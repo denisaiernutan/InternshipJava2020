@@ -1,1 +1,9 @@
 com\arobs\servlet\FirstServlet.class
+com\arobs\entities\Product.class
+com\arobs\services\ProductService.class
+com\arobs\services\UserService.class
+com\arobs\servlets\UserServlet.class
+com\arobs\entities\User.class
+com\arobs\servlets\LoginServlet.class
+com\arobs\servlets\ProductServlet.class
+com\arobs\servlet\Main.class
