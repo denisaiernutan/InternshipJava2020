@@ -20,7 +20,7 @@
          <center>
             <% User currentUser = (User )(session.getAttribute("currentSessionUser")); %>
             Welcome <%= currentUser.getFirstName() + " " + currentUser.getLastName()%>
-
+        <p> <a href="updateUser.jsp">update user</a></p>
          </center>
          <h1>
          Products:

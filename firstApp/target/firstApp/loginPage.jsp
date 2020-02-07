@@ -1,6 +1,7 @@
 <%@ page language="java"
     contentType="text/html; charset=windows-1256"
     pageEncoding="windows-1256"
+    import="com.arobs.services.UserService,java.util.List,com.arobs.services.ProductService"
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -13,6 +14,7 @@
 	</head>
 
 	<body>
+
 		<form action="loginServlet" method="GET">
 
 			Please enter your username

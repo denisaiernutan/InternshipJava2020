@@ -6,6 +6,8 @@ import com.arobs.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,18 +30,21 @@ public class LoginServlet extends HttpServlet {
 
         user= UserService.login(user);
         if(user.isValid()){
-            HttpSession session = req.getSession(false);
+            HttpSession session = req.getSession(true);
             session.setAttribute("currentSessionUser",user);
             session.setAttribute("productsList", ProductService.productsList);
             session.setAttribute("userProductsList", user.getProductsList());
             logger.info("user "+ user.getUsername() + "logged in");
-            resp.sendRedirect("userLogged.jsp"); //logged-in page
+//            resp.sendRedirect("userLogged.jsp"); //logged-in page
+
+            ServletContext context= getServletContext();
+            RequestDispatcher requestDispatcher = context.getRequestDispatcher("/userLogged.jsp");
+            requestDispatcher.forward(req,resp);
         }
         else
         {
             resp.sendRedirect("invalidLogin.jsp");
         }
-
     }
 
 

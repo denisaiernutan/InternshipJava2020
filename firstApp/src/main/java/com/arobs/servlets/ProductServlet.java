@@ -15,28 +15,24 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/productServlet")
 public class ProductServlet extends HttpServlet {
 
-
-    //not working
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Product product = new Product(req.getParameter("pr"), Integer.parseInt(req.getParameter("qu")));
 
-        //nu se pastreaza sesiunea!!!!
         HttpSession session = req.getSession(true);
 
-        User user = (User) session.getAttribute("currentUserSession");
+        User user = (User) session.getAttribute("currentSessionUser");
 
-        if (user == null)
+        boolean response = ProductService.addProduct(user, product);
+        if (!response) {
             resp.sendRedirect("invalidAddProduct.jsp");
-        else {
-            boolean response = ProductService.addProduct(user, product);
-            if (!response) {
-                resp.sendRedirect("invalidAddProduct.jsp");
-            } else {
-                resp.setHeader("Refresh", "0; URL=" + req.getContextPath());
-            }
+        } else {
+            session.setAttribute("userProductsList", user.getProductsList());
+            resp.setHeader("Refresh", "0; URL=" + req.getContextPath()+"/userLogged.jsp");
         }
+        //forward -- pastrez params
     }
+
 }
 
 

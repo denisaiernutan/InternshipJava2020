@@ -1,5 +1,8 @@
 package com.arobs.servlet;
 
+import com.arobs.services.ProductService;
+import com.arobs.services.UserService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -30,11 +33,6 @@ public class FirstServlet extends HttpServlet
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter printWriter=resp.getWriter();
-        for(int i=0;i<5;i++){
-            printWriter.println("elem-"+i);
-        }
-        printWriter.println("param elem= "+ getInitParameter("elem"));
 
     }
 }
