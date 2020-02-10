@@ -37,6 +37,7 @@ public class ProductService {
 
     }
 
+
     public static int validateQuantity(Product addedProduct) {
         String productName = addedProduct.getName();
         int productQuantity = addedProduct.getQuantity();
@@ -52,6 +53,7 @@ public class ProductService {
         } else return -1;
         return -1;
     }
+
 
 
 }

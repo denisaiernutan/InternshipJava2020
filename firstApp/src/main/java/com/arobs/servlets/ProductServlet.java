@@ -18,9 +18,7 @@ public class ProductServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Product product = new Product(req.getParameter("pr"), Integer.parseInt(req.getParameter("qu")));
-
         HttpSession session = req.getSession(true);
-
         User user = (User) session.getAttribute("currentSessionUser");
 
         boolean response = ProductService.addProduct(user, product);
@@ -32,6 +30,8 @@ public class ProductServlet extends HttpServlet {
         }
         //forward -- pastrez params
     }
+
+
 
 }
 

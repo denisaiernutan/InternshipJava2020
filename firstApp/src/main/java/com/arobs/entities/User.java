@@ -12,7 +12,11 @@ public class User {
     public List<Product> productsList;
 
 
-    public User(){};
+    public User() {
+    }
+
+    ;
+
     public User(String username, String password, String firstName, String lastName, boolean valid, List<Product> productsList) {
         this.username = username;
         this.password = password;
@@ -74,6 +78,7 @@ public class User {
     public void setValid(boolean valid) {
         this.valid = valid;
     }
+
     public List<Product> getProductsList() {
         return productsList;
     }

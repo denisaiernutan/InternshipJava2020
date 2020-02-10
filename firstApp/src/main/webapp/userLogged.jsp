@@ -86,10 +86,26 @@
          			<input type="text" name="pr"/><br>
 
          			Quantity:
-         			<input type="number" name="qu"/>
+         			<input type="number" name="qu"/><br>
 
-         			<input type="submit" value="submit">
+         			<input type="submit" value="add">
          		</form>
+
+
+          <h1>
+                   Delete product
+                  </h1>
+
+                  	<form action="userServlet" method="GET">
+
+                  			Product:
+                  			<input type="text" name="pr"/><br>
+
+                  			Quantity:
+                  			<input type="number" name="qu"/><br>
+
+                  			<input type="submit" value="delete">
+                  		</form>
 
       </body>
 

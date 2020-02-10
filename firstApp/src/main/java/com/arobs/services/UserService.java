@@ -58,13 +58,60 @@ public class UserService {
         if (productList == null) {
             productList = new ArrayList<Product>(15);
         }
-        productList.add(product);
+        int indexProd = 0;
+        for (indexProd = 0; indexProd < productList.size(); indexProd++) {
+            Product prod = productList.get(indexProd);
+            if (prod.getName().equals(product.getName())) {
+                int newQuantity = product.getQuantity() + prod.getQuantity();
+                double newPrice = product.getPrice() + prod.getPrice();
+                product.setQuantity(newQuantity);
+                product.setPrice(newPrice);
+                break;
+            }
+        }
+        if (indexProd < productList.size()) {
+            productList.set(indexProd, product);
+        } else {
+            productList.add(product);
+        }
         user.setProductsList(productList);
         usersList.set(indexUser, user);
 
     }
 
-    public static void updateUser(User oldUser, User updateUser){
+    public static boolean deleteProduct(User user, Product product) {
+
+        int indexUser = findUserFromList(user);
+        List<Product> productList = usersList.get(indexUser).getProductsList();
+        int indexProd = 0;
+        if (productList != null) {
+            for (indexProd = 0; indexProd < productList.size(); indexProd++) {
+                Product prod = productList.get(indexProd);
+                if (prod.getName().equals(product.getName())) {
+                    if (prod.getQuantity() >= product.getQuantity()) {
+                        int newQuantity = prod.getQuantity() - product.getQuantity();
+                        double pricePerOneProduct = prod.getPrice() / prod.getQuantity();
+                        double newPrice = newQuantity * pricePerOneProduct;
+                        product.setQuantity(newQuantity);
+                        product.setPrice(newPrice);
+                        break;
+                    }
+                }
+            }
+            if (indexProd < productList.size()) {
+                if (product.getQuantity() == 0) {
+                    productList.remove(indexProd);
+                } else {
+                    productList.set(indexProd, product);
+                    user.setProductsList(productList);
+                    usersList.set(indexUser, user);
+                }
+                return true;
+            } else return false;
+        } else return false;
+    }
+
+    public static void updateUser(User oldUser, User updateUser) {
         int indexUser = findUserFromList(oldUser);
 
         oldUser.setUsername(updateUser.getUsername());
