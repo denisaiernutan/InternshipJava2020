@@ -36,7 +36,7 @@ public class UserServlet extends HttpServlet {
     }
 
 
-    //delete product for user
+    //delete-update product for user
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Product product = new Product(req.getParameter("pr"), Integer.parseInt(req.getParameter("qu")));
@@ -51,8 +51,6 @@ public class UserServlet extends HttpServlet {
         {
             resp.sendRedirect("userLogged.jsp");
         }
-
-
 
     }
 }
