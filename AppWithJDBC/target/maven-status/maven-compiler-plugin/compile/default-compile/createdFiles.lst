@@ -1,0 +1,9 @@
+repositories\AuthorRepository.class
+repositories\BookRepository.class
+entities\Author.class
+services\AuthorService.class
+servlets\BookServlet.class
+connection\ConnectionClass.class
+servlets\AuthorServlet.class
+services\BookService.class
+entities\Book.class
