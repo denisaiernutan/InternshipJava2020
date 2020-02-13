@@ -1,9 +1,12 @@
-repositories\AuthorRepository.class
 repositories\BookRepository.class
-entities\Author.class
 services\AuthorService.class
 servlets\BookServlet.class
-connection\ConnectionClass.class
 servlets\AuthorServlet.class
 services\BookService.class
 entities\Book.class
+Main.class
+repositories\AuthorRepository.class
+entities\Author.class
+connection\ConnectionClass.class
+servlets\AuthorDetailsServlet.class
+connection\DataSource.class

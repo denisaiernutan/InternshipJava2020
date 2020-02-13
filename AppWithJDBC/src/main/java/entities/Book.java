@@ -23,6 +23,7 @@ public class Book {
         this.datePublished = datePublished;
         this.noChapters = noChapters;
     }
+    public Book(){}
 
     public int getBookId() {
         return bookId;

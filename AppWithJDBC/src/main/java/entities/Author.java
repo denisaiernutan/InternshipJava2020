@@ -16,6 +16,8 @@ public class Author {
         this.birthDate = birthDate;
     }
 
+    public Author() { }
+
     public int getAuthorId() {
         return authorId;
     }
@@ -26,5 +28,25 @@ public class Author {
 
     public Date getBirthDate() {
         return birthDate;
+    }
+
+    public List<Book> getBookList() {
+        return bookList;
+    }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setBookList(List<Book> bookList) {
+        this.bookList = bookList;
     }
 }

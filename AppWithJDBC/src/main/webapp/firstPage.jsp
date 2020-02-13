@@ -71,7 +71,6 @@ import=" entities.Author,entities.Book,java.util.List"
         <% } %>
     </tbody>
 </table>
-</body>
 
 <h1>
           Add book
@@ -90,6 +89,34 @@ import=" entities.Author,entities.Book,java.util.List"
 
          			<input type="submit" value="add">
          		</form>
+<!--
+<h1>
+          Delete book
+         </h1>
+
+         	<form action="bookServlet" method="POST">
+
+         			Name:
+         			<input type="text" name="bn"/><br>
+
+         			<input type="submit" value="delete">
+         		</form>
+    -->
+
+
+<h1>
+          See details for an author
+         </h1>
+
+         	<form action="authorDetailsServlet" method="GET">
+
+         			Name:
+         			<input type="text" name="an"/><br>
+
+         			<input type="submit" value="details">
+         		</form>
+
+</body>
 
 
 

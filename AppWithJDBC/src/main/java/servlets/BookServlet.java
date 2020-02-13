@@ -22,7 +22,22 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);
-        session.setAttribute("bookList", BookService.getAllBooks());
+//        String action=(String) session.getAttribute("action");
+//        if(action==null)
+//        try {
+//            session.setAttribute("bookList", BookService.getAllBooks());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        else {
+//            doDelete(req,resp);
+//        }
+
+        try {
+            session.setAttribute("bookList", BookService.getAllBooks());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -30,8 +45,6 @@ public class BookServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Date date = Date.valueOf(req.getParameter("dp"));
         Book book = new Book(req.getParameter("nm"), date, Integer.parseInt(req.getParameter("ch")));
-
-
 
         try {
             BookService.insertBook(book);
@@ -44,4 +57,14 @@ public class BookServlet extends HttpServlet {
         resp.sendRedirect("firstPage.jsp");
     }
 
+//    @Override
+//    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        HttpSession session= req.getSession();
+//        String bookName=(String) session.getAttribute("bn");
+//        try {
+//            BookService.deleteBookByName(bookName);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
