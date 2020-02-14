@@ -47,6 +47,5 @@ Name <%=author.getAuthorName() %>
     </tbody>
 </table>
 
-
 </body>
 </html>

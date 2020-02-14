@@ -2,6 +2,7 @@ package servlets;
 
 
 import entities.Author;
+import entities.Book;
 import services.AuthorService;
 
 import javax.servlet.ServletException;
@@ -19,14 +20,15 @@ public class AuthorDetailsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-          HttpSession session= req.getSession();
-            String authorName= req.getParameter("an");
+        HttpSession session = req.getSession();
+        String authorName = req.getParameter("an");
         try {
-            Author author= AuthorService.getAuthorByName(authorName);
+            Author author = AuthorService.getAuthorByName(authorName);
             session.setAttribute("author", author);
             resp.sendRedirect("authorDetails.jsp");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 }

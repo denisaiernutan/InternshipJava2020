@@ -13,13 +13,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(urlPatterns = "/authorServlet")
-public class AuthorServlet  extends HttpServlet {
+public class AuthorServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         try {
             session.setAttribute("authorList", AuthorService.getAllAuthors());
+            session.setAttribute("author", null);
         } catch (SQLException e) {
             e.printStackTrace();
         }

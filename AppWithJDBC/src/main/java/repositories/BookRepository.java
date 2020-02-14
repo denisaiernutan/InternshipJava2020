@@ -4,12 +4,18 @@ import connection.ConnectionClass;
 import connection.DataSource;
 import entities.Author;
 import entities.Book;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import servlets.BookServlet;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookRepository {
+
+    private static final Logger logger
+            = LoggerFactory.getLogger(BookServlet.class);
 
 
     public static List<Book> getAllBooks() throws SQLException {
@@ -55,20 +61,33 @@ public class BookRepository {
     }
 
 
-    public static void insertBook(Book book) throws SQLException, ClassNotFoundException {
+    public static void insertBook(Book book, String authorName) throws SQLException {
 
         String sql = "INSERT INTO books(book_name,date_published,no_chapters) VALUES (?,?,?)";
+        int bookId = -1;
         try (Connection connection = DataSource.getConnection(); PreparedStatement insertStmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             insertStmt.setString(1, book.getBookName());
             insertStmt.setDate(2, book.getDatePublished());
             insertStmt.setInt(3, book.getNoChapters());
 
             insertStmt.executeUpdate();
-            ResultSet rs = insertStmt.getGeneratedKeys();
-            if (rs.next()) {
-                book.setBookId(insertStmt.getGeneratedKeys().getInt(1));
+            try (ResultSet rs = insertStmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    bookId = rs.getInt(1);
+                    logger.info("generated key: " + bookId);
+                }
+                book.setBookId(bookId);
+            }
+
+            Author author = AuthorRepository.getAuthorByName(authorName);
+            sql = "INSERT INTO books_authors(book_id, author_id) VALUES (?,?)";
+            try (PreparedStatement insertStm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                insertStm.setInt(1, book.getBookId());
+                insertStm.setInt(2, author.getAuthorId());
+                insertStm.executeUpdate();
             }
         }
+
     }
 
     private static Book findBookById(int bookId) throws SQLException {
@@ -79,7 +98,6 @@ public class BookRepository {
 
             ResultSet rs = statement.executeQuery();
             rs.next();
-
             toReturn.setBookId(rs.getInt("book_id"));
             toReturn.setBookName(rs.getString("book_name"));
             toReturn.setDatePublished(rs.getDate("date_published"));
@@ -96,7 +114,6 @@ public class BookRepository {
             statement.setInt(1, author.getAuthorId());
 
             ResultSet rs = statement.executeQuery();
-
             while (rs.next()) {
                 Book book = findBookById(rs.getInt("book_id"));
                 bookList.add(book);
@@ -108,8 +125,8 @@ public class BookRepository {
     public static void deleteBookByName(String bookName) throws SQLException {
         String sql = "DELETE FROM books WHERE book_name=?";
         try (Connection connection = DataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1,bookName);
-             int rs = statement.executeUpdate();
+            statement.setString(1, bookName);
+            statement.executeUpdate();
         }
 
     }

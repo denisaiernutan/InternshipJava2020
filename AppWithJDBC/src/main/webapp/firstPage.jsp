@@ -87,21 +87,24 @@ import=" entities.Author,entities.Book,java.util.List"
                     Chapters:
                     <input type="number" name="ch"/><br>
 
+                    Author:
+                     <input type="text" name="ah"/><br>
+
          			<input type="submit" value="add">
          		</form>
-<!--
+
 <h1>
           Delete book
          </h1>
 
-         	<form action="bookServlet" method="POST">
+         	<form action="bookServlet" method="GET">
 
          			Name:
          			<input type="text" name="bn"/><br>
 
          			<input type="submit" value="delete">
          		</form>
-    -->
+
 
 
 <h1>

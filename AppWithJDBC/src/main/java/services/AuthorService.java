@@ -11,14 +11,14 @@ import java.util.List;
 public class AuthorService {
 
     public static List<Author> getAllAuthors() throws SQLException {
-       return AuthorRepository.getAllAuthors();
+        return AuthorRepository.getAllAuthors();
     }
 
     public static Author getAuthorByName(String authorName) throws SQLException {
-       Author author= AuthorRepository.getAuthorByName(authorName);
-       List<Book> bookList= BookRepository.findBooksByAuthor(author);
-       author.setBookList(bookList);
-       return author;
+        Author author = AuthorRepository.getAuthorByName(authorName);
+        List<Book> bookList = BookRepository.findBooksByAuthor(author);
+        author.setBookList(bookList);
+        return author;
 
     }
 }

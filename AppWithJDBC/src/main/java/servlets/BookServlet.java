@@ -2,6 +2,8 @@ package servlets;
 
 
 import entities.Book;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.BookService;
 
 import javax.servlet.ServletException;
@@ -13,41 +15,37 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 @WebServlet(urlPatterns = "/bookServlet")
 public class BookServlet extends HttpServlet {
 
+    private static final Logger logger
+            = LoggerFactory.getLogger(BookServlet.class);
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);
-//        String action=(String) session.getAttribute("action");
-//        if(action==null)
-//        try {
-//            session.setAttribute("bookList", BookService.getAllBooks());
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        else {
-//            doDelete(req,resp);
-//        }
-
-        try {
-            session.setAttribute("bookList", BookService.getAllBooks());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (req.getParameter("bn") != null) {
+            doDelete(req, resp);
+            resp.sendRedirect("firstPage.jsp");
+        } else {
+            try {
+                session.setAttribute("bookList", BookService.getAllBooks());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Date date = Date.valueOf(req.getParameter("dp"));
         Book book = new Book(req.getParameter("nm"), date, Integer.parseInt(req.getParameter("ch")));
+        String authorName = req.getParameter("ah");
 
         try {
-            BookService.insertBook(book);
+            BookService.insertBook(book, authorName);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -57,14 +55,14 @@ public class BookServlet extends HttpServlet {
         resp.sendRedirect("firstPage.jsp");
     }
 
-//    @Override
-//    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        HttpSession session= req.getSession();
-//        String bookName=(String) session.getAttribute("bn");
-//        try {
-//            BookService.deleteBookByName(bookName);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String bookName = req.getParameter("bn");
+        try {
+            BookService.deleteBookByName(bookName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

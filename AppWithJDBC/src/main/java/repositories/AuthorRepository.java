@@ -36,9 +36,7 @@ public class AuthorRepository {
         Author toReturn = new Author();
 
         try (Connection connection = DataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-
             statement.setString(1, authorName);
-
             ResultSet rs = statement.executeQuery();
             rs.next();
             toReturn.setAuthorId(rs.getInt("author_id"));
