@@ -10,8 +10,10 @@ import java.util.List;
 
 public class AuthorRepository {
 
+    public AuthorRepository() {
+    }
 
-    public static List<Author> getAllAuthors() throws SQLException {
+    public  List<Author> getAllAuthors() throws SQLException {
         String sql = "SELECT * FROM authors";
         try (Connection connection = DataSource.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
@@ -31,7 +33,7 @@ public class AuthorRepository {
         }
     }
 
-    public static Author getAuthorByName(String authorName) throws SQLException {
+    public  Author getAuthorByName(String authorName) throws SQLException {
         String sql = "SELECT * from authors where author_name=?";
         Author toReturn = new Author();
 

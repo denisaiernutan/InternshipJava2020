@@ -17,8 +17,12 @@ public class BookRepository {
     private static final Logger logger
             = LoggerFactory.getLogger(BookServlet.class);
 
+    AuthorRepository authorRepository= new AuthorRepository();
 
-    public static List<Book> getAllBooks() throws SQLException {
+    public BookRepository() {
+    }
+
+    public  List<Book> getAllBooks() throws SQLException {
         String sql = "SELECT * FROM books";
         try (Connection connection = DataSource.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
@@ -39,7 +43,7 @@ public class BookRepository {
         }
     }
 
-    public static List<Book> getAllBooksWithAuthors() throws SQLException {
+    public  List<Book> getAllBooksWithAuthors() throws SQLException {
         String sql = "SELECT * FROM books";
         try (Connection connection = DataSource.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
@@ -61,7 +65,7 @@ public class BookRepository {
     }
 
 
-    public static void insertBook(Book book, String authorName) throws SQLException {
+    public  void insertBook(Book book, String authorName) throws SQLException {
 
         String sql = "INSERT INTO books(book_name,date_published,no_chapters) VALUES (?,?,?)";
         int bookId = -1;
@@ -79,7 +83,7 @@ public class BookRepository {
                 book.setBookId(bookId);
             }
 
-            Author author = AuthorRepository.getAuthorByName(authorName);
+            Author author = authorRepository.getAuthorByName(authorName);
             sql = "INSERT INTO books_authors(book_id, author_id) VALUES (?,?)";
             try (PreparedStatement insertStm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 insertStm.setInt(1, book.getBookId());
@@ -90,7 +94,7 @@ public class BookRepository {
 
     }
 
-    private static Book findBookById(int bookId) throws SQLException {
+    private  Book findBookById(int bookId) throws SQLException {
         String sql = "SELECT * FROM books where book_id=?";
         Book toReturn = new Book();
         try (Connection connection = DataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -107,7 +111,7 @@ public class BookRepository {
         return toReturn;
     }
 
-    public static List<Book> findBooksByAuthor(Author author) throws SQLException {
+    public  List<Book> findBooksByAuthor(Author author) throws SQLException {
         List<Book> bookList = new ArrayList<>(15);
         String sql = "SELECT * FROM books_authors where author_id=?";
         try (Connection connection = DataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -122,7 +126,7 @@ public class BookRepository {
         return bookList;
     }
 
-    public static void deleteBookByName(String bookName) throws SQLException {
+    public  void deleteBookByName(String bookName) throws SQLException {
         String sql = "DELETE FROM books WHERE book_name=?";
         try (Connection connection = DataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, bookName);

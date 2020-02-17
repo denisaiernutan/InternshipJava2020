@@ -15,11 +15,12 @@ import java.sql.SQLException;
 @WebServlet(urlPatterns = "/authorServlet")
 public class AuthorServlet extends HttpServlet {
 
+    AuthorService authorService= new AuthorService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         try {
-            session.setAttribute("authorList", AuthorService.getAllAuthors());
+            session.setAttribute("authorList", authorService.getAllAuthors());
             session.setAttribute("author", null);
         } catch (SQLException e) {
             e.printStackTrace();

@@ -18,12 +18,14 @@ import java.sql.SQLException;
 @WebServlet(urlPatterns = "/authorDetailsServlet")
 public class AuthorDetailsServlet extends HttpServlet {
 
+    AuthorService authorService= new AuthorService();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String authorName = req.getParameter("an");
         try {
-            Author author = AuthorService.getAuthorByName(authorName);
+            Author author = authorService.getAuthorByName(authorName);
             session.setAttribute("author", author);
             resp.sendRedirect("authorDetails.jsp");
         } catch (SQLException e) {

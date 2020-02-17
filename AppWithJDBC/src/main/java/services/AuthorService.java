@@ -10,13 +10,18 @@ import java.util.List;
 
 public class AuthorService {
 
-    public static List<Author> getAllAuthors() throws SQLException {
-        return AuthorRepository.getAllAuthors();
+    AuthorRepository authorRepository= new AuthorRepository();
+    BookRepository bookRepository= new BookRepository();
+    public AuthorService() {
     }
 
-    public static Author getAuthorByName(String authorName) throws SQLException {
-        Author author = AuthorRepository.getAuthorByName(authorName);
-        List<Book> bookList = BookRepository.findBooksByAuthor(author);
+    public  List<Author> getAllAuthors() throws SQLException {
+        return authorRepository.getAllAuthors();
+    }
+
+    public  Author getAuthorByName(String authorName) throws SQLException {
+        Author author = authorRepository.getAuthorByName(authorName);
+        List<Book> bookList = bookRepository.findBooksByAuthor(author);
         author.setBookList(bookList);
         return author;
 

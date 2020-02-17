@@ -19,6 +19,8 @@ import java.sql.SQLException;
 @WebServlet(urlPatterns = "/bookServlet")
 public class BookServlet extends HttpServlet {
 
+    BookService bookService= new BookService();
+
     private static final Logger logger
             = LoggerFactory.getLogger(BookServlet.class);
 
@@ -31,7 +33,7 @@ public class BookServlet extends HttpServlet {
             resp.sendRedirect("firstPage.jsp");
         } else {
             try {
-                session.setAttribute("bookList", BookService.getAllBooks());
+                session.setAttribute("bookList", bookService.getAllBooks());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -45,7 +47,7 @@ public class BookServlet extends HttpServlet {
         String authorName = req.getParameter("ah");
 
         try {
-            BookService.insertBook(book, authorName);
+            bookService.insertBook(book, authorName);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -60,7 +62,7 @@ public class BookServlet extends HttpServlet {
 
         String bookName = req.getParameter("bn");
         try {
-            BookService.deleteBookByName(bookName);
+            bookService.deleteBookByName(bookName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
