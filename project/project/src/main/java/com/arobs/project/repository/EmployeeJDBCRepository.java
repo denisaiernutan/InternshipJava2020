@@ -7,9 +7,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
+import java.sql.PreparedStatement
+        ;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class EmployeeJDBCRepository {
@@ -20,39 +22,37 @@ public class EmployeeJDBCRepository {
     public List<Employee> findAll() {
         String sql = "select * from employees";
 
-        List<Employee> employeeList = jdbcTemplate.query(sql, (rs, rowNum) ->
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
                 new Employee(rs.getInt("employee_id"),
                         rs.getString("employee_name"),
                         rs.getString("employee_pass"),
                         rs.getString("employee_email"),
                         rs.getString("employee_role")));
 
-        return  employeeList;
     }
 
-    public int insertEmployee(Employee employee){
+    public Employee insertEmployee(Employee employee)  {
         String sql="insert into employees(employee_name,employee_pass,employee_email, employee_role) values(?,md5(?),?,?)";
 
         KeyHolder keyHolder= new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, employee.getEmployeeName());
-            ps.setString(2, employee.getEmployeePass());
-            ps.setString(3, employee.getEmployeeEmail());
-            ps.setString(4, employee.getEmployeeRole());
-            return ps;
-        }, keyHolder );
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, employee.getEmployeeName());
+                ps.setString(2, employee.getEmployeePass());
+                ps.setString(3, employee.getEmployeeEmail());
+                ps.setString(4, employee.getEmployeeRole());
+                return ps;
+            }, keyHolder);
 
-        return keyHolder.getKey().intValue();
+            employee.setEmployeeId(Objects.requireNonNull(keyHolder.getKey()).intValue());
+            return  employee;
     }
 
     public String getPasswordByEmail(String employeeEmail){
 
         String sql="select employee_pass from employees where employee_email=?";
-        String oldPassword= jdbcTemplate.queryForObject(sql,new Object[]{employeeEmail},String.class);
-        return oldPassword;
-
+        return jdbcTemplate.queryForObject(sql,new Object[]{employeeEmail},String.class);
     }
 
     public void updatePassword(String employeeEmail, String employeePass){

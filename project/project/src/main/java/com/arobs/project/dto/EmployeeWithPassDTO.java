@@ -1,21 +1,29 @@
 package com.arobs.project.dto;
 
-import io.swagger.annotations.ApiModel;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 public class EmployeeWithPassDTO {
 
-   @NotNull
-   private String employeeName;
+    @NotNull
+    private String employeeName;
+
     @NotNull
     private String employeePass;
+
     @NotNull
-   @Email
+    @Email
     private String employeeEmail;
+
     @NotNull
     private String employeeRole;
+
+    public EmployeeWithPassDTO(@NotNull String employeeName, @NotNull String employeePass, @NotNull String employeeEmail, @NotNull String employeeRole) {
+        this.employeeName = employeeName;
+        this.employeePass = employeePass;
+        this.employeeEmail = employeeEmail;
+        this.employeeRole = employeeRole;
+    }
 
     public String getEmployeeName() {
         return employeeName;

@@ -1,6 +1,6 @@
 package com.arobs.project.service;
 
-import com.arobs.project.builder.EmployeeBuilder;
+import com.arobs.project.converter.EmployeeConverter;
 import com.arobs.project.dto.EmployeeDTO;
 import com.arobs.project.dto.EmployeeNewPassDTO;
 import com.arobs.project.dto.EmployeeWithPassDTO;
@@ -15,58 +15,61 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeJDBCRepository  employeeJDBCRepository;
+    private EmployeeJDBCRepository employeeJDBCRepository;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeJDBCRepository employeeJDBCRepository) {
-        this.employeeJDBCRepository=employeeJDBCRepository;
+        this.employeeJDBCRepository = employeeJDBCRepository;
     }
 
-    public List<EmployeeDTO> getAllEmployees(){
+    public List<EmployeeDTO> getAllEmployees() {
 
-        List<Employee> employeeList= employeeJDBCRepository.findAll();
-        List<EmployeeDTO> employeeDTOList=employeeList.stream().map(employee -> EmployeeBuilder.convertToDTO(employee)).collect(Collectors.toList());
+        List<Employee> employeeList = employeeJDBCRepository.findAll();
+        return employeeList.stream()
+                .map(EmployeeConverter::convertToEmployeeDTO)
+                .collect(Collectors.toList());
 
-        return employeeDTOList;
     }
 
-    public void insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) {
-        int newId= employeeJDBCRepository.insertEmployee(EmployeeBuilder.convertToEntity(employeeWithPassDTO));
+    public EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) {
+        Employee employee = employeeJDBCRepository.insertEmployee(EmployeeConverter.convertToEntity(employeeWithPassDTO));
+        return EmployeeConverter.convertToEmployeeDTO(employee);
+
     }
 
 
-    public void updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO){
-        String oldPassword=employeeJDBCRepository.getPasswordByEmail(employeeNewPassDTO.getEmployeeEmail());
-        String oldPassFromEmpl= encryptPass(employeeNewPassDTO.getEmployeeOldPass());
+    public void updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) {
+        String oldPassword = employeeJDBCRepository.getPasswordByEmail(employeeNewPassDTO.getEmployeeEmail());
+        String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
 
-        if(oldPassword.equals(oldPassFromEmpl))
-        {
+        if (oldPassword.equals(oldPassFromEmpl)) {
             employeeJDBCRepository.updatePassword(employeeNewPassDTO.getEmployeeEmail(), employeeNewPassDTO.getEmployeeNewPass());
-        }
-        else {
-            System.out.println(oldPassFromEmpl+ "\n" + oldPassword);
+        } else {
+            System.out.println(oldPassFromEmpl + "\n" + oldPassword);
         }
 
     }
 
-    public void deleteEmployee(String employeeEmail){
-        int size=employeeEmail.length();
-        String email= employeeEmail.substring(1,size-1);
+    public void deleteEmployee(String employeeEmail) {
+        int size = employeeEmail.length();
+        String email = employeeEmail.substring(1, size - 1);
         employeeJDBCRepository.deleteByEmail(email);
     }
 
-    private String encryptPass(String password){
-        MessageDigest md= null;
+    private String encryptPass(String password) {
+        MessageDigest md = null;
         try {
-            md= MessageDigest.getInstance("MD5");
+            md = MessageDigest.getInstance("MD5");
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        byte[] hashInBytes= md.digest(password.getBytes(StandardCharsets.UTF_8));
+        assert md != null;
+        byte[] hashInBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
 
         StringBuilder sb = new StringBuilder();
         for (byte b : hashInBytes) {
@@ -75,5 +78,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         return sb.toString();
     }
 
-
+    //replaced with @Email in EmployeeWithPassDTO
+//    private static boolean isValidEmailAddress(String email) {
+//        boolean result = true;
+//        try {s
+//            InternetAddress emailAddr = new InternetAddress(email);
+//            emailAddr.validate();
+//        } catch (AddressException ex) {
+//            result = false;
+//        }
+//        return result;
+//    }
 }
+
+
+
