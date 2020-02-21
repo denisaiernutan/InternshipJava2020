@@ -9,6 +9,7 @@ import com.arobs.project.repository.EmployeeJDBCRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -42,22 +43,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
-    public void updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) {
+    public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) {
         String oldPassword = employeeJDBCRepository.getPasswordByEmail(employeeNewPassDTO.getEmployeeEmail());
         String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
 
         if (oldPassword.equals(oldPassFromEmpl)) {
-            employeeJDBCRepository.updatePassword(employeeNewPassDTO.getEmployeeEmail(), employeeNewPassDTO.getEmployeeNewPass());
-        } else {
-            System.out.println(oldPassFromEmpl + "\n" + oldPassword);
+            Employee employee = employeeJDBCRepository.updatePassword(employeeNewPassDTO.getEmployeeEmail(), employeeNewPassDTO.getEmployeeNewPass());
+            return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
         }
+        return new EmployeeWithPassDTO();
 
     }
 
-    public void deleteEmployee(String employeeEmail) {
+    public boolean deleteEmployee(String employeeEmail) {
         int size = employeeEmail.length();
         String email = employeeEmail.substring(1, size - 1);
-        employeeJDBCRepository.deleteByEmail(email);
+        return employeeJDBCRepository.deleteByEmail(email);
     }
 
     private String encryptPass(String password) {

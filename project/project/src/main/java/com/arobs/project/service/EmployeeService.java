@@ -10,6 +10,6 @@ public interface EmployeeService {
 
     List<EmployeeDTO> getAllEmployees();
     EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO);
-    void updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO);
-    void deleteEmployee(String employeeEmail);
+    EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO);
+    boolean deleteEmployee(String employeeEmail);
 }

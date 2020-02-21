@@ -11,7 +11,10 @@ create table employees(
     employee_role varchar(15) not null,
     primary key(employee_id)
     );
-
+    
+alter table employees add unique (employee_email);
+    
+    
 create table books(
 	book_id int unique not null auto_increment,
     book_title varchar(70) not null,
@@ -20,6 +23,7 @@ create table books(
     book_added_date  datetime not null,
     primary key (book_id)
     );
+    
     
 create table tags(
 	tag_id int unique not null auto_increment,
@@ -83,7 +87,7 @@ create table book_requests(
      );
     
     
-insert into employees(employee_name,employee_pass,employee_email, employee_role) values("employee1",md5('pass'),"string@yahoo.com","user");
+insert into employees(employee_name,employee_pass,employee_email, employee_role) values("employee1",md5('pass'),"string","user");
 
 select employee_pass from employees where employee_email="string@yahoo.com";
 

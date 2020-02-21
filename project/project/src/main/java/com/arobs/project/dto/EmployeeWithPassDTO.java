@@ -18,6 +18,9 @@ public class EmployeeWithPassDTO {
     @NotNull
     private String employeeRole;
 
+    public EmployeeWithPassDTO() {
+    }
+
     public EmployeeWithPassDTO(@NotNull String employeeName, @NotNull String employeePass, @NotNull String employeeEmail, @NotNull String employeeRole) {
         this.employeeName = employeeName;
         this.employeePass = employeePass;

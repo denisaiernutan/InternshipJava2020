@@ -14,7 +14,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping(value = "/employees", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/employees")
 public class EmployeeController {
 
     private EmployeeServiceImpl employeeService;
@@ -35,13 +35,13 @@ public class EmployeeController {
     }
 
     @PutMapping
-    public void updatePasswordEmployee(@RequestBody EmployeeNewPassDTO employeeNewPassDTO) {
-        employeeService.updatePasswordEmployee(employeeNewPassDTO);
+    public EmployeeWithPassDTO updatePasswordEmployee(@RequestBody @Valid EmployeeNewPassDTO employeeNewPassDTO) {
+        return employeeService.updatePasswordEmployee(employeeNewPassDTO);
     }
 
     @DeleteMapping
-    public void deleteEmployee(@RequestBody String emailEmployee) {
-        employeeService.deleteEmployee(emailEmployee);
+    public boolean deleteEmployee(@RequestBody String emailEmployee) {
+       return employeeService.deleteEmployee(emailEmployee);
     }
 
 

@@ -1,14 +1,15 @@
 package com.arobs.project.dto;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 public class EmployeeNewPassDTO {
 
     @NotNull
     private String employeeEmail;
+
     @NotNull
     private String employeeOldPass;
+
     @NotNull
     private String employeeNewPass;
 
