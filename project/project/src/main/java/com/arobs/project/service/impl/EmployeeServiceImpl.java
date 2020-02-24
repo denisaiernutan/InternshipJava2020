@@ -1,15 +1,17 @@
-package com.arobs.project.service;
+package com.arobs.project.service.impl;
 
 import com.arobs.project.converter.EmployeeConverter;
 import com.arobs.project.dto.EmployeeDTO;
 import com.arobs.project.dto.EmployeeNewPassDTO;
 import com.arobs.project.dto.EmployeeWithPassDTO;
 import com.arobs.project.entity.Employee;
-import com.arobs.project.repository.EmployeeJDBCRepository;
+import com.arobs.project.repository.EmployeeRepository;
+import com.arobs.project.repository.RepoFactory;
+import com.arobs.project.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolationException;
+import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -20,16 +22,23 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeJDBCRepository employeeJDBCRepository;
+    private RepoFactory repoFactory;
+
+    private EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeJDBCRepository employeeJDBCRepository) {
-        this.employeeJDBCRepository = employeeJDBCRepository;
+    public EmployeeServiceImpl(RepoFactory repoFactory) {
+        this.repoFactory = repoFactory;
+    }
+
+    @PostConstruct
+    public void init() {
+        this.employeeRepository = this.repoFactory.getInstance().getEmployeeRepository();
     }
 
     public List<EmployeeDTO> getAllEmployees() {
 
-        List<Employee> employeeList = employeeJDBCRepository.findAll();
+        List<Employee> employeeList = employeeRepository.findAll();
         return employeeList.stream()
                 .map(EmployeeConverter::convertToEmployeeDTO)
                 .collect(Collectors.toList());
@@ -37,18 +46,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     public EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) {
-        Employee employee = employeeJDBCRepository.insertEmployee(EmployeeConverter.convertToEntity(employeeWithPassDTO));
+        Employee employee = employeeRepository.insertEmployee(EmployeeConverter.convertToEntity(employeeWithPassDTO));
         return EmployeeConverter.convertToEmployeeDTO(employee);
 
     }
 
 
     public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) {
-        String oldPassword = employeeJDBCRepository.getPasswordByEmail(employeeNewPassDTO.getEmployeeEmail());
+        String oldPassword = employeeRepository.getPasswordByEmail(employeeNewPassDTO.getEmployeeEmail());
         String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
 
         if (oldPassword.equals(oldPassFromEmpl)) {
-            Employee employee = employeeJDBCRepository.updatePassword(employeeNewPassDTO.getEmployeeEmail(), employeeNewPassDTO.getEmployeeNewPass());
+            Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeEmail(), employeeNewPassDTO.getEmployeeNewPass());
             return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
         }
         return new EmployeeWithPassDTO();
@@ -58,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public boolean deleteEmployee(String employeeEmail) {
         int size = employeeEmail.length();
         String email = employeeEmail.substring(1, size - 1);
-        return employeeJDBCRepository.deleteByEmail(email);
+        return employeeRepository.deleteByEmail(email);
     }
 
     private String encryptPass(String password) {

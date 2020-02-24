@@ -2,27 +2,28 @@ package com.arobs.project.entity;
 
 public class BookTag {
 
-    private int bookId;
-    private int tagId;
+    private Book book;
 
-    public BookTag(int bookId, int tagId) {
-        this.bookId = bookId;
-        this.tagId = tagId;
+    private Tag tag;
+
+    public BookTag(Book book, Tag tag) {
+        this.book = book;
+        this.tag = tag;
     }
 
-    public int getBookId() {
-        return bookId;
+    public Book getBook() {
+        return book;
     }
 
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
+    public void setBook(Book book) {
+        this.book = book;
     }
 
-    public int getTagId() {
-        return tagId;
+    public Tag getTag() {
+        return tag;
     }
 
-    public void setTagId(int tagId) {
-        this.tagId = tagId;
+    public void setTag(Tag tag) {
+        this.tag = tag;
     }
 }

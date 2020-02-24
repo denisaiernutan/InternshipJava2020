@@ -1,7 +1,7 @@
-package com.arobs.project.repository;
+package com.arobs.project.repository.jdbc;
 
-import com.arobs.project.entity.Employee;
 import com.arobs.project.entity.Tag;
+import com.arobs.project.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.Objects;
 
 @Repository
-public class TagJDBCRepository {
+public class TagJDBCRepository implements TagRepository {
 
     JdbcTemplate jdbcTemplate;
 
@@ -24,18 +24,14 @@ public class TagJDBCRepository {
 
     public Tag findByDescription(String description) {
         String sql = "select * from tags where tag_description=?";
-        try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{description}, (rs, rowNum) ->
-                    new Tag(rs.getInt("tag_id"),
-                            rs.getString("tag_description")));
-        }
-        catch (Exception e){
-            return null;
-        }
+        return jdbcTemplate.queryForObject(sql, new Object[]{description}, (rs, rowNum) ->
+                new Tag(rs.getInt("tag_id"),
+                        rs.getString("tag_description")));
+
     }
 
-    public Tag insertTag(String description){
-        String sql=" insert into tags(tag_description) values (?)";
+    public Tag insertTag(String description) {
+        String sql = " insert into tags(tag_description) values (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {

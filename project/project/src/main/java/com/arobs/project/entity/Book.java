@@ -6,10 +6,15 @@ import java.util.List;
 public class Book {
 
     private int bookId;
+
     private String bookTitle;
+
     private String bookAuthor;
+
     private String bookDescription;
+
     private Timestamp bookAddedDate;
+
     private List<Tag> tagList;
 
     public Book(int bookId, String bookTitle, String bookAuthor, String bookDescription, Timestamp bookAddedDate) {

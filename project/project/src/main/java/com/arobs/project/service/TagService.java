@@ -5,6 +5,7 @@ import com.arobs.project.entity.Tag;
 
 public interface TagService {
 
-     TagDTO insertTag(String description);
-     Tag findByDescription(String description);
+    TagDTO insertTag(String description);
+
+    Tag findByDescription(String description);
 }

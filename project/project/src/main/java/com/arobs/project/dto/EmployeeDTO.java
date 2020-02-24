@@ -1,10 +1,11 @@
 package com.arobs.project.dto;
 
-
 public class EmployeeDTO {
 
     private String employeeName;
+
     private String employeeEmail;
+
     private String employeeRole;
 
 

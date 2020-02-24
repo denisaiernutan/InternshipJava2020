@@ -1,8 +1,7 @@
 package com.arobs.project.controller;
 
 import com.arobs.project.dto.BookDTO;
-import com.arobs.project.service.BookService;
-import com.arobs.project.service.BookServiceImpl;
+import com.arobs.project.service.impl.BookServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +20,7 @@ public class BookController {
     }
 
     @PostMapping
-    public BookDTO insertBook(@RequestBody  BookDTO bookDTO) {
+    public BookDTO insertBook(@RequestBody BookDTO bookDTO) {
         return bookServiceImpl.insertBook(bookDTO);
     }
 

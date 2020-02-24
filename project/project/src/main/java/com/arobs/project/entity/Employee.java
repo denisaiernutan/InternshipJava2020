@@ -3,9 +3,13 @@ package com.arobs.project.entity;
 public class Employee {
 
     private int employeeId;
+
     private String employeeName;
+
     private String employeePass;
+
     private String employeeEmail;
+
     private String employeeRole;
 
     public Employee(int employeeId, String employeeName, String employeePass, String employeeEmail, String employeeRole) {

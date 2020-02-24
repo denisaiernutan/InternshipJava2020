@@ -9,7 +9,10 @@ import java.util.List;
 public interface EmployeeService {
 
     List<EmployeeDTO> getAllEmployees();
+
     EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO);
+
     EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO);
+
     boolean deleteEmployee(String employeeEmail);
 }

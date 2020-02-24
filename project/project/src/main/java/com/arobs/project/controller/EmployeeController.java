@@ -3,9 +3,8 @@ package com.arobs.project.controller;
 import com.arobs.project.dto.EmployeeDTO;
 import com.arobs.project.dto.EmployeeNewPassDTO;
 import com.arobs.project.dto.EmployeeWithPassDTO;
-import com.arobs.project.service.EmployeeServiceImpl;
+import com.arobs.project.service.impl.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +30,7 @@ public class EmployeeController {
 
     @PostMapping
     public EmployeeDTO insertEmployee(@RequestBody @Valid EmployeeWithPassDTO employeeDTO) {
-          return  employeeService.insertEmployee(employeeDTO);
+        return employeeService.insertEmployee(employeeDTO);
     }
 
     @PutMapping
@@ -41,7 +40,7 @@ public class EmployeeController {
 
     @DeleteMapping
     public boolean deleteEmployee(@RequestBody String emailEmployee) {
-       return employeeService.deleteEmployee(emailEmployee);
+        return employeeService.deleteEmployee(emailEmployee);
     }
 
 

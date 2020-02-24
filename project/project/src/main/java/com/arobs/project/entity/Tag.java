@@ -3,6 +3,7 @@ package com.arobs.project.entity;
 public class Tag {
 
     private int tagId;
+
     private String tagDescription;
 
     public Tag(int tagId, String tagDescription) {

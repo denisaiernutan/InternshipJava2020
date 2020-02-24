@@ -1,6 +1,7 @@
-package com.arobs.project.repository;
+package com.arobs.project.repository.jdbc;
 
 import com.arobs.project.entity.Book;
+import com.arobs.project.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,7 +13,7 @@ import java.sql.Statement;
 import java.util.Objects;
 
 @Repository
-public class BookJDBCRepository {
+public class BookJDBCRepository implements BookRepository {
 
     JdbcTemplate jdbcTemplate;
 
@@ -21,16 +22,15 @@ public class BookJDBCRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Book insertBook(Book book)
-    {
+    public Book insertBook(Book book) {
         String sql = "insert into books(book_title,book_author,book_description,book_added_date) values(?,?,?,?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1,book.getBookTitle());
-            ps.setString(2,book.getBookAuthor());
+            ps.setString(1, book.getBookTitle());
+            ps.setString(2, book.getBookAuthor());
             ps.setString(3, book.getBookDescription());
             ps.setTimestamp(4, book.getBookAddedDate());
             return ps;

@@ -4,5 +4,5 @@ import com.arobs.project.dto.BookDTO;
 
 public interface BookService {
 
-    public BookDTO insertBook(BookDTO bookDTO);
+     BookDTO insertBook(BookDTO bookDTO);
 }

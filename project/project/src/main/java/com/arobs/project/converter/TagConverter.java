@@ -12,8 +12,8 @@ public class TagConverter {
         return modelMapper.map(tag, TagDTO.class);
     }
 
-    public static Tag convertToEntity(TagDTO tagDTO){
-        return modelMapper.map(tagDTO,Tag.class);
+    public static Tag convertToEntity(TagDTO tagDTO) {
+        return modelMapper.map(tagDTO, Tag.class);
     }
 
 }

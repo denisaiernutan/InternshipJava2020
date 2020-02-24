@@ -1,6 +1,7 @@
-package com.arobs.project.repository;
+package com.arobs.project.repository.jdbc;
 
 import com.arobs.project.entity.Employee;
+import com.arobs.project.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
-public class EmployeeJDBCRepository {
+public class EmployeeJDBCRepository implements EmployeeRepository {
 
     private JdbcTemplate jdbcTemplate;
 

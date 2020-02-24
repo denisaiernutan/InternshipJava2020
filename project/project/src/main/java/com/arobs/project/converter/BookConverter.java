@@ -7,11 +7,11 @@ import org.modelmapper.ModelMapper;
 public class BookConverter {
     private static ModelMapper modelMapper = new ModelMapper();
 
-    public static BookDTO convertToDTO(Book book){
-        return modelMapper.map(book,BookDTO.class);
+    public static BookDTO convertToDTO(Book book) {
+        return modelMapper.map(book, BookDTO.class);
     }
 
-    public static Book convertToEntity(BookDTO bookDTO){
-        return  modelMapper.map(bookDTO,Book.class);
+    public static Book convertToEntity(BookDTO bookDTO) {
+        return modelMapper.map(bookDTO, Book.class);
     }
 }

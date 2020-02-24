@@ -1,15 +1,18 @@
 package com.arobs.project.dto;
 
 
-import java.sql.Timestamp;
 import java.util.List;
 
 public class BookDTO {
 
     private int bookId;
+
     private String bookTitle;
+
     private String bookAuthor;
+
     private String bookDescription;
+
     private List<TagDTO> tagList;
 
     public BookDTO(int bookId, String bookTitle, String bookAuthor, String bookDescription, List<TagDTO> tagList) {

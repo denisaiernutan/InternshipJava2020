@@ -20,7 +20,7 @@ public class TagController {
     }
 
     @PostMapping
-    public TagDTO insertTag(@RequestBody  String description){
+    public TagDTO insertTag(@RequestBody String description) {
         return tagService.insertTag(description);
     }
 }
