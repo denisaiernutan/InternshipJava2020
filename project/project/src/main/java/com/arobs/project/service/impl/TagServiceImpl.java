@@ -30,8 +30,7 @@ public class TagServiceImpl implements TagService {
     }
 
     public TagDTO insertTag(String description) {
-        int size = description.length();
-        return TagConverter.convertToDTO(tagRepository.insertTag(description.substring(1, size - 1)));
+        return TagConverter.convertToDTO(tagRepository.insertTag(description));
     }
 
     public Tag findByDescription(String description) {

@@ -38,8 +38,8 @@ public class EmployeeController {
         return employeeService.updatePasswordEmployee(employeeNewPassDTO);
     }
 
-    @DeleteMapping
-    public boolean deleteEmployee(@RequestBody String emailEmployee) {
+    @DeleteMapping(value = "/{email}")
+    public boolean deleteEmployee(@PathVariable("email") String emailEmployee) {
         return employeeService.deleteEmployee(emailEmployee);
     }
 

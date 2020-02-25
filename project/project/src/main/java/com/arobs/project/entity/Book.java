@@ -1,21 +1,43 @@
 package com.arobs.project.entity;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+@Entity
+@Table(name = "books")
 public class Book {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "book_id")
     private int bookId;
 
+    @Column(name = "book_title")
     private String bookTitle;
 
+    @Column(name = "book_author")
     private String bookAuthor;
 
+    @Column(name = "book_description")
     private String bookDescription;
 
+    @Column(name = "book_added_date")
     private Timestamp bookAddedDate;
 
-    private List<Tag> tagList;
+    @ManyToMany
+    @JoinTable(name = "book_tag", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tagSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "book")
+    private Set<Copy> copySet = new HashSet<>();
+
+    @OneToMany(mappedBy = "book")
+    private Set<BookRent> bookRentSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee")
+    private Set<RentRequest> rentRequestSet = new HashSet<>();
 
     public Book(int bookId, String bookTitle, String bookAuthor, String bookDescription, Timestamp bookAddedDate) {
         this.bookId = bookId;
@@ -67,4 +89,30 @@ public class Book {
     public void setBookAddedDate(Timestamp bookAddedDate) {
         this.bookAddedDate = bookAddedDate;
     }
+
+    public void addTag(Tag tag) {
+        this.tagSet.add(tag);
+        tag.getBookSet().add(this);
+    }
+
+    public void removeTag(Tag tag) {
+        this.tagSet.remove(tag);
+        tag.getBookSet().remove(this);
+    }
+
+    public void addCopy(Copy copy) {
+        this.copySet.add(copy);
+        copy.setBook(this);
+    }
+
+    public void addBookRent(BookRent bookRent) {
+        this.bookRentSet.add(bookRent);
+        bookRent.setBook(this);
+    }
+
+    public void addRentRequest(RentRequest rentRequest) {
+        this.rentRequestSet.add(rentRequest);
+        rentRequest.setBook(this);
+    }
+
 }

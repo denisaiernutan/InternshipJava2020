@@ -1,16 +1,36 @@
 package com.arobs.project.entity;
 
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "employees")
 public class Employee {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "employee_id")
     private int employeeId;
 
+    @Column(name = "employee_name")
     private String employeeName;
 
+    @Column(name = "employee_pass")
     private String employeePass;
 
+    @Column(name = "employee_email")
     private String employeeEmail;
 
+    @Column(name = "employee_role")
     private String employeeRole;
+
+    @OneToMany(mappedBy = "employee")
+    private Set<RentRequest> rentRequestSet = new HashSet<>();
+
+    public Employee() {
+    }
+
 
     public Employee(int employeeId, String employeeName, String employeePass, String employeeEmail, String employeeRole) {
         this.employeeId = employeeId;
@@ -20,8 +40,14 @@ public class Employee {
         this.employeeRole = employeeRole;
     }
 
-    public Employee() {
+
+    public Employee(String employeeName, String employeePass, String employeeEmail, String employeeRole) {
+        this.employeeName = employeeName;
+        this.employeePass = employeePass;
+        this.employeeEmail = employeeEmail;
+        this.employeeRole = employeeRole;
     }
+
 
     public int getEmployeeId() {
         return employeeId;
@@ -61,5 +87,10 @@ public class Employee {
 
     public void setEmployeeRole(String employeeRole) {
         this.employeeRole = employeeRole;
+    }
+
+    public void addRentRequest(RentRequest rentRequest) {
+        this.rentRequestSet.add(rentRequest);
+        rentRequest.setEmployee(this);
     }
 }

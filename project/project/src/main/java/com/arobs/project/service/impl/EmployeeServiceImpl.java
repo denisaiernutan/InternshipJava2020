@@ -65,9 +65,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     public boolean deleteEmployee(String employeeEmail) {
-        int size = employeeEmail.length();
-        String email = employeeEmail.substring(1, size - 1);
-        return employeeRepository.deleteByEmail(email);
+        return employeeRepository.deleteByEmail(employeeEmail);
     }
 
     private String encryptPass(String password) {
