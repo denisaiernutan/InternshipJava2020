@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,17 +63,20 @@ public class EmployeeJDBCRepository implements EmployeeRepository {
     public Employee updatePassword(String employeeEmail, String employeePass) {
         String sql = "update employees set employee_pass=md5(?) where employee_email=?";
         jdbcTemplate.update(sql, employeePass, employeeEmail);
-        return findByEmail(employeeEmail);
+        return findByEmail(employeeEmail).get(0);
     }
 
-    public Employee findByEmail(String employeeEmail) {
+    public List<Employee> findByEmail(String employeeEmail) {
         String sql = "select * from employees where employee_email=?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{employeeEmail}, (rs, rowNum) ->
+        List<Employee> employeeList = new ArrayList<>(5);
+        employeeList.add(jdbcTemplate.queryForObject(sql, new Object[]{employeeEmail}, (rs, rowNum) ->
                 new Employee(rs.getInt("employee_id"),
                         rs.getString("employee_name"),
                         rs.getString("employee_pass"),
                         rs.getString("employee_email"),
-                        rs.getString("employee_role")));
+                        rs.getString("employee_role"))));
+
+        return employeeList;
     }
 
     public boolean deleteByEmail(String employeeEmail) {

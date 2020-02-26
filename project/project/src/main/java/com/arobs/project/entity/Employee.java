@@ -31,6 +31,9 @@ public class Employee {
     public Employee() {
     }
 
+    public Employee(String employeeEmail) {
+        this.employeeEmail = employeeEmail;
+    }
 
     public Employee(int employeeId, String employeeName, String employeePass, String employeeEmail, String employeeRole) {
         this.employeeId = employeeId;
@@ -47,6 +50,7 @@ public class Employee {
         this.employeeEmail = employeeEmail;
         this.employeeRole = employeeRole;
     }
+
 
 
     public int getEmployeeId() {

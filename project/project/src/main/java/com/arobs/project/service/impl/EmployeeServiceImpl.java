@@ -5,6 +5,7 @@ import com.arobs.project.dto.EmployeeDTO;
 import com.arobs.project.dto.EmployeeNewPassDTO;
 import com.arobs.project.dto.EmployeeWithPassDTO;
 import com.arobs.project.entity.Employee;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.EmployeeRepository;
 import com.arobs.project.repository.RepoFactory;
 import com.arobs.project.service.EmployeeService;
@@ -45,12 +46,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+
     public EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) {
-        Employee employee = employeeRepository.insertEmployee(EmployeeConverter.convertToEntity(employeeWithPassDTO));
-        return EmployeeConverter.convertToEmployeeDTO(employee);
-
+        if (employeeRepository.findByEmail(employeeWithPassDTO.getEmployeeEmail()).isEmpty()) {
+            Employee employee = employeeRepository.insertEmployee(EmployeeConverter.convertToEntity(employeeWithPassDTO));
+            return EmployeeConverter.convertToEmployeeDTO(employee);
+        } else {
+            throw new ValidationException("email is already registered");
+        }
     }
-
 
     public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) {
         String oldPassword = employeeRepository.getPasswordByEmail(employeeNewPassDTO.getEmployeeEmail());

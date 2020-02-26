@@ -15,7 +15,7 @@ public class Tag {
 
     private String tagDescription;
 
-    @ManyToMany(mappedBy = "tagList")
+    @ManyToMany(mappedBy = "tagSet")
     private Set<Book> bookSet = new HashSet<>();
 
     public Tag(int tagId, String tagDescription) {
