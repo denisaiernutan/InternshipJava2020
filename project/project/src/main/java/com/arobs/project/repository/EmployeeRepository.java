@@ -11,9 +11,9 @@ public interface EmployeeRepository {
 
     Employee insertEmployee(Employee employee);
 
-    String getPasswordByEmail(String employeeEmail);
+    String getPasswordById(int employeeId);
 
-    Employee updatePassword(String employeeEmail, String employeePass);
+    Employee updatePassword(int employeeId, String employeePass);
 
    List<Employee> findByEmail(String employeeEmail);
 

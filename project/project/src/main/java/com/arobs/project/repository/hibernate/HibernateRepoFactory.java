@@ -13,6 +13,12 @@ public class HibernateRepoFactory extends RepoFactory {
     @Autowired
     private EmployeeHibernateRepo employeeHibernateRepo;
 
+    @Autowired
+    private TagHibernateRepo tagHibernateRepo;
+
+    @Autowired
+    private BookHibernateRepo bookHibernateRepo;
+
     @Override
     public EmployeeRepository getEmployeeRepository() {
         return employeeHibernateRepo;
@@ -20,12 +26,12 @@ public class HibernateRepoFactory extends RepoFactory {
 
     @Override
     public BookRepository getBookRepository() {
-        return null;
+        return bookHibernateRepo;
     }
 
     @Override
     public TagRepository getTagRepository() {
-        return null;
+        return tagHibernateRepo;
     }
 
 

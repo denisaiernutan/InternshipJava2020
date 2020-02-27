@@ -8,7 +8,7 @@ public class BookConverter {
     private static ModelMapper modelMapper = new ModelMapper();
 
     public static BookDTO convertToDTO(Book book) {
-        return modelMapper.map(book, BookDTO.class);
+      return modelMapper.map(book, BookDTO.class);
     }
 
     public static Book convertToEntity(BookDTO bookDTO) {

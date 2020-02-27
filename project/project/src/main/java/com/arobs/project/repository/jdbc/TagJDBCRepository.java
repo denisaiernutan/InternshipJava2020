@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -22,25 +24,27 @@ public class TagJDBCRepository implements TagRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Tag findByDescription(String description) {
+    public List<Tag> findByDescription(String description) {
         String sql = "select * from tags where tag_description=?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{description}, (rs, rowNum) ->
+        List<Tag> tags = new ArrayList<>(5);
+        tags.add(jdbcTemplate.queryForObject(sql, new Object[]{description}, (rs, rowNum) ->
                 new Tag(rs.getInt("tag_id"),
-                        rs.getString("tag_description")));
+                        rs.getString("tag_description"))));
 
+        return tags;
     }
 
-    public Tag insertTag(String description) {
+    public Tag insertTag(Tag tag) {
         String sql = " insert into tags(tag_description) values (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, description);
+            ps.setString(1, tag.getTagDescription());
             return ps;
         }, keyHolder);
 
-        return new Tag(Objects.requireNonNull(keyHolder.getKey()).intValue(), description);
+        return new Tag(Objects.requireNonNull(keyHolder.getKey()).intValue(), tag.getTagDescription());
     }
 
 }

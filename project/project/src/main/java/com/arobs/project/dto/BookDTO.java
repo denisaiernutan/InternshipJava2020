@@ -1,7 +1,7 @@
 package com.arobs.project.dto;
 
 
-import java.util.List;
+import java.util.Set;
 
 public class BookDTO {
 
@@ -13,14 +13,14 @@ public class BookDTO {
 
     private String bookDescription;
 
-    private List<TagDTO> tagList;
+    private Set<TagDTO> tagSet;
 
-    public BookDTO(int bookId, String bookTitle, String bookAuthor, String bookDescription, List<TagDTO> tagList) {
+    public BookDTO(int bookId, String bookTitle, String bookAuthor, String bookDescription, Set<TagDTO> tagSet) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
-        this.tagList = tagList;
+        this.tagSet = tagSet;
     }
 
     public BookDTO() {
@@ -58,11 +58,11 @@ public class BookDTO {
         this.bookDescription = bookDescription;
     }
 
-    public List<TagDTO> getTagList() {
-        return tagList;
+    public Set<TagDTO> getTagSet() {
+        return tagSet;
     }
 
-    public void setTagList(List<TagDTO> tagList) {
-        this.tagList = tagList;
+    public void setTagSet(Set<TagDTO> tagSet) {
+        this.tagSet = tagSet;
     }
 }

@@ -13,18 +13,25 @@ public class Tag {
     @Column(name = "tag_id")
     private int tagId;
 
+    @Column(name="tag_description")
     private String tagDescription;
 
     @ManyToMany(mappedBy = "tagSet")
     private Set<Book> bookSet = new HashSet<>();
+
+    public Tag() {
+    }
+
+    public Tag(String tagDescription) {
+        this.tagDescription = tagDescription;
+    }
 
     public Tag(int tagId, String tagDescription) {
         this.tagId = tagId;
         this.tagDescription = tagDescription;
     }
 
-    public Tag() {
-    }
+
 
     public int getTagId() {
         return tagId;
@@ -49,4 +56,10 @@ public class Tag {
     public void setBookSet(Set<Book> bookSet) {
         this.bookSet = bookSet;
     }
+
+    public void addBook(Book book){
+        this.bookSet.add(book);
+        book.getTagSet().add(this);
+    }
+
 }

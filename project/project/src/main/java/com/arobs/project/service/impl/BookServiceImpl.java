@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -44,19 +46,37 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public BookDTO insertBook(BookDTO bookDTO) {
         Book book = BookConverter.convertToEntity(bookDTO);
-        book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
-        book = bookRepository.insertBook(book);
 
-        if (bookDTO.getTagList().size() != 0) {
-            for (TagDTO tagDTO : bookDTO.getTagList()) {
-                Tag tag = tagService.findByDescription(tagDTO.getTagDescription());
-                if (tag == null) {
-                    tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
+        book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
+        if (bookRepository.getClass().getName().equals("BookJDBCRepository")) {
+            book = bookRepository.insertBook(book);
+
+            if (bookDTO.getTagSet().size() != 0) {
+                for (TagDTO tagDTO : bookDTO.getTagSet()) {
+                    Tag tag = tagService.findByDescription(tagDTO.getTagDescription());
+                    if (tag == null) {
+                        tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
+                    }
+                    bookTagService.insertBookTag(new BookTag(book, tag));
                 }
-                bookTagService.insertBookTag(new BookTag(book, tag));
             }
+        } else {
+            if (bookDTO.getTagSet().size() != 0) {
+                Set<Tag> tagSet = new HashSet<>(15);
+                for (TagDTO tagDTO : bookDTO.getTagSet()) {
+                    Tag tag = tagService.findByDescription(tagDTO.getTagDescription());
+                    if (tag == null) {
+//                        tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
+                        tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
+                    }
+                   tagSet.add(tag);
+                }
+                book.setTagSet(tagSet);
+                book = bookRepository.insertBook(book);
+            }
+
         }
+
         return BookConverter.convertToDTO(book);
     }
-
 }

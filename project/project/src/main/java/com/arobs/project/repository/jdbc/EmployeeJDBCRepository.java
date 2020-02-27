@@ -54,16 +54,16 @@ public class EmployeeJDBCRepository implements EmployeeRepository {
         return employee;
     }
 
-    public String getPasswordByEmail(String employeeEmail) {
+    public String getPasswordById(int employeeId) {
 
-        String sql = "select employee_pass from employees where employee_email=?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{employeeEmail}, String.class);
+        String sql = "select employee_pass from employees where employee_id=?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{employeeId}, String.class);
     }
 
-    public Employee updatePassword(String employeeEmail, String employeePass) {
-        String sql = "update employees set employee_pass=md5(?) where employee_email=?";
-        jdbcTemplate.update(sql, employeePass, employeeEmail);
-        return findByEmail(employeeEmail).get(0);
+    public Employee updatePassword(int employeeId, String employeePass) {
+        String sql = "update employees set employee_pass=md5(?) where employee_id=?";
+        jdbcTemplate.update(sql, employeePass, employeeId);
+        return findById(employeeId);
     }
 
     public List<Employee> findByEmail(String employeeEmail) {
@@ -77,6 +77,18 @@ public class EmployeeJDBCRepository implements EmployeeRepository {
                         rs.getString("employee_role"))));
 
         return employeeList;
+    }
+
+
+    public Employee findById(int employeeId) {
+        String sql = "select * from employees where employee_id=?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{employeeId}, (rs, rowNum) ->
+                new Employee(rs.getInt("employee_id"),
+                        rs.getString("employee_name"),
+                        rs.getString("employee_pass"),
+                        rs.getString("employee_email"),
+                        rs.getString("employee_role")));
+
     }
 
     public boolean deleteByEmail(String employeeEmail) {

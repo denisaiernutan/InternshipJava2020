@@ -90,6 +90,14 @@ public class Book {
         this.bookAddedDate = bookAddedDate;
     }
 
+    public Set<Tag> getTagSet() {
+        return tagSet;
+    }
+
+    public void setTagSet(Set<Tag> tagSet) {
+        this.tagSet = tagSet;
+    }
+
     public void addTag(Tag tag) {
         this.tagSet.add(tag);
         tag.getBookSet().add(this);
