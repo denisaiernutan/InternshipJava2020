@@ -17,7 +17,9 @@ public interface EmployeeRepository {
 
    List<Employee> findByEmail(String employeeEmail);
 
-    boolean deleteByEmail(String employeeEmail);
+    boolean deleteById(int employeeId);
+
+    Employee findById(int employeeId);
 
 
 }

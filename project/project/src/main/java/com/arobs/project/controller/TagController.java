@@ -1,9 +1,12 @@
 package com.arobs.project.controller;
 
-import com.arobs.project.dto.TagDTO;
+import com.arobs.project.dto.TagWithIdDTO;
 import com.arobs.project.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/tags")
@@ -17,7 +20,7 @@ public class TagController {
     }
 
     @PostMapping(value = "/{descr}")
-    public TagDTO insertTag(@PathVariable("descr") String description) {
+    public TagWithIdDTO insertTag(@PathVariable("descr") String description) {
         return tagService.insertTag(description);
     }
 }

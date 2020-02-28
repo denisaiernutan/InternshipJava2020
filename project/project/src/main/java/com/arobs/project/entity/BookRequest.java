@@ -36,6 +36,9 @@ public class BookRequest {
     @Column(name = "book_req_status")
     private String bookReqStatus;
 
+    public BookRequest() {
+    }
+
     public BookRequest(int bookReqId, Employee employee, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int no_copies, Double total_coast, String bookReqStatus) {
         this.bookReqId = bookReqId;
         this.employee = employee;
@@ -47,6 +50,7 @@ public class BookRequest {
         this.total_coast = total_coast;
         this.bookReqStatus = bookReqStatus;
     }
+
 
     public int getBookReqId() {
         return bookReqId;

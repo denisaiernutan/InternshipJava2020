@@ -10,6 +10,7 @@ import com.arobs.project.repository.EmployeeRepository;
 import com.arobs.project.repository.RepoFactory;
 import com.arobs.project.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -47,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
-    public EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) {
+    public EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) throws ValidationException {
         if (employeeRepository.findByEmail(employeeWithPassDTO.getEmployeeEmail()).isEmpty()) {
             Employee employee = employeeRepository.insertEmployee(EmployeeConverter.convertToEntity(employeeWithPassDTO));
             return EmployeeConverter.convertToEmployeeDTO(employee);
@@ -56,20 +57,37 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) {
-        String oldPassword = employeeRepository.getPasswordByEmail(employeeNewPassDTO.getEmployeeEmail());
-        String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
-
-        if (oldPassword.equals(oldPassFromEmpl)) {
-            Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeEmail(), employeeNewPassDTO.getEmployeeNewPass());
-            return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
+    public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
+        String oldPassword;
+        if (!employeeNewPassDTO.getEmployeeNewPass().equals(employeeNewPassDTO.getEmployeeOldPass())) {
+            try {
+                oldPassword = employeeRepository.getPasswordById(employeeNewPassDTO.getEmployeeId());
+            } catch (EmptyResultDataAccessException e) {
+                throw new ValidationException("invalid id");
+            }
+            String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
+            if (oldPassword.equals(oldPassFromEmpl)) {
+                Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeId(), employeeNewPassDTO.getEmployeeNewPass());
+                return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
+            } else {
+                throw new ValidationException("old password is incorrect!");
+            }
+        } else {
+            throw new ValidationException("old password and the new one are the same");
         }
-        return new EmployeeWithPassDTO();
 
     }
 
-    public boolean deleteEmployee(String employeeEmail) {
-        return employeeRepository.deleteByEmail(employeeEmail);
+    public boolean deleteEmployee(int employeeId) throws ValidationException {
+        try {
+            if (employeeRepository.findById(employeeId) != null) {
+                return employeeRepository.deleteById(employeeId);
+            } else {
+                throw new ValidationException("id is invalid!");
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new ValidationException("invalid id");
+        }
     }
 
     private String encryptPass(String password) {

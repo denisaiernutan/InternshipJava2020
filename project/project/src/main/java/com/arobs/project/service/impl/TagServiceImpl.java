@@ -1,8 +1,9 @@
 package com.arobs.project.service.impl;
 
 import com.arobs.project.converter.TagConverter;
-import com.arobs.project.dto.TagDTO;
+import com.arobs.project.dto.TagWithIdDTO;
 import com.arobs.project.entity.Tag;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.RepoFactory;
 import com.arobs.project.repository.TagRepository;
 import com.arobs.project.service.TagService;
@@ -30,12 +31,18 @@ public class TagServiceImpl implements TagService {
         this.tagRepository = this.repoFactory.getInstance().getTagRepository();
     }
 
-    public TagDTO insertTag(String description) {
-        return TagConverter.convertToDTO(tagRepository.insertTag(new Tag(description)));
+    public TagWithIdDTO insertTag(String description) {
+        return TagConverter.convertToTagWithIdDTO(tagRepository.insertTag(new Tag(description)));
     }
 
-    public Tag findByDescription(String description) {
-        return ValidationService.safeGetUniqueResult(tagRepository.findByDescription(description));
+    public Tag findByDescription(String description) throws ValidationException {
+        Tag tag = ValidationService.safeGetUniqueResult(tagRepository.findByDescription(description));
+        if (tag != null) {
+            return tag;
+        } else {
+            throw new ValidationException("tag does not exist");
+        }
+
     }
 
 }

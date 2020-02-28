@@ -1,6 +1,5 @@
 package com.arobs.project.repository.hibernate;
 
-import com.arobs.project.entity.Employee;
 import com.arobs.project.entity.Tag;
 import com.arobs.project.repository.TagRepository;
 import com.arobs.project.util.HibernateUtil;
@@ -36,9 +35,9 @@ public class TagHibernateRepo implements TagRepository {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            int id = (int) session.save(tag);
+            Long id = (Long) session.save(tag);
             transaction.commit();
-            tag.setTagId(id);
+            tag.setTagId(id.intValue());
             return tag;
         } catch (Exception e) {
             if (transaction != null) {
@@ -48,7 +47,6 @@ public class TagHibernateRepo implements TagRepository {
         }
         return null;
     }
-
 
 
 }

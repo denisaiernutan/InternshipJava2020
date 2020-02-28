@@ -1,19 +1,11 @@
 package com.arobs.project.exception;
 
-public class ValidationException extends RuntimeException {
+public class ValidationException extends Exception {
 
-    private String message;
 
     public ValidationException(String message) {
-        this.message = message;
+        super(message);
     }
 
-    @Override
-    public String getMessage() {
-        return message;
-    }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

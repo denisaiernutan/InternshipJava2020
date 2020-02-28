@@ -4,11 +4,14 @@ import com.arobs.project.entity.Tag;
 import com.arobs.project.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +29,10 @@ public class TagJDBCRepository implements TagRepository {
 
     public List<Tag> findByDescription(String description) {
         String sql = "select * from tags where tag_description=?";
-        List<Tag> tags = new ArrayList<>(5);
-        tags.add(jdbcTemplate.queryForObject(sql, new Object[]{description}, (rs, rowNum) ->
-                new Tag(rs.getInt("tag_id"),
-                        rs.getString("tag_description"))));
-
-        return tags;
+        return jdbcTemplate.query(sql, new Object[]{description}, (rs, i) ->
+                new Tag(rs.getInt("tag_id"), rs.getString("tag_description")));
     }
+
 
     public Tag insertTag(Tag tag) {
         String sql = " insert into tags(tag_description) values (?)";

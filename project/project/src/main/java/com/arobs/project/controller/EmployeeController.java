@@ -3,6 +3,8 @@ package com.arobs.project.controller;
 import com.arobs.project.dto.EmployeeDTO;
 import com.arobs.project.dto.EmployeeNewPassDTO;
 import com.arobs.project.dto.EmployeeWithPassDTO;
+import com.arobs.project.exception.ValidationException;
+import com.arobs.project.service.EmployeeService;
 import com.arobs.project.service.impl.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.List;
 
 @Validated
@@ -19,7 +20,7 @@ import java.util.List;
 @RequestMapping(value = "/employees")
 public class EmployeeController {
 
-    private EmployeeServiceImpl employeeService;
+    private EmployeeService employeeService;
 
     @Autowired
     public EmployeeController(EmployeeServiceImpl employeeService) {
@@ -32,7 +33,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<?>insertEmployee(@RequestBody @Valid EmployeeWithPassDTO employeeDTO) {
+    public ResponseEntity<?> insertEmployee(@RequestBody @Valid EmployeeWithPassDTO employeeDTO) {
         try {
             return new ResponseEntity<>(employeeService.insertEmployee(employeeDTO), HttpStatus.OK);
         } catch (ValidationException e) {
@@ -41,13 +42,21 @@ public class EmployeeController {
     }
 
     @PutMapping
-    public EmployeeWithPassDTO updatePasswordEmployee(@RequestBody @Valid EmployeeNewPassDTO employeeNewPassDTO) {
-        return employeeService.updatePasswordEmployee(employeeNewPassDTO);
+    public ResponseEntity<?> updatePasswordEmployee(@RequestBody @Valid EmployeeNewPassDTO employeeNewPassDTO) {
+        try {
+            return new ResponseEntity<>(employeeService.updatePasswordEmployee(employeeNewPassDTO), HttpStatus.OK);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @DeleteMapping(value = "/{email}")
-    public boolean deleteEmployee(@PathVariable("email") String emailEmployee) {
-        return employeeService.deleteEmployee(emailEmployee);
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable("id") int employeeId) {
+        try {
+            return new ResponseEntity<>(employeeService.deleteEmployee(employeeId), HttpStatus.OK);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 

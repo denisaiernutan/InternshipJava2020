@@ -4,8 +4,9 @@ import javax.validation.constraints.NotNull;
 
 public class EmployeeNewPassDTO {
 
+
     @NotNull
-    private String employeeEmail;
+    private int employeeId;
 
     @NotNull
     private String employeeOldPass;
@@ -13,18 +14,18 @@ public class EmployeeNewPassDTO {
     @NotNull
     private String employeeNewPass;
 
-    public EmployeeNewPassDTO(@NotNull String employeeEmail, @NotNull String employeeOldPass, @NotNull String employeeNewPass) {
-        this.employeeEmail = employeeEmail;
+    public EmployeeNewPassDTO(@NotNull int employeeId, @NotNull String employeeOldPass, @NotNull String employeeNewPass) {
+        this.employeeId = employeeId;
         this.employeeOldPass = employeeOldPass;
         this.employeeNewPass = employeeNewPass;
     }
 
-    public String getEmployeeEmail() {
-        return employeeEmail;
+    public int getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployeeEmail(String employeeEmail) {
-        this.employeeEmail = employeeEmail;
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getEmployeeOldPass() {

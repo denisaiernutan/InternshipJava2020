@@ -7,6 +7,7 @@ import com.arobs.project.dto.TagDTO;
 import com.arobs.project.entity.Book;
 import com.arobs.project.entity.BookTag;
 import com.arobs.project.entity.Tag;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.BookRepository;
 import com.arobs.project.repository.RepoFactory;
 import com.arobs.project.service.BookService;
@@ -44,39 +45,50 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public BookDTO insertBook(BookDTO bookDTO) {
+    public BookDTO insertBook(BookDTO bookDTO) throws ValidationException {
         Book book = BookConverter.convertToEntity(bookDTO);
 
         book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
-        if (bookRepository.getClass().getName().equals("BookJDBCRepository")) {
-            book = bookRepository.insertBook(book);
-
-            if (bookDTO.getTagSet().size() != 0) {
-                for (TagDTO tagDTO : bookDTO.getTagSet()) {
-                    Tag tag = tagService.findByDescription(tagDTO.getTagDescription());
-                    if (tag == null) {
-                        tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
-                    }
-                    bookTagService.insertBookTag(new BookTag(book, tag));
-                }
+        if (!bookDTO.getTagSet().isEmpty()) {
+            if (bookRepository.getClass().getName().contains("BookJDBCRepository")) {
+                book = insertBookJDBC(book, bookDTO.getTagSet());
+            } else {
+                book = insertBookHibernate(book, bookDTO.getTagSet());
             }
         } else {
-            if (bookDTO.getTagSet().size() != 0) {
-                Set<Tag> tagSet = new HashSet<>(15);
-                for (TagDTO tagDTO : bookDTO.getTagSet()) {
-                    Tag tag = tagService.findByDescription(tagDTO.getTagDescription());
-                    if (tag == null) {
-//                        tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
-                        tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
-                    }
-                   tagSet.add(tag);
-                }
-                book.setTagSet(tagSet);
-                book = bookRepository.insertBook(book);
-            }
-
+            book = bookRepository.insertBook(book);
         }
 
         return BookConverter.convertToDTO(book);
+    }
+
+    private Book insertBookJDBC(Book book, Set<TagDTO> tagDTOSet) {
+        book = bookRepository.insertBook(book);
+        for (TagDTO tagDTO : tagDTOSet) {
+            Tag tag;
+            try {
+                tag = tagService.findByDescription(tagDTO.getTagDescription());
+            } catch (ValidationException e) {
+                tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
+            }
+            bookTagService.insertBookTag(new BookTag(book, tag));
+        }
+        return book;
+    }
+
+    private Book insertBookHibernate(Book book, Set<TagDTO> tagDTOSet) throws ValidationException {
+
+        Set<Tag> tagSet = new HashSet<>(15);
+        for (TagDTO tagDTO : tagDTOSet) {
+            Tag tag = tagService.findByDescription(tagDTO.getTagDescription());
+            if (tag == null) {
+                tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
+            }
+            tagSet.add(tag);
+        }
+        book.setTagSet(tagSet);
+
+        book = bookRepository.insertBook(book);
+        return book;
     }
 }

@@ -9,14 +9,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BookHibernateRepo implements BookRepository {
+
     @Override
     public Book insertBook(Book book) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            int id= (int) session.save(book);
+            Long id = (Long) session.save(book);
             transaction.commit();
-            book.setBookId(id);
+            book.setBookId(id.intValue());
             return book;
         } catch (Exception e) {
             if (transaction != null) {

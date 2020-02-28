@@ -36,10 +36,10 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
         String hql = "update Employee set employeePass= MD5(:password) where employeeEmail= :email";
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            int id= (int) session.save(employee);
+            Long id = (Long) session.save(employee);
             session.createQuery(hql).setParameter("password", employee.getEmployeePass()).setParameter("email", employee.getEmployeeEmail()).executeUpdate();
             transaction.commit();
-            employee.setEmployeeId(id);
+            employee.setEmployeeId(id.intValue());
             return employee;
         } catch (Exception e) {
             if (transaction != null) {
@@ -55,9 +55,11 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Employee employee = session.get(Employee.class,employeeId);
+            Employee employee = session.get(Employee.class, employeeId);
             transaction.commit();
-            return employee.getEmployeePass();
+            if (employee != null) {
+                return employee.getEmployeePass();
+            }
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -105,13 +107,13 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
     }
 
     @Override
-    public boolean deleteByEmail(String employeeEmail) {
-        String hql = "delete from Employee where employeeEmail= :email";
+    public boolean deleteById(int employeeId) {
+        String hql = "delete from Employee where employeeId= :id";
 
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.createQuery(hql).setParameter("email", employeeEmail).executeUpdate();
+            session.createQuery(hql).setParameter("id", employeeId).executeUpdate();
             transaction.commit();
             return true;
         } catch (Exception e) {
@@ -123,11 +125,11 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
         }
     }
 
-    public Employee findById(int employeeId){
+    public Employee findById(int employeeId) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Employee employee= session.get(Employee.class,employeeId);
+            Employee employee = session.get(Employee.class, employeeId);
             transaction.commit();
             return employee;
         } catch (Exception e) {

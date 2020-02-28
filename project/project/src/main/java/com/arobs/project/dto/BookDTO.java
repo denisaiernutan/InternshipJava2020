@@ -5,7 +5,6 @@ import java.util.Set;
 
 public class BookDTO {
 
-    private int bookId;
 
     private String bookTitle;
 
@@ -15,8 +14,7 @@ public class BookDTO {
 
     private Set<TagDTO> tagSet;
 
-    public BookDTO(int bookId, String bookTitle, String bookAuthor, String bookDescription, Set<TagDTO> tagSet) {
-        this.bookId = bookId;
+    public BookDTO(String bookTitle, String bookAuthor, String bookDescription, Set<TagDTO> tagSet) {
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
@@ -26,13 +24,6 @@ public class BookDTO {
     public BookDTO() {
     }
 
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
 
     public String getBookTitle() {
         return bookTitle;
