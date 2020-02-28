@@ -45,7 +45,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public BookDTO insertBook(BookDTO bookDTO) throws ValidationException {
+    public BookDTO insertBook(BookDTO bookDTO) {
         Book book = BookConverter.convertToEntity(bookDTO);
 
         book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
@@ -62,7 +62,8 @@ public class BookServiceImpl implements BookService {
         return BookConverter.convertToDTO(book);
     }
 
-    private Book insertBookJDBC(Book book, Set<TagDTO> tagDTOSet) {
+    @Transactional
+    public Book insertBookJDBC(Book book, Set<TagDTO> tagDTOSet) {
         book = bookRepository.insertBook(book);
         for (TagDTO tagDTO : tagDTOSet) {
             Tag tag;
@@ -76,12 +77,16 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
-    private Book insertBookHibernate(Book book, Set<TagDTO> tagDTOSet) throws ValidationException {
+
+    @Transactional
+    public Book insertBookHibernate(Book book, Set<TagDTO> tagDTOSet)  {
 
         Set<Tag> tagSet = new HashSet<>(15);
         for (TagDTO tagDTO : tagDTOSet) {
-            Tag tag = tagService.findByDescription(tagDTO.getTagDescription());
-            if (tag == null) {
+            Tag tag;
+            try {
+                tag = tagService.findByDescription(tagDTO.getTagDescription());
+            } catch (ValidationException e) {
                 tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
             }
             tagSet.add(tag);

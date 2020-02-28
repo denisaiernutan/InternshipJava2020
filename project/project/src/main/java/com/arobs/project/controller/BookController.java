@@ -3,7 +3,6 @@ package com.arobs.project.controller;
 import com.arobs.project.dto.BookDTO;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookService;
-import com.arobs.project.service.impl.BookServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,7 @@ public class BookController {
     private BookService bookService;
 
     @Autowired
-    public BookController(BookServiceImpl bookService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 

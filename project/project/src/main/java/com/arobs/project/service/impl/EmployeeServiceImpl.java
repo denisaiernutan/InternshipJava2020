@@ -12,6 +12,7 @@ import com.arobs.project.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
@@ -48,6 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
+    @Transactional
     public EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) throws ValidationException {
         if (employeeRepository.findByEmail(employeeWithPassDTO.getEmployeeEmail()).isEmpty()) {
             Employee employee = employeeRepository.insertEmployee(EmployeeConverter.convertToEntity(employeeWithPassDTO));
@@ -57,14 +59,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    @Transactional
     public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
         String oldPassword;
         if (!employeeNewPassDTO.getEmployeeNewPass().equals(employeeNewPassDTO.getEmployeeOldPass())) {
             try {
                 oldPassword = employeeRepository.getPasswordById(employeeNewPassDTO.getEmployeeId());
+                if (oldPassword == null) {
+                    throw new ValidationException("invalid id");
+                }
             } catch (EmptyResultDataAccessException e) {
                 throw new ValidationException("invalid id");
             }
+
             String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
             if (oldPassword.equals(oldPassFromEmpl)) {
                 Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeId(), employeeNewPassDTO.getEmployeeNewPass());
@@ -78,6 +85,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    @Transactional
     public boolean deleteEmployee(int employeeId) throws ValidationException {
         try {
             if (employeeRepository.findById(employeeId) != null) {

@@ -10,6 +10,7 @@ import com.arobs.project.service.TagService;
 import com.arobs.project.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 
@@ -34,6 +35,7 @@ public class TagServiceImpl implements TagService {
     public TagWithIdDTO insertTag(String description) {
         return TagConverter.convertToTagWithIdDTO(tagRepository.insertTag(new Tag(description)));
     }
+
 
     public Tag findByDescription(String description) throws ValidationException {
         Tag tag = ValidationService.safeGetUniqueResult(tagRepository.findByDescription(description));
