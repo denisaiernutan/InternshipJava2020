@@ -15,6 +15,7 @@ create table employees(
 alter table employees add unique (employee_email);
     
     
+    
 create table books(
 	book_id int unique not null auto_increment,
     book_title varchar(70) not null,
@@ -23,6 +24,7 @@ create table books(
     book_added_date  datetime not null,
     primary key (book_id)
     );
+    
     
     
 create table tags(
@@ -52,8 +54,8 @@ create table book_rents(
 	book_rent_id int unique not null auto_increment,
     copy_id int not null, 
     book_id int not null, 
-    rental_date datetime not null,
-    return_date datetime,
+    rental_date date not null,
+    return_date date,
     book_rent_status varchar(20) not null,
     grade double not null, 
     primary key (book_rent_id),

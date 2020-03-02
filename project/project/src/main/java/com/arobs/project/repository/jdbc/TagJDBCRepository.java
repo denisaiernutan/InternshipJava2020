@@ -47,4 +47,13 @@ public class TagJDBCRepository implements TagRepository {
         return new Tag(Objects.requireNonNull(keyHolder.getKey()).intValue(), tag.getTagDescription());
     }
 
+    @Override
+    public Tag findById(int tagId) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteTag(Tag tag) {
+        return false;
+    }
 }

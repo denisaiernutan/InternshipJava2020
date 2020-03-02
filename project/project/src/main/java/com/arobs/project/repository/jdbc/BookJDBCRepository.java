@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -38,5 +39,25 @@ public class BookJDBCRepository implements BookRepository {
 
         book.setBookId(Objects.requireNonNull(keyHolder.getKey()).intValue());
         return book;
+    }
+
+    @Override
+    public List<Book> findAll() {
+        return null;
+    }
+
+    @Override
+    public Book updateBook(Book book) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteBook(Book book) {
+        return false;
+    }
+
+    @Override
+    public Book findById(int bookId) {
+        return null;
     }
 }

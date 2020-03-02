@@ -32,11 +32,13 @@ public class TagServiceImpl implements TagService {
         this.tagRepository = this.repoFactory.getInstance().getTagRepository();
     }
 
+    @Transactional
     public TagWithIdDTO insertTag(String description) {
         return TagConverter.convertToTagWithIdDTO(tagRepository.insertTag(new Tag(description)));
     }
 
 
+    @Transactional
     public Tag findByDescription(String description) throws ValidationException {
         Tag tag = ValidationService.safeGetUniqueResult(tagRepository.findByDescription(description));
         if (tag != null) {
@@ -44,7 +46,16 @@ public class TagServiceImpl implements TagService {
         } else {
             throw new ValidationException("tag does not exist");
         }
+    }
 
+    @Transactional
+    public boolean deleteTag(TagWithIdDTO tagDTO) {
+        Tag tag = tagRepository.findById(tagDTO.getTagId());
+        if (tag != null) {
+            return tagRepository.deleteTag(tag);
+        } else {
+            return false;
+        }
     }
 
 }

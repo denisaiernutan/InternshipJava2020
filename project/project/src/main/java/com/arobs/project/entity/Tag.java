@@ -16,6 +16,7 @@ public class Tag {
     @Column(name="tag_description")
     private String tagDescription;
 
+
     @ManyToMany(mappedBy = "tagSet")
     private Set<Book> bookSet = new HashSet<>();
 

@@ -3,7 +3,8 @@ package com.arobs.project.service.impl;
 import com.arobs.project.converter.BookConverter;
 import com.arobs.project.converter.TagConverter;
 import com.arobs.project.dto.BookDTO;
-import com.arobs.project.dto.TagDTO;
+import com.arobs.project.dto.BookWithIdDTO;
+import com.arobs.project.dto.TagWithIdDTO;
 import com.arobs.project.entity.Book;
 import com.arobs.project.entity.BookTag;
 import com.arobs.project.entity.Tag;
@@ -12,14 +13,16 @@ import com.arobs.project.repository.BookRepository;
 import com.arobs.project.repository.RepoFactory;
 import com.arobs.project.service.BookService;
 import com.arobs.project.service.BookTagService;
+import com.arobs.project.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -28,12 +31,12 @@ public class BookServiceImpl implements BookService {
 
     private BookRepository bookRepository;
 
-    private TagServiceImpl tagService;
+    private TagService tagService;
 
     private BookTagService bookTagService;
 
     @Autowired
-    public BookServiceImpl(RepoFactory repoFactory, TagServiceImpl tagService, BookTagService bookTagService) {
+    public BookServiceImpl(RepoFactory repoFactory, TagService tagService, BookTagService bookTagService) {
         this.repoFactory = repoFactory;
         this.tagService = tagService;
         this.bookTagService = bookTagService;
@@ -47,14 +50,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public BookDTO insertBook(BookDTO bookDTO) {
         Book book = BookConverter.convertToEntity(bookDTO);
-
         book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
-        if (!bookDTO.getTagSet().isEmpty()) {
-            if (bookRepository.getClass().getName().contains("BookJDBCRepository")) {
-                book = insertBookJDBC(book, bookDTO.getTagSet());
-            } else {
-                book = insertBookHibernate(book, bookDTO.getTagSet());
-            }
+
+        if (bookRepository.getClass().getName().contains("BookJDBCRepository") && !bookDTO.getTagSet().isEmpty()) {
+            book = insertBookJDBC(book, bookDTO.getTagSet());
         } else {
             book = bookRepository.insertBook(book);
         }
@@ -63,9 +62,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public Book insertBookJDBC(Book book, Set<TagDTO> tagDTOSet) {
+    public Book insertBookJDBC(Book book, Set<TagWithIdDTO> tagDTOSet) {
         book = bookRepository.insertBook(book);
-        for (TagDTO tagDTO : tagDTOSet) {
+        for (TagWithIdDTO tagDTO : tagDTOSet) {
             Tag tag;
             try {
                 tag = tagService.findByDescription(tagDTO.getTagDescription());
@@ -77,23 +76,42 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+    @Transactional
+    public BookWithIdDTO updateBook(BookWithIdDTO bookDTO) {
+        if (bookRepository.findById(bookDTO.getBookId()) != null) {
+            return BookConverter.convertToBookWithIdDTO(bookRepository.updateBook(BookConverter.convertToEntity(bookDTO)));
+        } else return null;
+    }
+
 
     @Transactional
-    public Book insertBookHibernate(Book book, Set<TagDTO> tagDTOSet)  {
+    public boolean deleteBook(BookWithIdDTO bookDTO) {
+        Book book=bookRepository.findById(bookDTO.getBookId());
+        if (book!= null) {
+            return bookRepository.deleteBook(book);
+        } else return false;
+    }
+//    @Transactional
+//    public Book insertBookHibernate(Book book, Set<TagWithIdDTO> tagDTOSet)  {
+//
+//        Set<Tag> tagSet = new HashSet<>(15);
+//        for (TagWithIdDTO tagDTO : tagDTOSet) {
+//            Tag tag;
+//            try {
+//                tag = tagService.findByDescription(tagDTO.getTagDescription());
+//            } catch (ValidationException e) {
+//                tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
+//            }
+//            tagSet.add(tag);
+//        }
+//        book.setTagSet(tagSet);
+//
+//        book = bookRepository.insertBook(book);
+//        return book;
+//    }
 
-        Set<Tag> tagSet = new HashSet<>(15);
-        for (TagDTO tagDTO : tagDTOSet) {
-            Tag tag;
-            try {
-                tag = tagService.findByDescription(tagDTO.getTagDescription());
-            } catch (ValidationException e) {
-                tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
-            }
-            tagSet.add(tag);
-        }
-        book.setTagSet(tagSet);
-
-        book = bookRepository.insertBook(book);
-        return book;
+    @Transactional
+    public List<BookWithIdDTO> findAll() {
+        return bookRepository.findAll().stream().map(BookConverter::convertToBookWithIdDTO).collect(Collectors.toList());
     }
 }

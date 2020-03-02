@@ -23,7 +23,7 @@ public class TagHibernateRepo implements TagRepository {
     public List<Tag> findByDescription(String description) {
         String hql = "from Tag where tagDescription= :descr";
         Session session = sessionFactory.getCurrentSession();
-        return (List<Tag>) session.createQuery(hql).setParameter("descr", description).list();
+        return session.createQuery(hql, Tag.class).setParameter("descr", description).list();
 
     }
 
@@ -33,8 +33,17 @@ public class TagHibernateRepo implements TagRepository {
         int id = (int) session.save(tag);
         tag.setTagId(id);
         return tag;
-
     }
 
+    public boolean deleteTag(Tag tag) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(tag);
+        return true;
+    }
+
+    public Tag findById(int tagId) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Tag.class, tagId);
+    }
 
 }

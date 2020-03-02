@@ -26,7 +26,7 @@ public class Book {
     @Column(name = "book_added_date")
     private Timestamp bookAddedDate;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "book_tag", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tagSet = new HashSet<>();
 

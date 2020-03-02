@@ -39,6 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeRepository = this.repoFactory.getInstance().getEmployeeRepository();
     }
 
+    @Transactional
     public List<EmployeeDTO> getAllEmployees() {
 
         List<Employee> employeeList = employeeRepository.findAll();
@@ -61,23 +62,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
+        String oldPassword = validateEmployee(employeeNewPassDTO);
+        String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
+        if (oldPassword.equals(oldPassFromEmpl)) {
+            Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeId(), employeeNewPassDTO.getEmployeeNewPass());
+            return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
+        } else {
+            throw new ValidationException("old password is incorrect!");
+        }
+
+
+    }
+
+    public String validateEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
         String oldPassword;
         if (!employeeNewPassDTO.getEmployeeNewPass().equals(employeeNewPassDTO.getEmployeeOldPass())) {
             try {
                 oldPassword = employeeRepository.getPasswordById(employeeNewPassDTO.getEmployeeId());
                 if (oldPassword == null) {
                     throw new ValidationException("invalid id");
-                }
+                } else return oldPassword;
             } catch (EmptyResultDataAccessException e) {
                 throw new ValidationException("invalid id");
-            }
-
-            String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
-            if (oldPassword.equals(oldPassFromEmpl)) {
-                Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeId(), employeeNewPassDTO.getEmployeeNewPass());
-                return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
-            } else {
-                throw new ValidationException("old password is incorrect!");
             }
         } else {
             throw new ValidationException("old password and the new one are the same");

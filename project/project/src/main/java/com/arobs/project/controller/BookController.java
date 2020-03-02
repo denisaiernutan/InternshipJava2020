@@ -1,15 +1,16 @@
 package com.arobs.project.controller;
 
 import com.arobs.project.dto.BookDTO;
+import com.arobs.project.dto.BookWithIdDTO;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/books")
@@ -31,4 +32,23 @@ public class BookController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<?> findAll() {
+        return new ResponseEntity<>(bookService.findAll(), HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateBook(@RequestBody BookWithIdDTO bookDTO) {
+        BookWithIdDTO bookWithIdDTO = bookService.updateBook(bookDTO);
+        if (bookWithIdDTO != null) {
+            return new ResponseEntity<>(bookWithIdDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("invalid id", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping
+    public boolean deleteBook(@RequestBody BookWithIdDTO bookWithIdDTO) {
+        return bookService.deleteBook(bookWithIdDTO);
+    }
 }
