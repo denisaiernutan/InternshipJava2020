@@ -3,6 +3,8 @@ package com.arobs.project.controller;
 import com.arobs.project.dto.TagWithIdDTO;
 import com.arobs.project.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +24,12 @@ public class TagController {
     }
 
     @DeleteMapping
-    public boolean deleteTag(@RequestBody TagWithIdDTO tagWithIdDTO){
-        return tagService.deleteTag(tagWithIdDTO);
+    public boolean deleteTag(@RequestBody int tagId) {
+        return tagService.deleteTag(tagId);
+    }
+
+    @GetMapping("findBooks")
+    public ResponseEntity<?> getBooks(@RequestParam int tagId) {
+        return new ResponseEntity<>(tagService.findBooks(tagId), HttpStatus.OK);
     }
 }

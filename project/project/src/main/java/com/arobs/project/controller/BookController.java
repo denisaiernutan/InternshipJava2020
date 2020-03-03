@@ -7,10 +7,7 @@ import com.arobs.project.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/books")
@@ -48,7 +45,13 @@ public class BookController {
     }
 
     @DeleteMapping
-    public boolean deleteBook(@RequestBody BookWithIdDTO bookWithIdDTO) {
-        return bookService.deleteBook(bookWithIdDTO);
+    public boolean deleteBook(@RequestParam int bookId) {
+        return bookService.deleteBook(bookId);
     }
+
+    @GetMapping("findCopies")
+    public ResponseEntity<?> findCopies(@RequestParam int bookId) {
+        return new ResponseEntity<>(bookService.findCopies(bookId), HttpStatus.OK);
+    }
+
 }

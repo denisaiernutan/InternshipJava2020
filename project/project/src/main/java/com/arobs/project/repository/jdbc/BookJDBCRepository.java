@@ -1,6 +1,7 @@
 package com.arobs.project.repository.jdbc;
 
 import com.arobs.project.entity.Book;
+import com.arobs.project.entity.Copy;
 import com.arobs.project.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,11 +13,14 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Repository
 public class BookJDBCRepository implements BookRepository {
 
     JdbcTemplate jdbcTemplate;
+
+
 
     @Autowired
     public BookJDBCRepository(JdbcTemplate jdbcTemplate) {
@@ -58,6 +62,11 @@ public class BookJDBCRepository implements BookRepository {
 
     @Override
     public Book findById(int bookId) {
+        return null;
+    }
+
+    @Override
+    public Set<Copy> findCopies(int book) {
         return null;
     }
 }

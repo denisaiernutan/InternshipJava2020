@@ -56,7 +56,7 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
     public List<Employee> findByEmail(String employeeEmail) {
         Session session = sessionFactory.getCurrentSession();
         String hql = "from Employee where employeeEmail= :employeeEmail";
-        return (List<Employee>) session.createQuery(hql).setParameter("employeeEmail", employeeEmail).list();
+        return session.createQuery(hql, Employee.class).setParameter("employeeEmail", employeeEmail).list();
 
     }
 

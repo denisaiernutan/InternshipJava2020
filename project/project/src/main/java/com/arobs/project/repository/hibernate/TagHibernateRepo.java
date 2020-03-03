@@ -1,5 +1,6 @@
 package com.arobs.project.repository.hibernate;
 
+import com.arobs.project.entity.Book;
 import com.arobs.project.entity.Tag;
 import com.arobs.project.repository.TagRepository;
 import org.hibernate.Session;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class TagHibernateRepo implements TagRepository {
@@ -46,4 +48,9 @@ public class TagHibernateRepo implements TagRepository {
         return session.get(Tag.class, tagId);
     }
 
+    @Override
+    public Set<Book> findBooks(int tagId) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Tag.class, tagId).getBookSet();
+    }
 }

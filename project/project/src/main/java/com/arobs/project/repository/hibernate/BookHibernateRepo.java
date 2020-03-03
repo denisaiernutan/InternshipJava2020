@@ -1,6 +1,7 @@
 package com.arobs.project.repository.hibernate;
 
 import com.arobs.project.entity.Book;
+import com.arobs.project.entity.Copy;
 import com.arobs.project.repository.BookRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class BookHibernateRepo implements BookRepository {
@@ -47,8 +49,13 @@ public class BookHibernateRepo implements BookRepository {
         return true;
     }
 
-    public Book findById(int bookId){
-        Session session= this.sessionFactory.getCurrentSession();
+    public Book findById(int bookId) {
+        Session session = this.sessionFactory.getCurrentSession();
         return session.get(Book.class, bookId);
+    }
+
+    public Set<Copy> findCopies(int bookId) {
+        Session session = this.sessionFactory.getCurrentSession();
+        return session.get(Book.class, bookId).getCopySet();
     }
 }

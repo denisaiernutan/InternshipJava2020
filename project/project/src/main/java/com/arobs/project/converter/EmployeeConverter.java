@@ -13,9 +13,10 @@ public class EmployeeConverter {
         return modelMapper.map(employee, EmployeeDTO.class);
     }
 
-    public static EmployeeWithPassDTO convertToEmployeeWithPassDTO(Employee employee){
-        return modelMapper.map(employee,EmployeeWithPassDTO.class);
+    public static EmployeeWithPassDTO convertToEmployeeWithPassDTO(Employee employee) {
+        return modelMapper.map(employee, EmployeeWithPassDTO.class);
     }
+
     public static Employee convertToEntity(EmployeeWithPassDTO employeeWithPassDTO) {
         return modelMapper.map(employeeWithPassDTO, Employee.class);
     }

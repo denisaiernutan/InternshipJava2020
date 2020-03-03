@@ -26,7 +26,7 @@ public class Book {
     @Column(name = "book_added_date")
     private Timestamp bookAddedDate;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "book_tag", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tagSet = new HashSet<>();
 
@@ -123,4 +123,27 @@ public class Book {
         rentRequest.setBook(this);
     }
 
+    public Set<Copy> getCopySet() {
+        return copySet;
+    }
+
+    public void setCopySet(Set<Copy> copySet) {
+        this.copySet = copySet;
+    }
+
+    public Set<BookRent> getBookRentSet() {
+        return bookRentSet;
+    }
+
+    public void setBookRentSet(Set<BookRent> bookRentSet) {
+        this.bookRentSet = bookRentSet;
+    }
+
+    public Set<RentRequest> getRentRequestSet() {
+        return rentRequestSet;
+    }
+
+    public void setRentRequestSet(Set<RentRequest> rentRequestSet) {
+        this.rentRequestSet = rentRequestSet;
+    }
 }

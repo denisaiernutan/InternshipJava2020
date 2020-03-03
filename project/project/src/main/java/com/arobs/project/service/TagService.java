@@ -1,8 +1,11 @@
 package com.arobs.project.service;
 
+import com.arobs.project.dto.BookDTO;
 import com.arobs.project.dto.TagWithIdDTO;
 import com.arobs.project.entity.Tag;
 import com.arobs.project.exception.ValidationException;
+
+import java.util.List;
 
 public interface TagService {
 
@@ -10,5 +13,7 @@ public interface TagService {
 
     Tag findByDescription(String description) throws ValidationException;
 
-    boolean deleteTag(TagWithIdDTO tagDTO);
+    boolean deleteTag(int tagId);
+
+    List<BookDTO> findBooks(int tagId);
 }

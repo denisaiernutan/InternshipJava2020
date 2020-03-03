@@ -12,9 +12,9 @@ public class BookDTO {
 
     private String bookDescription;
 
-    private Set<TagWithIdDTO> tagSet;
+    private Set<TagDTO> tagSet;
 
-    public BookDTO(String bookTitle, String bookAuthor, String bookDescription, Set<TagWithIdDTO> tagSet) {
+    public BookDTO(String bookTitle, String bookAuthor, String bookDescription, Set<TagDTO> tagSet) {
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
@@ -49,11 +49,11 @@ public class BookDTO {
         this.bookDescription = bookDescription;
     }
 
-    public Set<TagWithIdDTO> getTagSet() {
+    public Set<TagDTO> getTagSet() {
         return tagSet;
     }
 
-    public void setTagSet(Set<TagWithIdDTO> tagSet) {
+    public void setTagSet(Set<TagDTO> tagSet) {
         this.tagSet = tagSet;
     }
 }
