@@ -8,7 +8,7 @@ public class BookRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_reg_id")
+    @Column(name = "book_req_id")
     private int bookReqId;
 
     @ManyToOne

@@ -1,6 +1,6 @@
 package com.arobs.project.controller;
 
-import com.arobs.project.dto.TagWithIdDTO;
+import com.arobs.project.dto.tag.TagWithIdDTO;
 import com.arobs.project.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

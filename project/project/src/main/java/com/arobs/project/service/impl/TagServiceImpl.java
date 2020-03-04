@@ -2,8 +2,8 @@ package com.arobs.project.service.impl;
 
 import com.arobs.project.converter.BookConverter;
 import com.arobs.project.converter.TagConverter;
-import com.arobs.project.dto.BookDTO;
-import com.arobs.project.dto.TagWithIdDTO;
+import com.arobs.project.dto.book.BookDTO;
+import com.arobs.project.dto.tag.TagWithIdDTO;
 import com.arobs.project.entity.Tag;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.RepoFactory;

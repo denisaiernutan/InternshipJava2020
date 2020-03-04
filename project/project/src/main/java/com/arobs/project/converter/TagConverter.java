@@ -1,6 +1,6 @@
 package com.arobs.project.converter;
 
-import com.arobs.project.dto.TagWithIdDTO;
+import com.arobs.project.dto.tag.TagWithIdDTO;
 import com.arobs.project.entity.Tag;
 import org.modelmapper.ModelMapper;
 

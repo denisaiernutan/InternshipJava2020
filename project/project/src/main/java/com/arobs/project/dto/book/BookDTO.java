@@ -1,11 +1,12 @@
-package com.arobs.project.dto;
+package com.arobs.project.dto.book;
+
+
+import com.arobs.project.dto.tag.TagDTO;
 
 import java.util.Set;
 
-public class BookWithIdDTO {
+public class BookDTO {
 
-
-    private int bookId;
 
     private String bookTitle;
 
@@ -13,26 +14,18 @@ public class BookWithIdDTO {
 
     private String bookDescription;
 
-    private Set<TagWithIdDTO> tagSet;
+    private Set<TagDTO> tagSet;
 
-    public BookWithIdDTO(int bookId, String bookTitle, String bookAuthor, String bookDescription, Set<TagWithIdDTO> tagSet) {
-        this.bookId = bookId;
+    public BookDTO(String bookTitle, String bookAuthor, String bookDescription, Set<TagDTO> tagSet) {
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
         this.tagSet = tagSet;
     }
 
-    public BookWithIdDTO() {
+    public BookDTO() {
     }
 
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
 
     public String getBookTitle() {
         return bookTitle;
@@ -58,11 +51,11 @@ public class BookWithIdDTO {
         this.bookDescription = bookDescription;
     }
 
-    public Set<TagWithIdDTO> getTagSet() {
+    public Set<TagDTO> getTagSet() {
         return tagSet;
     }
 
-    public void setTagSet(Set<TagWithIdDTO> tagSet) {
+    public void setTagSet(Set<TagDTO> tagSet) {
         this.tagSet = tagSet;
     }
 }

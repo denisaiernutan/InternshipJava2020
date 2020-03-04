@@ -1,6 +1,8 @@
-package com.arobs.project.dto;
+package com.arobs.project.dto.copy;
 
-public class CopyUpdateDTO {
+import com.arobs.project.dto.book.BookWithIdDTO;
+
+public class CopyWithIdDTO {
 
     private int copyId;
 
@@ -8,13 +10,16 @@ public class CopyUpdateDTO {
 
     private String copyStatus;
 
-    public CopyUpdateDTO(int copyId, boolean copyFlag, String copyStatus) {
+    private BookWithIdDTO book;
+
+    public CopyWithIdDTO(int copyId, boolean copyFlag, String copyStatus, BookWithIdDTO book) {
         this.copyId = copyId;
         this.copyFlag = copyFlag;
         this.copyStatus = copyStatus;
+        this.book = book;
     }
 
-    public CopyUpdateDTO() {
+    public CopyWithIdDTO() {
     }
 
     public int getCopyId() {
@@ -39,5 +44,13 @@ public class CopyUpdateDTO {
 
     public void setCopyStatus(String copyStatus) {
         this.copyStatus = copyStatus;
+    }
+
+    public BookWithIdDTO getBook() {
+        return book;
+    }
+
+    public void setBook(BookWithIdDTO book) {
+        this.book = book;
     }
 }

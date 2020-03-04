@@ -1,8 +1,8 @@
 package com.arobs.project.controller;
 
-import com.arobs.project.dto.EmployeeDTO;
-import com.arobs.project.dto.EmployeeNewPassDTO;
-import com.arobs.project.dto.EmployeeWithPassDTO;
+import com.arobs.project.dto.employee.EmployeeDTO;
+import com.arobs.project.dto.employee.EmployeeNewPassDTO;
+import com.arobs.project.dto.employee.EmployeeWithPassDTO;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;

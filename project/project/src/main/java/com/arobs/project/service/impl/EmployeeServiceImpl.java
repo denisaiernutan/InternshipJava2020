@@ -1,9 +1,9 @@
 package com.arobs.project.service.impl;
 
 import com.arobs.project.converter.EmployeeConverter;
-import com.arobs.project.dto.EmployeeDTO;
-import com.arobs.project.dto.EmployeeNewPassDTO;
-import com.arobs.project.dto.EmployeeWithPassDTO;
+import com.arobs.project.dto.employee.EmployeeDTO;
+import com.arobs.project.dto.employee.EmployeeNewPassDTO;
+import com.arobs.project.dto.employee.EmployeeWithPassDTO;
 import com.arobs.project.entity.Employee;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.EmployeeRepository;
@@ -122,17 +122,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return sb.toString();
     }
 
-    //replaced with @Email in EmployeeWithPassDTO
-//    private static boolean isValidEmailAddress(String email) {
-//        boolean result = true;
-//        try {s
-//            InternetAddress emailAddr = new InternetAddress(email);
-//            emailAddr.validate();
-//        } catch (AddressException ex) {
-//            result = false;
-//        }
-//        return result;
-//    }
+    @Override
+    public Employee findById(int employeeId) {
+        return employeeRepository.findById(employeeId);
+    }
 }
 
 

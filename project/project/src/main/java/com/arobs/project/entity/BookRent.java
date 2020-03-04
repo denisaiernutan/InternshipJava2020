@@ -20,6 +20,10 @@ public class BookRent {
     @JoinColumn(name = "copy_id")
     private Copy copy;
 
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
     @Column(name = "rental_date")
     private Date rentalDate;
 
@@ -35,10 +39,11 @@ public class BookRent {
     public BookRent() {
     }
 
-    public BookRent(int bookRentId, Book book, Copy copy, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
+    public BookRent(int bookRentId, Book book, Copy copy, Employee employee, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
         this.bookRentId = bookRentId;
         this.book = book;
         this.copy = copy;
+        this.employee = employee;
         this.rentalDate = rentalDate;
         this.returnDate = returnDate;
         this.bookRentStatus = bookRentStatus;
@@ -99,5 +104,13 @@ public class BookRent {
 
     public void setGrade(Double grade) {
         this.grade = grade;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }

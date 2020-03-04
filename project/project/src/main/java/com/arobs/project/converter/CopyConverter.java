@@ -1,8 +1,8 @@
 package com.arobs.project.converter;
 
-import com.arobs.project.dto.CopyDTO;
-import com.arobs.project.dto.CopyUpdateDTO;
-import com.arobs.project.dto.CopyWithIdDTO;
+import com.arobs.project.dto.copy.CopyDTO;
+import com.arobs.project.dto.copy.CopyUpdateDTO;
+import com.arobs.project.dto.copy.CopyWithIdDTO;
 import com.arobs.project.entity.Copy;
 import org.modelmapper.ModelMapper;
 

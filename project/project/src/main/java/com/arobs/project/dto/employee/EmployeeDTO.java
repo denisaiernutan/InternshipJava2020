@@ -1,31 +1,32 @@
-package com.arobs.project.dto;
+package com.arobs.project.dto.employee;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+public class EmployeeDTO {
 
-public class EmployeeWithPassDTO {
+    private int employeeID;
 
-    @NotNull
     private String employeeName;
 
-    @NotNull
-    private String employeePass;
-
-    @NotNull
-    @Email
     private String employeeEmail;
 
-    @NotNull
     private String employeeRole;
 
-    public EmployeeWithPassDTO() {
-    }
 
-    public EmployeeWithPassDTO(@NotNull String employeeName, @NotNull String employeePass, @NotNull String employeeEmail, @NotNull String employeeRole) {
+    public EmployeeDTO(int employeeID, String employeeName, String employeeEmail, String employeeRole) {
+        this.employeeID = employeeID;
         this.employeeName = employeeName;
-        this.employeePass = employeePass;
         this.employeeEmail = employeeEmail;
         this.employeeRole = employeeRole;
+    }
+
+    public EmployeeDTO() {
+    }
+
+    public int getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(int employeeID) {
+        this.employeeID = employeeID;
     }
 
     public String getEmployeeName() {
@@ -36,13 +37,6 @@ public class EmployeeWithPassDTO {
         this.employeeName = employeeName;
     }
 
-    public String getEmployeePass() {
-        return employeePass;
-    }
-
-    public void setEmployeePass(String employeePass) {
-        this.employeePass = employeePass;
-    }
 
     public String getEmployeeEmail() {
         return employeeEmail;

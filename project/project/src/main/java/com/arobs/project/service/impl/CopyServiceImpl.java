@@ -1,12 +1,13 @@
 package com.arobs.project.service.impl;
 
 import com.arobs.project.converter.CopyConverter;
-import com.arobs.project.dto.CopyDTO;
-import com.arobs.project.dto.CopyUpdateDTO;
-import com.arobs.project.dto.CopyWithIdDTO;
+import com.arobs.project.dto.copy.CopyDTO;
+import com.arobs.project.dto.copy.CopyUpdateDTO;
+import com.arobs.project.dto.copy.CopyWithIdDTO;
 import com.arobs.project.entity.Book;
 import com.arobs.project.entity.Copy;
 import com.arobs.project.enums.CopyStatus;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.CopyRepository;
 import com.arobs.project.service.BookService;
 import com.arobs.project.service.CopyService;
@@ -32,30 +33,36 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     @Transactional
-    public CopyWithIdDTO insertCopy(CopyDTO copyDTO) {
-        try {
-            CopyStatus.valueOf(copyDTO.getCopyStatus().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-        Book book = bookService.findById(copyDTO.getBook().getBookId());
-
-        if (book != null) {
+    public CopyWithIdDTO insertCopy(CopyDTO copyDTO) throws ValidationException {
+        if (copyDTO.getCopyStatus().toUpperCase().equals(CopyStatus.AVAILABLE.toString())) {
+            Book book = bookService.findById(copyDTO.getBook().getBookId());
+            if (book == null) {
+                throw new ValidationException("book id invalid");
+            }
             Copy copy = CopyConverter.convertToEntity(copyDTO);
             copy.setBook(book);
             return CopyConverter.convertToCopyWithIdDTO(copyRepository.insertCopy(copy));
+        } else {
+            throw new ValidationException("status invalid! accepted status: AVAILABLE");
         }
-        return null;
+
     }
 
     @Override
     @Transactional
-    public CopyWithIdDTO updateCopy(CopyUpdateDTO copyDTO) {
-        Copy copy = copyRepository.findById(copyDTO.getCopyId());
-        if (copy != null) {
-            return CopyConverter.convertToCopyWithIdDTO(copyRepository.updateCopy(CopyConverter.convertToEntity(copyDTO)));
+    public CopyWithIdDTO updateCopy(CopyUpdateDTO copyDTO) throws ValidationException {
+
+        try {
+            CopyStatus.valueOf(copyDTO.getCopyStatus().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("invalid status. Accepted status: AVAILABLE, RENTED,PENDING");
         }
-        return null;
+        Copy copy = copyRepository.findById(copyDTO.getCopyId());
+        if (copy == null) {
+            throw new ValidationException("invalid copy id");
+        }
+        return CopyConverter.convertToCopyWithIdDTO(copyRepository.updateCopy(CopyConverter.convertToEntity(copyDTO)));
+
 
     }
 

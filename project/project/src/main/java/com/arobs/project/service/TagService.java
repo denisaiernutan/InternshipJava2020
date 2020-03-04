@@ -1,7 +1,7 @@
 package com.arobs.project.service;
 
-import com.arobs.project.dto.BookDTO;
-import com.arobs.project.dto.TagWithIdDTO;
+import com.arobs.project.dto.book.BookDTO;
+import com.arobs.project.dto.tag.TagWithIdDTO;
 import com.arobs.project.entity.Tag;
 import com.arobs.project.exception.ValidationException;
 

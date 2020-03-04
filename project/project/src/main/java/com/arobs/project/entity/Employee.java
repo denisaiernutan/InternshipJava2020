@@ -28,6 +28,9 @@ public class Employee {
     @OneToMany(mappedBy = "employee")
     private Set<RentRequest> rentRequestSet = new HashSet<>();
 
+    @OneToMany(mappedBy = "employee")
+    private Set<BookRent> bookRentSet = new HashSet<>();
+
     public Employee() {
     }
 
@@ -50,7 +53,6 @@ public class Employee {
         this.employeeEmail = employeeEmail;
         this.employeeRole = employeeRole;
     }
-
 
 
     public int getEmployeeId() {
@@ -96,5 +98,21 @@ public class Employee {
     public void addRentRequest(RentRequest rentRequest) {
         this.rentRequestSet.add(rentRequest);
         rentRequest.setEmployee(this);
+    }
+
+    public Set<RentRequest> getRentRequestSet() {
+        return rentRequestSet;
+    }
+
+    public void setRentRequestSet(Set<RentRequest> rentRequestSet) {
+        this.rentRequestSet = rentRequestSet;
+    }
+
+    public Set<BookRent> getBookRentSet() {
+        return bookRentSet;
+    }
+
+    public void setBookRentSet(Set<BookRent> bookRentSet) {
+        this.bookRentSet = bookRentSet;
     }
 }

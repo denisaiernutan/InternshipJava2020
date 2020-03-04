@@ -1,8 +1,9 @@
 package com.arobs.project.controller;
 
-import com.arobs.project.dto.CopyDTO;
-import com.arobs.project.dto.CopyUpdateDTO;
-import com.arobs.project.dto.CopyWithIdDTO;
+import com.arobs.project.dto.copy.CopyDTO;
+import com.arobs.project.dto.copy.CopyUpdateDTO;
+import com.arobs.project.dto.copy.CopyWithIdDTO;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.CopyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,11 +28,11 @@ public class CopyController {
 
     @PostMapping
     public ResponseEntity<?> insertCopy(@RequestBody CopyDTO copyDTO) {
-        CopyWithIdDTO copyWithIdDTO = copyService.insertCopy(copyDTO);
-        if (copyWithIdDTO != null) {
+        try {
+            CopyWithIdDTO copyWithIdDTO = copyService.insertCopy(copyDTO);
             return new ResponseEntity<>(copyWithIdDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("book id invalid or status invalid : AVAILABLE, RENTED, PENDING", HttpStatus.BAD_REQUEST);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -42,11 +43,12 @@ public class CopyController {
 
     @PutMapping
     public ResponseEntity<?> updateCopy(@RequestBody CopyUpdateDTO copyUpdateDTO) {
-        CopyWithIdDTO copyWithIdDTO = copyService.updateCopy(copyUpdateDTO);
-        if (copyWithIdDTO != null) {
+        try {
+            CopyWithIdDTO copyWithIdDTO = copyService.updateCopy(copyUpdateDTO);
             return new ResponseEntity<>(copyWithIdDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("id invalid ", HttpStatus.BAD_REQUEST);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+
     }
 }

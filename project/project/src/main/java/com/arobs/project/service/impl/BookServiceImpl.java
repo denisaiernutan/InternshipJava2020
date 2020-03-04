@@ -3,7 +3,10 @@ package com.arobs.project.service.impl;
 import com.arobs.project.converter.BookConverter;
 import com.arobs.project.converter.CopyConverter;
 import com.arobs.project.converter.TagConverter;
-import com.arobs.project.dto.*;
+import com.arobs.project.dto.book.BookDTO;
+import com.arobs.project.dto.book.BookWithIdDTO;
+import com.arobs.project.dto.copy.CopyUpdateDTO;
+import com.arobs.project.dto.tag.TagDTO;
 import com.arobs.project.entity.Book;
 import com.arobs.project.entity.BookTag;
 import com.arobs.project.entity.Tag;
@@ -53,6 +56,7 @@ public class BookServiceImpl implements BookService {
         book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
         Set<Tag> tagSet = listTags(bookDTO.getTagSet());
 
+        //strategy ?
         if (bookRepository.getClass().getName().contains("BookJDBCRepository")) {
             book = insertBookJDBC(book, tagSet);
         } else {

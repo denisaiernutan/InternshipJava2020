@@ -1,4 +1,4 @@
-package com.arobs.project.dto;
+package com.arobs.project.dto.employee;
 
 public class EmployeeIdDTO {
 

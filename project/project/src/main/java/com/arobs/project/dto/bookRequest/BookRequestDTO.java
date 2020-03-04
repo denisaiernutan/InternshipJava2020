@@ -1,9 +1,10 @@
-package com.arobs.project.dto;
+package com.arobs.project.dto.bookRequest;
 
+
+import com.arobs.project.dto.employee.EmployeeIdDTO;
 
 public class BookRequestDTO {
 
-    private int bookReqId;
 
     private EmployeeIdDTO employeeIdDTO;
 
@@ -17,31 +18,23 @@ public class BookRequestDTO {
 
     private int no_copies;
 
-    private Double total_coast;
+    private Double total_cost;
 
     private String bookReqStatus;
 
-    public BookRequestDTO(int bookReqId, EmployeeIdDTO employeeIdDTO, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int no_copies, Double total_coast, String bookReqStatus) {
-        this.bookReqId = bookReqId;
+    public BookRequestDTO(EmployeeIdDTO employeeIdDTO, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int no_copies, Double total_cost, String bookReqStatus) {
+
         this.employeeIdDTO = employeeIdDTO;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.publishingCompany = publishingCompany;
         this.onlineLibrary = onlineLibrary;
         this.no_copies = no_copies;
-        this.total_coast = total_coast;
+        this.total_cost = total_cost;
         this.bookReqStatus = bookReqStatus;
     }
 
     public BookRequestDTO() {
-    }
-
-    public int getBookReqId() {
-        return bookReqId;
-    }
-
-    public void setBookReqId(int bookReqId) {
-        this.bookReqId = bookReqId;
     }
 
     public EmployeeIdDTO getEmployeeIdDTO() {
@@ -92,12 +85,12 @@ public class BookRequestDTO {
         this.no_copies = no_copies;
     }
 
-    public Double getTotal_coast() {
-        return total_coast;
+    public Double getTotal_cost() {
+        return total_cost;
     }
 
-    public void setTotal_coast(Double total_coast) {
-        this.total_coast = total_coast;
+    public void setTotal_cost(Double total_cost) {
+        this.total_cost = total_cost;
     }
 
     public String getBookReqStatus() {

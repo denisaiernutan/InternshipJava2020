@@ -1,6 +1,6 @@
-package com.arobs.project.dto;
+package com.arobs.project.dto.copy;
 
-import com.arobs.project.entity.Book;
+import com.arobs.project.dto.book.BookIdDTO;
 
 
 public class CopyDTO {

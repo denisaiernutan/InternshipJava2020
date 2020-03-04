@@ -1,7 +1,7 @@
 package com.arobs.project.controller;
 
-import com.arobs.project.dto.BookDTO;
-import com.arobs.project.dto.BookWithIdDTO;
+import com.arobs.project.dto.book.BookDTO;
+import com.arobs.project.dto.book.BookWithIdDTO;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;

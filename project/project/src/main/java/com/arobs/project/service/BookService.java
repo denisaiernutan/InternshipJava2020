@@ -1,8 +1,8 @@
 package com.arobs.project.service;
 
-import com.arobs.project.dto.BookDTO;
-import com.arobs.project.dto.BookWithIdDTO;
-import com.arobs.project.dto.CopyUpdateDTO;
+import com.arobs.project.dto.book.BookDTO;
+import com.arobs.project.dto.book.BookWithIdDTO;
+import com.arobs.project.dto.copy.CopyUpdateDTO;
 import com.arobs.project.entity.Book;
 import com.arobs.project.exception.ValidationException;
 
