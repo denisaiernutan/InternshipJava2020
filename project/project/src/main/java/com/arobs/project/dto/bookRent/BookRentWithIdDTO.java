@@ -1,45 +1,30 @@
-package com.arobs.project.entity;
+package com.arobs.project.dto.bookRent;
 
-import javax.persistence.*;
+import com.arobs.project.dto.book.BookIdDTO;
+import com.arobs.project.dto.copy.CopyWithIdDTO;
+import com.arobs.project.dto.employee.EmployeeIdDTO;
+
 import java.sql.Date;
 
-@Entity
-@Table(name = "book_rents")
-public class BookRent {
+public class BookRentWithIdDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_rent_id")
     private int bookRentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+    private BookIdDTO book;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "copy_id")
-    private Copy copy;
+    private CopyWithIdDTO copy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    private EmployeeIdDTO employee;
 
-    @Column(name = "rental_date")
     private Date rentalDate;
 
-    @Column(name = "return_date")
     private Date returnDate;
 
-    @Column(name = "book_rent_status")
     private String bookRentStatus;
 
-    @Column(name = "grade")
     private Double grade;
 
-    public BookRent() {
-    }
-
-    public BookRent(int bookRentId, Book book, Copy copy, Employee employee, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
+    public BookRentWithIdDTO(int bookRentId, BookIdDTO book, CopyWithIdDTO copy, EmployeeIdDTO employee, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
         this.bookRentId = bookRentId;
         this.book = book;
         this.copy = copy;
@@ -50,6 +35,9 @@ public class BookRent {
         this.grade = grade;
     }
 
+    public BookRentWithIdDTO() {
+    }
+
     public int getBookRentId() {
         return bookRentId;
     }
@@ -58,20 +46,28 @@ public class BookRent {
         this.bookRentId = bookRentId;
     }
 
-    public Book getBook() {
+    public BookIdDTO getBook() {
         return book;
     }
 
-    public void setBook(Book book) {
+    public void setBook(BookIdDTO book) {
         this.book = book;
     }
 
-    public Copy getCopy() {
+    public CopyWithIdDTO getCopy() {
         return copy;
     }
 
-    public void setCopy(Copy copy) {
+    public void setCopy(CopyWithIdDTO copy) {
         this.copy = copy;
+    }
+
+    public EmployeeIdDTO getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(EmployeeIdDTO employee) {
+        this.employee = employee;
     }
 
     public Date getRentalDate() {
@@ -104,13 +100,5 @@ public class BookRent {
 
     public void setGrade(Double grade) {
         this.grade = grade;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
     }
 }

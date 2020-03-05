@@ -80,6 +80,14 @@ public class CopyServiceImpl implements CopyService {
     @Transactional
     public List<CopyWithIdDTO> findAll() {
         return copyRepository.findAll().stream().map(CopyConverter::convertToCopyWithIdDTO).collect(Collectors.toList());
+    }
 
+    @Transactional
+    @Override
+    public List<Copy> findAvailableCopiesForBook(int bookId) {
+        if (bookService.findById(bookId) != null) {
+            return copyRepository.findAvailableCopiesForBook(bookId);
+        }
+        return null;
     }
 }

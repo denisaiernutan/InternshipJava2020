@@ -54,6 +54,14 @@ public class CopyHibernateRepo implements CopyRepository {
     public Copy findById(int copyId) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(Copy.class, copyId);
-
     }
+
+    @Override
+    public List<Copy> findAvailableCopiesForBook(int bookId) {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "select first from Copy where bookId= :bookid and copyStatus='available' and copyFlag=true";
+        return session.createQuery(hql, Copy.class).setParameter("bookid", bookId).list();
+    }
+
+
 }

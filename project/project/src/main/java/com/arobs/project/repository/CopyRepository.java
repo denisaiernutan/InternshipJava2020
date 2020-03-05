@@ -15,4 +15,6 @@ public interface CopyRepository {
     boolean deleteCopy(Copy copy);
 
     Copy findById(int copyId);
+
+    List<Copy> findAvailableCopiesForBook(int bookId);
 }
