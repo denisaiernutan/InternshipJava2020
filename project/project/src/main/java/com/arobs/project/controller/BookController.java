@@ -1,6 +1,7 @@
 package com.arobs.project.controller;
 
 import com.arobs.project.dto.book.BookDTO;
+import com.arobs.project.dto.book.BookUpdateDTO;
 import com.arobs.project.dto.book.BookWithIdDTO;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookService;
@@ -35,7 +36,7 @@ public class BookController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateBook(@RequestBody BookWithIdDTO bookDTO) {
+    public ResponseEntity<?> updateBook(@RequestBody BookUpdateDTO bookDTO) {
         BookWithIdDTO bookWithIdDTO = bookService.updateBook(bookDTO);
         if (bookWithIdDTO != null) {
             return new ResponseEntity<>(bookWithIdDTO, HttpStatus.OK);

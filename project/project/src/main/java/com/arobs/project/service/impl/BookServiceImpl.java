@@ -4,6 +4,7 @@ import com.arobs.project.converter.BookConverter;
 import com.arobs.project.converter.CopyConverter;
 import com.arobs.project.converter.TagConverter;
 import com.arobs.project.dto.book.BookDTO;
+import com.arobs.project.dto.book.BookUpdateDTO;
 import com.arobs.project.dto.book.BookWithIdDTO;
 import com.arobs.project.dto.copy.CopyUpdateDTO;
 import com.arobs.project.dto.tag.TagDTO;
@@ -100,9 +101,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public BookWithIdDTO updateBook(BookWithIdDTO bookDTO) {
+    public BookWithIdDTO updateBook(BookUpdateDTO bookDTO) {
         if (bookRepository.findById(bookDTO.getBookId()) != null) {
-            return BookConverter.convertToBookWithIdDTO(bookRepository.updateBook(BookConverter.convertToEntity(bookDTO)));
+            Book updateBook=(BookConverter.convertToEntity(bookDTO));
+            updateBook.setTagSet(listTags(bookDTO.getTagSet()));
+            return BookConverter.convertToBookWithIdDTO(bookRepository.updateBook(updateBook));
         } else return null;
     }
 

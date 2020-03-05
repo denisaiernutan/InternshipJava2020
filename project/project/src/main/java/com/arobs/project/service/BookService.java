@@ -1,6 +1,7 @@
 package com.arobs.project.service;
 
 import com.arobs.project.dto.book.BookDTO;
+import com.arobs.project.dto.book.BookUpdateDTO;
 import com.arobs.project.dto.book.BookWithIdDTO;
 import com.arobs.project.dto.copy.CopyUpdateDTO;
 import com.arobs.project.entity.Book;
@@ -14,7 +15,7 @@ public interface BookService {
 
     List<BookWithIdDTO> findAll();
 
-    BookWithIdDTO updateBook(BookWithIdDTO bookWithIdDTO);
+    BookWithIdDTO updateBook(BookUpdateDTO bookWithIdDTO);
 
     boolean deleteBook(int bookId);
 
