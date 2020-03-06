@@ -48,6 +48,7 @@ public class CopyServiceImpl implements CopyService {
 
     }
 
+    //refactor to updateCopy(Copy)
     @Override
     @Transactional
     public CopyWithIdDTO updateCopy(CopyUpdateDTO copyDTO) throws ValidationException {
@@ -89,5 +90,21 @@ public class CopyServiceImpl implements CopyService {
             return copyRepository.findAvailableCopiesForBook(bookId);
         }
         return null;
+    }
+
+    @Transactional
+    @Override
+    public Copy updateCopy(Copy copy) throws ValidationException {
+        try {
+            CopyStatus.valueOf(copy.getCopyStatus().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("invalid status. Accepted status: AVAILABLE, RENTED,PENDING");
+        }
+        Copy updateCopy = copyRepository.findById(copy.getCopyId());
+        if (updateCopy == null) {
+            throw new ValidationException("invalid copy id");
+        }
+        return copyRepository.updateCopy(copy);
+
     }
 }

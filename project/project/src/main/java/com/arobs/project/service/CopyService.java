@@ -21,4 +21,6 @@ public interface CopyService {
 
     List<Copy> findAvailableCopiesForBook(int bookId);
 
+    Copy updateCopy(Copy copy) throws ValidationException;
+
 }

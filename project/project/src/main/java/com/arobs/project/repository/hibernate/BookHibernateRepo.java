@@ -51,7 +51,10 @@ public class BookHibernateRepo implements BookRepository {
 
     public Book findById(int bookId) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.get(Book.class, bookId);
+        String hql = "SELECT b from Book b LEFT JOIN b.tagSet where b.bookId= :bookid";
+        //fix it
+        return session.createQuery(hql, Book.class).setParameter("bookid", bookId).list().get(0);
+
     }
 
     public Set<Copy> findCopies(int bookId) {

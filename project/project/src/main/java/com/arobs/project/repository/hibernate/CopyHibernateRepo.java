@@ -59,7 +59,7 @@ public class CopyHibernateRepo implements CopyRepository {
     @Override
     public List<Copy> findAvailableCopiesForBook(int bookId) {
         Session session = sessionFactory.getCurrentSession();
-        String hql = "select first from Copy where bookId= :bookid and copyStatus='available' and copyFlag=true";
+        String hql = "SELECT c from Copy c INNER JOIN c.book b where b.bookId= :bookid and c.copyStatus='available' and c.copyFlag=true";
         return session.createQuery(hql, Copy.class).setParameter("bookid", bookId).list();
     }
 

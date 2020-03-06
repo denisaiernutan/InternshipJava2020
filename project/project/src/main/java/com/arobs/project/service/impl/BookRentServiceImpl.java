@@ -5,6 +5,7 @@ import com.arobs.project.entity.BookRent;
 import com.arobs.project.entity.Copy;
 import com.arobs.project.entity.Employee;
 import com.arobs.project.enums.BookRentStatus;
+import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.BookRentRepository;
 import com.arobs.project.service.BookRentService;
@@ -35,7 +36,7 @@ public class BookRentServiceImpl implements BookRentService {
         this.employeeService = employeeService;
         this.copyService = copyService;
     }
-    
+
     //try it
     @Override
     @Transactional
@@ -54,13 +55,19 @@ public class BookRentServiceImpl implements BookRentService {
                     throw new ValidationException("there is no copy available");
                 }
 
-                bookRent.setCopy(availableCopies.get(0));
+                Copy copy = availableCopies.get(0);
+                bookRent.setCopy(copy);
                 bookRent.setBookRentStatus(BookRentStatus.ON_GOING.toString().toLowerCase());
                 bookRent.setRentalDate(new Date(new java.util.Date().getTime()));
                 bookRent.setBook(book);
+                bookRent.setGrade(0.0);
+                bookRent.setReturnDate(null);
                 bookRent.setEmployee(employee);
 
                 bookRentRepository.insertBookRent(bookRent);
+
+                copy.setCopyStatus(CopyStatus.RENTED.toString().toLowerCase());
+                copyService.updateCopy(copy);
                 return bookRent;
             }
             throw new ValidationException("employee id invalid");

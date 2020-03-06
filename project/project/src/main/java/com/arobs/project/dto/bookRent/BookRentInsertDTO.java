@@ -10,4 +10,27 @@ public class BookRentInsertDTO {
     private EmployeeIdDTO employee;
 
 
+    public BookRentInsertDTO(BookIdDTO book, EmployeeIdDTO employee) {
+        this.book = book;
+        this.employee = employee;
+    }
+
+    public BookRentInsertDTO() {
+    }
+
+    public BookIdDTO getBook() {
+        return book;
+    }
+
+    public void setBook(BookIdDTO book) {
+        this.book = book;
+    }
+
+    public EmployeeIdDTO getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(EmployeeIdDTO employee) {
+        this.employee = employee;
+    }
 }

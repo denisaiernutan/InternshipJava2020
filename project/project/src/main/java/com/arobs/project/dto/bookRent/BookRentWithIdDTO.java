@@ -1,7 +1,7 @@
 package com.arobs.project.dto.bookRent;
 
 import com.arobs.project.dto.book.BookIdDTO;
-import com.arobs.project.dto.copy.CopyWithIdDTO;
+import com.arobs.project.dto.copy.CopyWithoutBookDTO;
 import com.arobs.project.dto.employee.EmployeeIdDTO;
 
 import java.sql.Date;
@@ -12,7 +12,7 @@ public class BookRentWithIdDTO {
 
     private BookIdDTO book;
 
-    private CopyWithIdDTO copy;
+    private CopyWithoutBookDTO copy;
 
     private EmployeeIdDTO employee;
 
@@ -24,11 +24,19 @@ public class BookRentWithIdDTO {
 
     private Double grade;
 
-    public BookRentWithIdDTO(int bookRentId, BookIdDTO book, CopyWithIdDTO copy, EmployeeIdDTO employee, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
+    public BookRentWithIdDTO(int bookRentId, BookIdDTO book, CopyWithoutBookDTO copy, EmployeeIdDTO employee, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
         this.bookRentId = bookRentId;
         this.book = book;
         this.copy = copy;
         this.employee = employee;
+        this.rentalDate = rentalDate;
+        this.returnDate = returnDate;
+        this.bookRentStatus = bookRentStatus;
+        this.grade = grade;
+    }
+
+    public BookRentWithIdDTO(int bookRentId, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
+        this.bookRentId = bookRentId;
         this.rentalDate = rentalDate;
         this.returnDate = returnDate;
         this.bookRentStatus = bookRentStatus;
@@ -52,14 +60,6 @@ public class BookRentWithIdDTO {
 
     public void setBook(BookIdDTO book) {
         this.book = book;
-    }
-
-    public CopyWithIdDTO getCopy() {
-        return copy;
-    }
-
-    public void setCopy(CopyWithIdDTO copy) {
-        this.copy = copy;
     }
 
     public EmployeeIdDTO getEmployee() {
@@ -100,5 +100,13 @@ public class BookRentWithIdDTO {
 
     public void setGrade(Double grade) {
         this.grade = grade;
+    }
+
+    public CopyWithoutBookDTO getCopy() {
+        return copy;
+    }
+
+    public void setCopy(CopyWithoutBookDTO copy) {
+        this.copy = copy;
     }
 }
