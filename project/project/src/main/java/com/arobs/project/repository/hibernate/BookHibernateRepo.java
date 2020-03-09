@@ -30,11 +30,13 @@ public class BookHibernateRepo implements BookRepository {
         return book;
     }
 
+    @Override
     public List<Book> findAll() {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createQuery("from Book", Book.class).list();
+        return session.createQuery("SELECT DISTINCT b from Book as b JOIN FETCH b.tagSet", Book.class).list();
     }
 
+    @Override
     public Book updateBook(Book book) {
         Session session = this.sessionFactory.getCurrentSession();
         Book updateBook = session.get(Book.class, book.getBookId());
@@ -43,20 +45,29 @@ public class BookHibernateRepo implements BookRepository {
         return updateBook;
     }
 
+    @Override
     public boolean deleteBook(Book book) {
         Session session = this.sessionFactory.getCurrentSession();
         session.delete(book);
         return true;
     }
 
+    @Override
     public Book findById(int bookId) {
         Session session = this.sessionFactory.getCurrentSession();
-        String hql = "SELECT b from Book b LEFT JOIN b.tagSet where b.bookId= :bookid";
+        String hql = "SELECT b from Book b join fetch b.tagSet where b.bookId= :bookid";
         //fix it
-        return session.createQuery(hql, Book.class).setParameter("bookid", bookId).list().get(0);
+        return session.createQuery(hql, Book.class).setParameter("bookid", bookId).getSingleResult();
 
     }
 
+    @Override
+    public boolean existBookInDb(int bookId) {
+        Session session = this.sessionFactory.getCurrentSession();
+        return null != session.get(Book.class, bookId);
+    }
+
+    @Override
     public Set<Copy> findCopies(int bookId) {
         Session session = this.sessionFactory.getCurrentSession();
         return session.get(Book.class, bookId).getCopySet();

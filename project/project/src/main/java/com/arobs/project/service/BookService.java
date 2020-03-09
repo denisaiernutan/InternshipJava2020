@@ -1,25 +1,22 @@
 package com.arobs.project.service;
 
-import com.arobs.project.dto.book.BookDTO;
-import com.arobs.project.dto.book.BookUpdateDTO;
-import com.arobs.project.dto.book.BookWithIdDTO;
-import com.arobs.project.dto.copy.CopyUpdateDTO;
 import com.arobs.project.entity.Book;
+import com.arobs.project.entity.Copy;
 import com.arobs.project.exception.ValidationException;
 
 import java.util.List;
 
 public interface BookService {
 
-    BookDTO insertBook(BookDTO bookDTO) throws ValidationException;
+    Book insertBook(Book book) throws ValidationException;
 
-    List<BookWithIdDTO> findAll();
+    List<Book> findAll();
 
-    BookWithIdDTO updateBook(BookUpdateDTO bookWithIdDTO);
+    Book updateBook(Book book);
 
     boolean deleteBook(int bookId);
 
     Book findById(int bookId);
 
-    List<CopyUpdateDTO> findCopies(int bookId);
+    List<Copy> findCopies(int bookId);
 }

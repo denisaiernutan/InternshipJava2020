@@ -17,7 +17,7 @@ public class HibernateRepoFactory extends RepoFactory {
     private TagHibernateRepo tagHibernateRepo;
 
     @Autowired
-    private BookHibernateRepo bookHibernateRepo;
+    private BookRepository bookHibernateRepo;
 
     @Override
     public EmployeeRepository getEmployeeRepository() {

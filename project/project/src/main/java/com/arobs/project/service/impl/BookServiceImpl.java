@@ -1,15 +1,9 @@
 package com.arobs.project.service.impl;
 
-import com.arobs.project.converter.BookConverter;
-import com.arobs.project.converter.CopyConverter;
 import com.arobs.project.converter.TagConverter;
-import com.arobs.project.dto.book.BookDTO;
-import com.arobs.project.dto.book.BookUpdateDTO;
-import com.arobs.project.dto.book.BookWithIdDTO;
-import com.arobs.project.dto.copy.CopyUpdateDTO;
-import com.arobs.project.dto.tag.TagDTO;
 import com.arobs.project.entity.Book;
 import com.arobs.project.entity.BookTag;
+import com.arobs.project.entity.Copy;
 import com.arobs.project.entity.Tag;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.BookRepository;
@@ -23,10 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -52,10 +46,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public BookDTO insertBook(BookDTO bookDTO) {
-        Book book = BookConverter.convertToEntity(bookDTO);
+    public Book insertBook(Book book) {
         book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
-        Set<Tag> tagSet = listTags(bookDTO.getTagSet());
+        Set<Tag> tagSet = listTags(book.getTagSet());
+
 
         //strategy ?
         if (bookRepository.getClass().getName().contains("BookJDBCRepository")) {
@@ -63,7 +57,7 @@ public class BookServiceImpl implements BookService {
         } else {
             book = insertBookHibernate(book, tagSet);
         }
-        return BookConverter.convertToDTO(book);
+        return book;
     }
 
     @Transactional
@@ -84,28 +78,27 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
-    public Set<Tag> listTags(Set<TagDTO> tagDTOSet) {
-        Set<Tag> tagSet = new HashSet<>(15);
-        if (tagDTOSet != null && !tagDTOSet.isEmpty()) {
-            for (TagDTO tagDTO : tagDTOSet) {
+    public Set<Tag> listTags(Set<Tag> tagSet) {
+        Set<Tag> tagEntitySet = new HashSet<>(15);
+        if (tagSet != null && !tagSet.isEmpty()) {
+            for (Tag tagDTO : tagSet) {
                 Tag tag;
                 try {
                     tag = tagService.findByDescription(tagDTO.getTagDescription());
                 } catch (ValidationException e) {
                     tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
                 }
-                tagSet.add(tag);
+                tagEntitySet.add(tag);
             }
         }
-        return tagSet;
+        return tagEntitySet;
     }
 
     @Transactional
-    public BookWithIdDTO updateBook(BookUpdateDTO bookDTO) {
-        if (bookRepository.findById(bookDTO.getBookId()) != null) {
-            Book updateBook=(BookConverter.convertToEntity(bookDTO));
-            updateBook.setTagSet(listTags(bookDTO.getTagSet()));
-            return BookConverter.convertToBookWithIdDTO(bookRepository.updateBook(updateBook));
+    public Book updateBook(Book book) {
+        if (bookRepository.existBookInDb(book.getBookId())) {
+            book.setTagSet(listTags(book.getTagSet()));
+            return bookRepository.updateBook(book);
         } else return null;
     }
 
@@ -121,8 +114,8 @@ public class BookServiceImpl implements BookService {
 
 
     @Transactional
-    public List<BookWithIdDTO> findAll() {
-        return bookRepository.findAll().stream().map(BookConverter::convertToBookWithIdDTO).collect(Collectors.toList());
+    public List<Book> findAll() {
+        return bookRepository.findAll();//.stream().collect(Collectors.toList());
     }
 
     @Transactional
@@ -132,9 +125,9 @@ public class BookServiceImpl implements BookService {
 
 
     @Transactional
-    public List<CopyUpdateDTO> findCopies(int bookId) {
+    public List<Copy> findCopies(int bookId) {
         if (bookRepository.findById(bookId) != null) {
-            return bookRepository.findCopies(bookId).stream().map(CopyConverter::convertToCopyUpdateDTO).collect(Collectors.toList());
+            return new ArrayList<>(bookRepository.findCopies(bookId));
         }
         return null;
     }

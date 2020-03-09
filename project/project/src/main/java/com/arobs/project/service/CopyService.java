@@ -11,13 +11,11 @@ import java.util.List;
 public interface CopyService {
 
 
-    CopyWithIdDTO insertCopy(CopyDTO copyDTO) throws ValidationException;
-
-    CopyWithIdDTO updateCopy(CopyUpdateDTO copyDTO) throws ValidationException;
+    Copy insertCopy(Copy copy) throws ValidationException;
 
     boolean deleteCopy(int copyId);
 
-    List<CopyWithIdDTO> findAll();
+    List<Copy> findAll();
 
     List<Copy> findAvailableCopiesForBook(int bookId);
 

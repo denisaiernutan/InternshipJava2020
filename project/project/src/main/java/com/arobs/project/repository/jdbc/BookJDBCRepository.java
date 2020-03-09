@@ -21,7 +21,6 @@ public class BookJDBCRepository implements BookRepository {
     JdbcTemplate jdbcTemplate;
 
 
-
     @Autowired
     public BookJDBCRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -66,7 +65,12 @@ public class BookJDBCRepository implements BookRepository {
     }
 
     @Override
-    public Set<Copy> findCopies(int book) {
+    public Set<Copy> findCopies(int bookId) {
         return null;
+    }
+
+    @Override
+    public boolean existBookInDb(int bookId) {
+        return false;
     }
 }
