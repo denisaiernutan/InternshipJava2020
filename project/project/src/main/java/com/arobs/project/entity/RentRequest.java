@@ -12,11 +12,11 @@ public class RentRequest {
     @Column(name = "rent_req_id")
     private int rentReqId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 

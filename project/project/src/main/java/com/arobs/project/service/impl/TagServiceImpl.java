@@ -1,9 +1,7 @@
 package com.arobs.project.service.impl;
 
 import com.arobs.project.converter.BookConverter;
-import com.arobs.project.converter.TagConverter;
-import com.arobs.project.dto.book.BookDTO;
-import com.arobs.project.dto.tag.TagWithIdDTO;
+import com.arobs.project.entity.Book;
 import com.arobs.project.entity.Tag;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.RepoFactory;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,8 +36,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Transactional
-    public TagWithIdDTO insertTag(String description) {
-        return TagConverter.convertToTagWithIdDTO(tagRepository.insertTag(new Tag(description)));
+    public Tag insertTag(String description) {
+        return tagRepository.insertTag(new Tag(description));
     }
 
 
@@ -63,10 +62,10 @@ public class TagServiceImpl implements TagService {
     }
 
     @Transactional
-    public List<BookDTO> findBooks(int tagId){
+    public List<Book> findBooks(int tagId) {
         Tag tag = tagRepository.findById(tagId);
         if (tag != null) {
-            return tagRepository.findBooks(tagId).stream().map(BookConverter::convertToDTO).collect(Collectors.toList());
+            return new ArrayList<>(tagRepository.findBooks(tagId));
         } else {
             return null;
         }

@@ -1,7 +1,6 @@
 package com.arobs.project.service.impl;
 
 import com.arobs.project.converter.EmployeeConverter;
-import com.arobs.project.dto.employee.EmployeeDTO;
 import com.arobs.project.dto.employee.EmployeeNewPassDTO;
 import com.arobs.project.dto.employee.EmployeeWithPassDTO;
 import com.arobs.project.entity.Employee;
@@ -19,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -40,21 +38,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Transactional
-    public List<EmployeeDTO> getAllEmployees() {
-
-        List<Employee> employeeList = employeeRepository.findAll();
-        return employeeList.stream()
-                .map(EmployeeConverter::convertToEmployeeDTO)
-                .collect(Collectors.toList());
-
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
     }
 
 
     @Transactional
-    public EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) throws ValidationException {
-        if (employeeRepository.findByEmail(employeeWithPassDTO.getEmployeeEmail()).isEmpty()) {
-            Employee employee = employeeRepository.insertEmployee(EmployeeConverter.convertToEntity(employeeWithPassDTO));
-            return EmployeeConverter.convertToEmployeeDTO(employee);
+    public Employee insertEmployee(Employee employee) throws ValidationException {
+        if (employeeRepository.findByEmail(employee.getEmployeeEmail()).isEmpty()) {
+            Employee insertedEmployee = employeeRepository.insertEmployee(employee);
+            return insertedEmployee;
         } else {
             throw new ValidationException("email is already registered");
         }

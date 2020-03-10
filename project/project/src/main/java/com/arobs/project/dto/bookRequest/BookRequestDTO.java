@@ -16,21 +16,21 @@ public class BookRequestDTO {
 
     private String onlineLibrary;
 
-    private int no_copies;
+    private int noCopies;
 
-    private Double total_cost;
+    private Double totalCost;
 
     private String bookReqStatus;
 
-    public BookRequestDTO(EmployeeIdDTO employeeIdDTO, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int no_copies, Double total_cost, String bookReqStatus) {
+    public BookRequestDTO(EmployeeIdDTO employeeIdDTO, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int noCopies, Double totalCost, String bookReqStatus) {
 
         this.employeeIdDTO = employeeIdDTO;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.publishingCompany = publishingCompany;
         this.onlineLibrary = onlineLibrary;
-        this.no_copies = no_copies;
-        this.total_cost = total_cost;
+        this.noCopies = noCopies;
+        this.totalCost = totalCost;
         this.bookReqStatus = bookReqStatus;
     }
 
@@ -77,20 +77,20 @@ public class BookRequestDTO {
         this.onlineLibrary = onlineLibrary;
     }
 
-    public int getNo_copies() {
-        return no_copies;
+    public int getNoCopies() {
+        return noCopies;
     }
 
-    public void setNo_copies(int no_copies) {
-        this.no_copies = no_copies;
+    public void setNoCopies(int noCopies) {
+        this.noCopies = noCopies;
     }
 
-    public Double getTotal_cost() {
-        return total_cost;
+    public Double getTotalCost() {
+        return totalCost;
     }
 
-    public void setTotal_cost(Double total_cost) {
-        this.total_cost = total_cost;
+    public void setTotalCost(Double totalCost) {
+        this.totalCost = totalCost;
     }
 
     public String getBookReqStatus() {

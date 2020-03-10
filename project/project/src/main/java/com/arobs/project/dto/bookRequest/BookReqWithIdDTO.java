@@ -7,8 +7,8 @@ public class BookReqWithIdDTO extends BookRequestDTO {
     private int bookReqId;
 
 
-    public BookReqWithIdDTO(EmployeeIdDTO employeeIdDTO, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int no_copies, Double total_coast, String bookReqStatus, int bookReqId) {
-        super(employeeIdDTO, bookTitle, bookAuthor, publishingCompany, onlineLibrary, no_copies, total_coast, bookReqStatus);
+    public BookReqWithIdDTO(EmployeeIdDTO employeeIdDTO, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int noCopies, Double totalCost, String bookReqStatus, int bookReqId) {
+        super(employeeIdDTO, bookTitle, bookAuthor, publishingCompany, onlineLibrary, noCopies, totalCost, bookReqStatus);
         this.bookReqId = bookReqId;
     }
 

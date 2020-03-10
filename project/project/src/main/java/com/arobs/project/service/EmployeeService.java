@@ -1,6 +1,5 @@
 package com.arobs.project.service;
 
-import com.arobs.project.dto.employee.EmployeeDTO;
 import com.arobs.project.dto.employee.EmployeeNewPassDTO;
 import com.arobs.project.dto.employee.EmployeeWithPassDTO;
 import com.arobs.project.entity.Employee;
@@ -10,9 +9,9 @@ import java.util.List;
 
 public interface EmployeeService {
 
-    List<EmployeeDTO> getAllEmployees();
+    List<Employee> getAllEmployees();
 
-    EmployeeDTO insertEmployee(EmployeeWithPassDTO employeeWithPassDTO) throws ValidationException;
+    Employee insertEmployee(Employee employee) throws ValidationException;
 
     EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException;
 

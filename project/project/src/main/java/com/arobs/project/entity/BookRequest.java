@@ -11,7 +11,7 @@ public class BookRequest {
     @Column(name = "book_req_id")
     private int bookReqId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
@@ -28,10 +28,10 @@ public class BookRequest {
     private String onlineLibrary;
 
     @Column(name = "no_copies")
-    private int no_copies;
+    private int noCopies;
 
     @Column(name = "total_cost")
-    private Double total_coast;
+    private Double totalCost;
 
     @Column(name = "book_req_status")
     private String bookReqStatus;
@@ -39,15 +39,15 @@ public class BookRequest {
     public BookRequest() {
     }
 
-    public BookRequest(int bookReqId, Employee employee, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int no_copies, Double total_coast, String bookReqStatus) {
+    public BookRequest(int bookReqId, Employee employee, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int noCopies, Double totalCost, String bookReqStatus) {
         this.bookReqId = bookReqId;
         this.employee = employee;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.publishingCompany = publishingCompany;
         this.onlineLibrary = onlineLibrary;
-        this.no_copies = no_copies;
-        this.total_coast = total_coast;
+        this.noCopies = noCopies;
+        this.totalCost = totalCost;
         this.bookReqStatus = bookReqStatus;
     }
 
@@ -100,20 +100,20 @@ public class BookRequest {
         this.onlineLibrary = onlineLibrary;
     }
 
-    public int getNo_copies() {
-        return no_copies;
+    public int getNoCopies() {
+        return noCopies;
     }
 
-    public void setNo_copies(int no_copies) {
-        this.no_copies = no_copies;
+    public void setNoCopies(int noCopies) {
+        this.noCopies = noCopies;
     }
 
-    public Double getTotal_coast() {
-        return total_coast;
+    public Double getTotalCost() {
+        return totalCost;
     }
 
-    public void setTotal_coast(Double total_coast) {
-        this.total_coast = total_coast;
+    public void setTotalCost(Double totalCost) {
+        this.totalCost = totalCost;
     }
 
     public String getBookReqStatus() {

@@ -1,6 +1,6 @@
 package com.arobs.project.controller;
 
-import com.arobs.project.dto.employee.EmployeeDTO;
+import com.arobs.project.converter.EmployeeConverter;
 import com.arobs.project.dto.employee.EmployeeNewPassDTO;
 import com.arobs.project.dto.employee.EmployeeWithPassDTO;
 import com.arobs.project.exception.ValidationException;
@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -27,14 +27,17 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<EmployeeDTO> getAll() {
-        return employeeService.getAllEmployees();
+    public ResponseEntity<?> findAll() {
+        return new ResponseEntity<>(employeeService.getAllEmployees().
+                stream().
+                map(EmployeeConverter::convertToEmployeeDTO).
+                collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> insertEmployee(@RequestBody @Valid EmployeeWithPassDTO employeeDTO) {
         try {
-            return new ResponseEntity<>(employeeService.insertEmployee(employeeDTO), HttpStatus.OK);
+            return new ResponseEntity<>(EmployeeConverter.convertToEmployeeWithPassDTO(employeeService.insertEmployee(EmployeeConverter.convertToEntity(employeeDTO))), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

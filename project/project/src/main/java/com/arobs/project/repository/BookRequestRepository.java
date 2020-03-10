@@ -4,7 +4,7 @@ import com.arobs.project.entity.BookRequest;
 
 import java.util.List;
 
-public interface BookRequestRepository  {
+public interface BookRequestRepository {
 
     BookRequest insertBookRequest(BookRequest bookRequest);
 

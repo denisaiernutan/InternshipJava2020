@@ -86,7 +86,7 @@ public class BookServiceImpl implements BookService {
                 try {
                     tag = tagService.findByDescription(tagDTO.getTagDescription());
                 } catch (ValidationException e) {
-                    tag = TagConverter.convertToEntity(tagService.insertTag(tagDTO.getTagDescription()));
+                    tag = tagService.insertTag(tagDTO.getTagDescription());
                 }
                 tagEntitySet.add(tag);
             }

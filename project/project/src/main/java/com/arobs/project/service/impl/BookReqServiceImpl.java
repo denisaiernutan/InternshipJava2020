@@ -1,9 +1,5 @@
 package com.arobs.project.service.impl;
 
-import com.arobs.project.converter.BookRequestConverter;
-import com.arobs.project.dto.bookRequest.BookReqUpdateDTO;
-import com.arobs.project.dto.bookRequest.BookReqWithIdDTO;
-import com.arobs.project.dto.bookRequest.BookRequestDTO;
 import com.arobs.project.entity.BookRequest;
 import com.arobs.project.entity.Employee;
 import com.arobs.project.enums.BookRequestStatus;
@@ -16,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookReqServiceImpl implements BookRequestService {
@@ -32,15 +27,14 @@ public class BookReqServiceImpl implements BookRequestService {
 
     @Override
     @Transactional
-    public BookReqWithIdDTO insertBookRequest(BookRequestDTO bookRequestDTO) throws ValidationException {
-        if (bookRequestDTO.getBookReqStatus().toUpperCase().equals(BookRequestStatus.PENDING.toString())) {
-            Employee employee = employeeService.findById(bookRequestDTO.getEmployeeIdDTO().getEmployeeId());
+    public BookRequest insertBookRequest(BookRequest bookRequest) throws ValidationException {
+        if (bookRequest.getBookReqStatus().toUpperCase().equals(BookRequestStatus.PENDING.toString())) {
+            Employee employee = employeeService.findById(bookRequest.getEmployee().getEmployeeId());
             if (employee == null) {
                 throw new ValidationException(" employee id invalid ");
             }
-            BookRequest bookRequest = BookRequestConverter.convertToEntity(bookRequestDTO);
             bookRequest.setEmployee(employee);
-            return BookRequestConverter.convertToBookReqWithIdDTO(bookRequestRepository.insertBookRequest(bookRequest));
+            return bookRequestRepository.insertBookRequest(bookRequest);
         } else {
             throw new ValidationException("status invalid! Accepted status: PENDING");
         }
@@ -49,20 +43,19 @@ public class BookReqServiceImpl implements BookRequestService {
 
     @Override
     @Transactional
-    public BookReqWithIdDTO updateBookRequest(BookReqUpdateDTO bookReqUpdateDTO) throws ValidationException {
+    public BookRequest updateBookRequest(BookRequest bookRequest) throws ValidationException {
         try {
-            BookRequestStatus.valueOf(bookReqUpdateDTO.getBookReqStatus().toUpperCase());
+            BookRequestStatus.valueOf(bookRequest.getBookReqStatus().toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new ValidationException("status invalid! Accepted status: PENDING,ACCEPTED,REJECTED");
         }
 
-        BookRequest bookRequest = bookRequestRepository.findById(bookReqUpdateDTO.getBookReqId());
-        if (bookRequest == null) {
+        BookRequest foundBookRequest = bookRequestRepository.findById(bookRequest.getBookReqId());
+        if (foundBookRequest == null) {
             throw new ValidationException("id invalid");
         }
 
-        return BookRequestConverter.convertToBookReqWithIdDTO(bookRequestRepository.updateBookRequest(BookRequestConverter.convertToEntity(bookReqUpdateDTO)));
-
+        return bookRequestRepository.updateBookRequest(bookRequest);
     }
 
     @Override
@@ -77,7 +70,7 @@ public class BookReqServiceImpl implements BookRequestService {
 
     @Override
     @Transactional
-    public List<BookReqWithIdDTO> findAll() {
-        return bookRequestRepository.findAll().stream().map(BookRequestConverter::convertToBookReqWithIdDTO).collect(Collectors.toList());
+    public List<BookRequest> findAll() {
+        return bookRequestRepository.findAll();
     }
 }

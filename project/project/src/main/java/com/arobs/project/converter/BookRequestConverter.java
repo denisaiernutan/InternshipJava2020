@@ -14,7 +14,9 @@ public class BookRequestConverter {
     }
 
     public static BookRequestDTO convertToDTO(BookRequest bookRequest) {
-        return modelMapper.map(bookRequest, BookRequestDTO.class);
+        BookRequestDTO bookRequestDTO = modelMapper.map(bookRequest, BookRequestDTO.class);
+        bookRequestDTO.setEmployeeIdDTO(EmployeeConverter.convertToEmployeeIdDTO(bookRequest.getEmployee()));
+        return bookRequestDTO;
     }
 
     public static BookReqWithIdDTO convertToBookReqWithIdDTO(BookRequest bookRequest) {
