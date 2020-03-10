@@ -1,16 +1,13 @@
 package com.arobs.project.dto.bookRent;
 
-import com.arobs.project.dto.book.BookIdDTO;
-import com.arobs.project.dto.employee.EmployeeIdDTO;
-
 public class BookRentInsertDTO {
 
-    private BookIdDTO book;
+    private int book;
 
-    private EmployeeIdDTO employee;
+    private int employee;
 
 
-    public BookRentInsertDTO(BookIdDTO book, EmployeeIdDTO employee) {
+    public BookRentInsertDTO(int book, int employee) {
         this.book = book;
         this.employee = employee;
     }
@@ -18,19 +15,19 @@ public class BookRentInsertDTO {
     public BookRentInsertDTO() {
     }
 
-    public BookIdDTO getBook() {
+    public int getBook() {
         return book;
     }
 
-    public void setBook(BookIdDTO book) {
+    public void setBook(int book) {
         this.book = book;
     }
 
-    public EmployeeIdDTO getEmployee() {
+    public int getEmployee() {
         return employee;
     }
 
-    public void setEmployee(EmployeeIdDTO employee) {
+    public void setEmployee(int employee) {
         this.employee = employee;
     }
 }

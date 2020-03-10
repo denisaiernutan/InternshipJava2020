@@ -17,7 +17,8 @@ public class BookWithIdDTO{
 
     private Set<TagWithIdDTO> tagSet;
 
-    public BookWithIdDTO(int bookId, String bookTitle, String bookAuthor, String bookDescription, Set<TagWithIdDTO> tagSet) {
+    public BookWithIdDTO(int bookId, String bookTitle, String bookAuthor, String bookDescription,
+                         Set<TagWithIdDTO> tagSet) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;

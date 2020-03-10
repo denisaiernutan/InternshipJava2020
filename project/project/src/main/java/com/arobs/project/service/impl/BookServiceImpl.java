@@ -1,6 +1,5 @@
 package com.arobs.project.service.impl;
 
-import com.arobs.project.converter.TagConverter;
 import com.arobs.project.entity.Book;
 import com.arobs.project.entity.BookTag;
 import com.arobs.project.entity.Copy;
@@ -49,8 +48,6 @@ public class BookServiceImpl implements BookService {
     public Book insertBook(Book book) {
         book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
         Set<Tag> tagSet = listTags(book.getTagSet());
-
-
         //strategy ?
         if (bookRepository.getClass().getName().contains("BookJDBCRepository")) {
             book = insertBookJDBC(book, tagSet);
@@ -95,11 +92,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public Book updateBook(Book book) {
+    public Book updateBook(Book book) throws ValidationException {
         if (bookRepository.existBookInDb(book.getBookId())) {
             book.setTagSet(listTags(book.getTagSet()));
             return bookRepository.updateBook(book);
-        } else return null;
+        } else {
+            throw new ValidationException("invalid id");
+        }
     }
 
 
@@ -115,7 +114,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     public List<Book> findAll() {
-        return bookRepository.findAll();//.stream().collect(Collectors.toList());
+        return bookRepository.findAll();
     }
 
     @Transactional
@@ -125,10 +124,16 @@ public class BookServiceImpl implements BookService {
 
 
     @Transactional
-    public List<Copy> findCopies(int bookId) {
-        if (bookRepository.findById(bookId) != null) {
+    public List<Copy> findCopies(int bookId) throws ValidationException {
+        if (bookRepository.existBookInDb(bookId)) {
             return new ArrayList<>(bookRepository.findCopies(bookId));
+        } else {
+            throw new ValidationException("invalid id");
         }
-        return null;
+    }
+
+    @Override
+    public boolean existBookInDb(int bookId) {
+        return bookRepository.existBookInDb(bookId);
     }
 }

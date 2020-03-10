@@ -39,6 +39,10 @@ public class Book {
     @OneToMany(mappedBy = "employee")
     private Set<RentRequest> rentRequestSet = new HashSet<>();
 
+    public Book(int bookId) {
+        this.bookId = bookId;
+    }
+
     public Book(int bookId, String bookTitle, String bookAuthor, String bookDescription, Timestamp bookAddedDate) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;

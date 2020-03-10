@@ -1,8 +1,6 @@
 package com.arobs.project.dto.bookRent;
 
-import com.arobs.project.dto.book.BookIdDTO;
 import com.arobs.project.dto.copy.CopyWithoutBookDTO;
-import com.arobs.project.dto.employee.EmployeeIdDTO;
 
 import java.sql.Date;
 
@@ -10,11 +8,11 @@ public class BookRentWithIdDTO {
 
     private int bookRentId;
 
-    private BookIdDTO book;
+    private int book;
 
     private CopyWithoutBookDTO copy;
 
-    private EmployeeIdDTO employee;
+    private int employee;
 
     private Date rentalDate;
 
@@ -24,7 +22,8 @@ public class BookRentWithIdDTO {
 
     private Double grade;
 
-    public BookRentWithIdDTO(int bookRentId, BookIdDTO book, CopyWithoutBookDTO copy, EmployeeIdDTO employee, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
+    public BookRentWithIdDTO(int bookRentId, int book, CopyWithoutBookDTO copy, int employee,
+                             Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
         this.bookRentId = bookRentId;
         this.book = book;
         this.copy = copy;
@@ -54,19 +53,19 @@ public class BookRentWithIdDTO {
         this.bookRentId = bookRentId;
     }
 
-    public BookIdDTO getBook() {
+    public int getBook() {
         return book;
     }
 
-    public void setBook(BookIdDTO book) {
+    public void setBook(int book) {
         this.book = book;
     }
 
-    public EmployeeIdDTO getEmployee() {
+    public int getEmployee() {
         return employee;
     }
 
-    public void setEmployee(EmployeeIdDTO employee) {
+    public void setEmployee(int employee) {
         this.employee = employee;
     }
 

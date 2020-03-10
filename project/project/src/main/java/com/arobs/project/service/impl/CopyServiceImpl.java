@@ -41,6 +41,7 @@ public class CopyServiceImpl implements CopyService {
         }
 
     }
+
     @Override
     @Transactional
     public boolean deleteCopy(int copyId) {
@@ -59,11 +60,15 @@ public class CopyServiceImpl implements CopyService {
 
     @Transactional
     @Override
-    public List<Copy> findAvailableCopiesForBook(int bookId) {
-        if (bookService.findById(bookId) != null) {
-            return copyRepository.findAvailableCopiesForBook(bookId);
+    public List<Copy> findAvailableCopiesForBook(int bookId) throws ValidationException {
+        List<Copy> copyList = copyRepository.findAvailableCopiesForBook(bookId);
+        if (copyList == null) {
+            throw new ValidationException("book id invalid");
         }
-        return null;
+        if (copyList.isEmpty()) {
+            throw new ValidationException("there is no copy available");
+        }
+        return copyList;
     }
 
     @Transactional

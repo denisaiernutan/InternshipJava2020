@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class EmployeeHibernateRepo implements EmployeeRepository {
@@ -30,7 +31,8 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
         Session session = sessionFactory.getCurrentSession();
         String hql = "update Employee set employeePass= MD5(:password) where employeeEmail= :email";
         int id = (int) session.save(employee);
-        session.createQuery(hql).setParameter("password", employee.getEmployeePass()).setParameter("email", employee.getEmployeeEmail()).executeUpdate();
+        session.createQuery(hql).setParameter("password", employee.getEmployeePass())
+                .setParameter("email", employee.getEmployeeEmail()).executeUpdate();
         employee.setEmployeeId(id);
         return employee;
     }
@@ -41,14 +43,18 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
         Employee employee = session.get(Employee.class, employeeId);
         if (employee != null) {
             return employee.getEmployeePass();
-        } else return null;
+        }
+        return new String();
+
+
     }
 
     @Override
     public Employee updatePassword(int employeeId, String employeePass) {
         Session session = sessionFactory.getCurrentSession();
         String hql = "update Employee set employeePass= MD5(:password) where employeeId= :id";
-        session.createQuery(hql).setParameter("password", employeePass).setParameter("id", employeeId).executeUpdate();
+        session.createQuery(hql).setParameter("password", employeePass)
+                .setParameter("id", employeeId).executeUpdate();
         return findById(employeeId);
     }
 

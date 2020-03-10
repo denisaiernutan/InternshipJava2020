@@ -38,7 +38,9 @@ public class TagController {
     public ResponseEntity<?> getBooks(@RequestParam int tagId) {
         List<Book> bookList = tagService.findBooks(tagId);
         if (bookList != null) {
-            return new ResponseEntity<>(bookList.stream().map(BookConverter::convertToDTO).collect(Collectors.toList()), HttpStatus.OK);
+            return new ResponseEntity<>(bookList.stream()
+                    .map(BookConverter::convertToDTO)
+                    .collect(Collectors.toList()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("invalid id", HttpStatus.OK);
         }

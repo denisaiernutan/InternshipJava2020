@@ -12,11 +12,13 @@ public interface BookService {
 
     List<Book> findAll();
 
-    Book updateBook(Book book);
+    Book updateBook(Book book) throws ValidationException;
 
     boolean deleteBook(int bookId);
 
     Book findById(int bookId);
 
-    List<Copy> findCopies(int bookId);
+    List<Copy> findCopies(int bookId) throws ValidationException;
+
+    boolean existBookInDb(int bookId);
 }

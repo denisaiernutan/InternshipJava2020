@@ -39,6 +39,14 @@ public class BookRent {
     public BookRent() {
     }
 
+    public BookRent(Book book, Copy copy, Employee employee, Date rentalDate, String bookRentStatus) {
+        this.book = book;
+        this.copy = copy;
+        this.employee = employee;
+        this.rentalDate = rentalDate;
+        this.bookRentStatus = bookRentStatus;
+    }
+
     public BookRent(int bookRentId, Book book, Copy copy, Employee employee, Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
         this.bookRentId = bookRentId;
         this.book = book;
@@ -49,6 +57,8 @@ public class BookRent {
         this.bookRentStatus = bookRentStatus;
         this.grade = grade;
     }
+
+
 
     public int getBookRentId() {
         return bookRentId;

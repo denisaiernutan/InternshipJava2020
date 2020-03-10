@@ -14,7 +14,8 @@ public class EmployeeNewPassDTO {
     @NotNull
     private String employeeNewPass;
 
-    public EmployeeNewPassDTO(@NotNull int employeeId, @NotNull String employeeOldPass, @NotNull String employeeNewPass) {
+    public EmployeeNewPassDTO(@NotNull int employeeId, @NotNull String employeeOldPass,
+                              @NotNull String employeeNewPass) {
         this.employeeId = employeeId;
         this.employeeOldPass = employeeOldPass;
         this.employeeNewPass = employeeNewPass;

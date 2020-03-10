@@ -38,6 +38,9 @@ public class Employee {
         this.employeeEmail = employeeEmail;
     }
 
+    public Employee(int employeeId) {
+        this.employeeId = employeeId;
+    }
     public Employee(int employeeId, String employeeName, String employeePass, String employeeEmail, String employeeRole) {
         this.employeeId = employeeId;
         this.employeeName = employeeName;

@@ -1,6 +1,5 @@
 package com.arobs.project.service.impl;
 
-import com.arobs.project.converter.BookConverter;
 import com.arobs.project.entity.Book;
 import com.arobs.project.entity.Tag;
 import com.arobs.project.exception.ValidationException;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TagServiceImpl implements TagService {

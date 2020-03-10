@@ -28,10 +28,10 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<?> findAll() {
-        return new ResponseEntity<>(employeeService.getAllEmployees().
-                stream().
-                map(EmployeeConverter::convertToEmployeeDTO).
-                collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.getAllEmployees()
+                .stream()
+                .map(EmployeeConverter::convertToEmployeeDTO)
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @PostMapping

@@ -30,7 +30,8 @@ public class BookController {
     public ResponseEntity<?> insertBook(@RequestBody BookDTO bookDTO) {
         try {
             Book book = BookConverter.convertToEntity(bookDTO);
-            return new ResponseEntity<>(BookConverter.convertToBookWithIdDTO(bookService.insertBook(book)), HttpStatus.OK);
+            return new ResponseEntity<>(BookConverter.convertToBookWithIdDTO(bookService.insertBook(book)),
+                    HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -47,12 +48,14 @@ public class BookController {
 
     @PutMapping
     public ResponseEntity<?> updateBook(@RequestBody BookUpdateDTO bookDTO) {
-        Book book = bookService.updateBook(BookConverter.convertToEntity(bookDTO));
-        if (book != null) {
+
+        try {
+            Book book = bookService.updateBook(BookConverter.convertToEntity(bookDTO));
+
             BookWithIdDTO bookWithIdDTO = BookConverter.convertToBookWithIdDTO(book);
             return new ResponseEntity<>(bookWithIdDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("invalid id", HttpStatus.BAD_REQUEST);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -63,8 +66,15 @@ public class BookController {
 
     @GetMapping("/findCopies")
     public ResponseEntity<?> findCopies(@RequestParam int bookId) {
+        try {
+            return new ResponseEntity<>(bookService.findCopies(bookId)
+                    .stream()
+                    .map(CopyConverter::convertToCopyWithIdDTO)
+                    .collect(Collectors.toList()), HttpStatus.OK);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>(bookService.findCopies(bookId).stream().map(CopyConverter::convertToCopyWithIdDTO).collect(Collectors.toList()), HttpStatus.OK);
     }
 
 }

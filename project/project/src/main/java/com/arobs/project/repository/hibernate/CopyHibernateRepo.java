@@ -22,7 +22,9 @@ public class CopyHibernateRepo implements CopyRepository {
     @Override
     public List<Copy> findAll() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("SELECT DISTINCT c from Copy c join fetch c.book as b join fetch b.tagSet ", Copy.class).list();
+        return session.createQuery("SELECT DISTINCT c from Copy c " +
+                "join fetch c.book as b " +
+                "join fetch b.tagSet ", Copy.class).list();
 
     }
 
@@ -37,7 +39,10 @@ public class CopyHibernateRepo implements CopyRepository {
     @Override
     public Copy updateCopy(Copy copy) {
         Session session = sessionFactory.getCurrentSession();
-        Copy updatedCopy = session.createQuery("SELECT DISTINCT c from Copy c join fetch c.book as b join fetch b.tagSet where c.copyId= :copyId",
+        Copy updatedCopy = session.createQuery("SELECT DISTINCT c from Copy c " +
+                        "join fetch c.book as b " +
+                        "join fetch b.tagSet" +
+                        " where c.copyId= :copyId",
                 Copy.class).setParameter("copyId", copy.getCopyId()).getSingleResult();
         updatedCopy.setCopyFlag(copy.isCopyFlag());
         updatedCopy.setCopyStatus(copy.getCopyStatus());
@@ -60,7 +65,8 @@ public class CopyHibernateRepo implements CopyRepository {
     @Override
     public List<Copy> findAvailableCopiesForBook(int bookId) {
         Session session = sessionFactory.getCurrentSession();
-        String hql = "SELECT c from Copy c INNER JOIN c.book b where b.bookId= :bookid and c.copyStatus='available' and c.copyFlag=true";
+        String hql = "SELECT c from Copy c INNER JOIN c.book b where b.bookId= :bookid " +
+                "and c.copyStatus='available' and c.copyFlag=true";
         return session.createQuery(hql, Copy.class).setParameter("bookid", bookId).list();
     }
 

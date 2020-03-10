@@ -1,8 +1,5 @@
 package com.arobs.project.service;
 
-import com.arobs.project.dto.copy.CopyDTO;
-import com.arobs.project.dto.copy.CopyUpdateDTO;
-import com.arobs.project.dto.copy.CopyWithIdDTO;
 import com.arobs.project.entity.Copy;
 import com.arobs.project.exception.ValidationException;
 
@@ -17,7 +14,7 @@ public interface CopyService {
 
     List<Copy> findAll();
 
-    List<Copy> findAvailableCopiesForBook(int bookId);
+    List<Copy> findAvailableCopiesForBook(int bookId) throws ValidationException;
 
     Copy updateCopy(Copy copy) throws ValidationException;
 

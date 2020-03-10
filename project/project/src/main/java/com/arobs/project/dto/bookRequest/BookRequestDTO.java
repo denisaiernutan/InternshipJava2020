@@ -1,12 +1,10 @@
 package com.arobs.project.dto.bookRequest;
 
 
-import com.arobs.project.dto.employee.EmployeeIdDTO;
-
 public class BookRequestDTO {
 
 
-    private EmployeeIdDTO employeeIdDTO;
+    private int employeeId;
 
     private String bookTitle;
 
@@ -22,9 +20,10 @@ public class BookRequestDTO {
 
     private String bookReqStatus;
 
-    public BookRequestDTO(EmployeeIdDTO employeeIdDTO, String bookTitle, String bookAuthor, String publishingCompany, String onlineLibrary, int noCopies, Double totalCost, String bookReqStatus) {
+    public BookRequestDTO(int employeeId, String bookTitle, String bookAuthor, String publishingCompany,
+                          String onlineLibrary, int noCopies, Double totalCost, String bookReqStatus) {
 
-        this.employeeIdDTO = employeeIdDTO;
+        this.employeeId = employeeId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.publishingCompany = publishingCompany;
@@ -37,12 +36,12 @@ public class BookRequestDTO {
     public BookRequestDTO() {
     }
 
-    public EmployeeIdDTO getEmployeeIdDTO() {
-        return employeeIdDTO;
+    public int getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployeeIdDTO(EmployeeIdDTO employeeIdDTO) {
-        this.employeeIdDTO = employeeIdDTO;
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getBookTitle() {

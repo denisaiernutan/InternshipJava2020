@@ -46,42 +46,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public Employee insertEmployee(Employee employee) throws ValidationException {
         if (employeeRepository.findByEmail(employee.getEmployeeEmail()).isEmpty()) {
-            Employee insertedEmployee = employeeRepository.insertEmployee(employee);
-            return insertedEmployee;
+            return employeeRepository.insertEmployee(employee);
         } else {
             throw new ValidationException("email is already registered");
         }
-    }
-
-    @Transactional
-    public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
-        String oldPassword = validateEmployee(employeeNewPassDTO);
-        String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
-        if (oldPassword.equals(oldPassFromEmpl)) {
-            Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeId(), employeeNewPassDTO.getEmployeeNewPass());
-            return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
-        } else {
-            throw new ValidationException("old password is incorrect!");
-        }
-
-
-    }
-
-    public String validateEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
-        String oldPassword;
-        if (!employeeNewPassDTO.getEmployeeNewPass().equals(employeeNewPassDTO.getEmployeeOldPass())) {
-            try {
-                oldPassword = employeeRepository.getPasswordById(employeeNewPassDTO.getEmployeeId());
-                if (oldPassword == null) {
-                    throw new ValidationException("invalid id");
-                } else return oldPassword;
-            } catch (EmptyResultDataAccessException e) {
-                throw new ValidationException("invalid id");
-            }
-        } else {
-            throw new ValidationException("old password and the new one are the same");
-        }
-
     }
 
     @Transactional
@@ -95,6 +63,36 @@ public class EmployeeServiceImpl implements EmployeeService {
         } catch (EmptyResultDataAccessException e) {
             throw new ValidationException("invalid id");
         }
+    }
+
+    @Transactional
+    public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
+        String oldPassword = validateEmployee(employeeNewPassDTO);
+        String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
+        if (oldPassword.equals(oldPassFromEmpl)) {
+            Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeId(),
+                    employeeNewPassDTO.getEmployeeNewPass());
+            return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
+        } else {
+            throw new ValidationException("old password is incorrect!");
+        }
+    }
+
+    private String validateEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
+        String oldPassword;
+        if (!employeeNewPassDTO.getEmployeeNewPass().equals(employeeNewPassDTO.getEmployeeOldPass())) {
+            try {
+                oldPassword = employeeRepository.getPasswordById(employeeNewPassDTO.getEmployeeId());
+                if (oldPassword.isEmpty()) {
+                    throw new ValidationException("invalid id");
+                } else return oldPassword;
+            } catch (EmptyResultDataAccessException e) {
+                throw new ValidationException("invalid id");
+            }
+        } else {
+            throw new ValidationException("old password and the new one are the same");
+        }
+
     }
 
     private String encryptPass(String password) {

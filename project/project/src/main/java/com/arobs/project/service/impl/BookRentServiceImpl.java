@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.util.List;
 
 
 @Service
@@ -30,48 +29,46 @@ public class BookRentServiceImpl implements BookRentService {
 
 
     @Autowired
-    public BookRentServiceImpl(BookRentRepository bookRentRepository, BookService bookService, EmployeeService employeeService, CopyService copyService) {
+    public BookRentServiceImpl(BookRentRepository bookRentRepository, BookService bookService,
+                               EmployeeService employeeService, CopyService copyService) {
         this.bookRentRepository = bookRentRepository;
         this.bookService = bookService;
         this.employeeService = employeeService;
         this.copyService = copyService;
     }
 
-    //try it
     @Override
     @Transactional
     public BookRent insertBookRent(BookRent bookRent) throws ValidationException {
         {
             Employee employee = employeeService.findById(bookRent.getEmployee().getEmployeeId());
-            Book book = bookService.findById(bookRent.getBook().getBookId());
+
+            if (bookService.existBookInDb(bookRent.getBook().getBookId())) {
+                Book book = bookService.findById(bookRent.getBook().getBookId());
+                bookRent.setBook(book);
+            } else {
+                throw new ValidationException("book id invalid");
+            }
+
             if (employee != null) {
-                List<Copy> availableCopies = copyService.findAvailableCopiesForBook(bookRent.getBookRentId());
-
-                if (availableCopies == null) {
-                    throw new ValidationException("book id invalid");
-                }
-
-                if (availableCopies.isEmpty()) {
-                    throw new ValidationException("there is no copy available");
-                }
-
-                Copy copy = availableCopies.get(0);
+                Copy copy = copyService.findAvailableCopiesForBook(bookRent.getBook().getBookId()).get(0);
                 bookRent.setCopy(copy);
+                bookRent.setGrade(0.0);
                 bookRent.setBookRentStatus(BookRentStatus.ON_GOING.toString().toLowerCase());
                 bookRent.setRentalDate(new Date(new java.util.Date().getTime()));
-                bookRent.setBook(book);
-                bookRent.setGrade(0.0);
-                bookRent.setReturnDate(null);
                 bookRent.setEmployee(employee);
-
                 bookRentRepository.insertBookRent(bookRent);
-
-                copy.setCopyStatus(CopyStatus.RENTED.toString().toLowerCase());
-                copyService.updateCopy(copy);
+                updateRentedCopy(copy);
                 return bookRent;
             }
             throw new ValidationException("employee id invalid");
         }
+
+    }
+
+    private void updateRentedCopy(Copy copy) throws ValidationException {
+        copy.setCopyStatus(CopyStatus.RENTED.toString().toLowerCase());
+        copyService.updateCopy(copy);
 
     }
 }
