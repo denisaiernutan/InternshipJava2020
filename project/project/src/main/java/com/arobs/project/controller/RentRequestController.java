@@ -1,10 +1,20 @@
 package com.arobs.project.controller;
 
+import com.arobs.project.converter.RentRequestConverter;
+import com.arobs.project.dto.bookRent.BookRentInsertDTO;
+import com.arobs.project.entity.RentRequest;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.RentRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(value = "/rentrequests")
 public class RentRequestController {
 
     private RentRequestService rentRequestService;
@@ -12,5 +22,16 @@ public class RentRequestController {
     @Autowired
     public RentRequestController(RentRequestService rentRequestService) {
         this.rentRequestService = rentRequestService;
+    }
+
+    @PostMapping
+    public ResponseEntity<?> insertRentRequest(@RequestBody BookRentInsertDTO bookRentInsertDTO) {
+        try {
+            RentRequest rentRequest = rentRequestService.insertRentRequest(bookRentInsertDTO.getBook(),
+                    bookRentInsertDTO.getEmployee());
+            return new ResponseEntity<>(RentRequestConverter.convertToRentReqWithIdDTO(rentRequest), HttpStatus.OK);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

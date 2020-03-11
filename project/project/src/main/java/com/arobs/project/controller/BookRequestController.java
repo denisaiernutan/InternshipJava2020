@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(value = "/bookrequests")
 public class BookRequestController {
 
     private BookRequestService bookRequestService;

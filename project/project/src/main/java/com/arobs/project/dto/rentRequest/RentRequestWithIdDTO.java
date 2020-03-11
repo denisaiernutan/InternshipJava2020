@@ -1,35 +1,23 @@
-package com.arobs.project.entity;
+package com.arobs.project.dto.rentRequest;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
 
-@Entity
-@Table(name = "rent_requests")
-public class RentRequest {
+public class RentRequestWithIdDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rent_req_id")
     private int rentReqId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    private int employee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+    private int book;
 
-    @Column(name = "request_date")
     private Timestamp requestDate;
 
-    @Column(name = "rent_req_status")
     private String rentReqStatus;
 
-    public RentRequest() {
+    public RentRequestWithIdDTO() {
     }
 
-    public RentRequest(int rentReqId, Employee employee, Book book, Timestamp requestDate, String rentReqStatus) {
+    public RentRequestWithIdDTO(int rentReqId, int employee, int book, Timestamp requestDate, String rentReqStatus) {
         this.rentReqId = rentReqId;
         this.employee = employee;
         this.book = book;
@@ -37,9 +25,8 @@ public class RentRequest {
         this.rentReqStatus = rentReqStatus;
     }
 
-    public RentRequest(Employee employee, Book book, Timestamp requestDate, String rentReqStatus) {
-        this.employee = employee;
-        this.book = book;
+    public RentRequestWithIdDTO(int rentReqId, Timestamp requestDate, String rentReqStatus) {
+        this.rentReqId = rentReqId;
         this.requestDate = requestDate;
         this.rentReqStatus = rentReqStatus;
     }
@@ -52,19 +39,19 @@ public class RentRequest {
         this.rentReqId = rentReqId;
     }
 
-    public Employee getEmployee() {
+    public int getEmployee() {
         return employee;
     }
 
-    public void setEmployee(Employee employee) {
+    public void setEmployee(int employee) {
         this.employee = employee;
     }
 
-    public Book getBook() {
+    public int getBook() {
         return book;
     }
 
-    public void setBook(Book book) {
+    public void setBook(int book) {
         this.book = book;
     }
 
