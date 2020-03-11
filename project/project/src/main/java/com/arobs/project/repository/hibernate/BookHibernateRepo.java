@@ -22,6 +22,9 @@ public class BookHibernateRepo implements BookRepository {
         this.sessionFactory = sessionFactory;
     }
 
+    public BookHibernateRepo() {
+    }
+
     @Override
     public Book insertBook(Book book) {
         Session session = this.sessionFactory.getCurrentSession();

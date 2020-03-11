@@ -3,6 +3,7 @@ package com.arobs.project.controller;
 import com.arobs.project.converter.EmployeeConverter;
 import com.arobs.project.dto.employee.EmployeeNewPassDTO;
 import com.arobs.project.dto.employee.EmployeeWithPassDTO;
+import com.arobs.project.entity.Employee;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Validated
@@ -28,10 +30,15 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<?> findAll() {
-        return new ResponseEntity<>(employeeService.getAllEmployees()
-                .stream()
-                .map(EmployeeConverter::convertToEmployeeDTO)
-                .collect(Collectors.toList()), HttpStatus.OK);
+        List<Employee> employeeList = employeeService.getAllEmployees();
+        if (employeeList.isEmpty()) {
+            return new ResponseEntity<>(" smth went wrong", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(employeeList
+                    .stream()
+                    .map(EmployeeConverter::convertToEmployeeDTO)
+                    .collect(Collectors.toList()), HttpStatus.OK);
+        }
     }
 
     @PostMapping

@@ -51,6 +51,14 @@ public class Book {
         this.bookAddedDate = bookAddedDate;
     }
 
+    public Book(int bookId, String bookTitle, String bookAuthor, String bookDescription) {
+        this.bookId = bookId;
+        this.bookTitle = bookTitle;
+        this.bookAuthor = bookAuthor;
+        this.bookDescription = bookDescription;
+    }
+
+
     public Book() {
     }
 
