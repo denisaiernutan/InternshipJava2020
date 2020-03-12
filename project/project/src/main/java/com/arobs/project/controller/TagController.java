@@ -4,6 +4,7 @@ import com.arobs.project.converter.BookConverter;
 import com.arobs.project.converter.TagConverter;
 import com.arobs.project.dto.tag.TagWithIdDTO;
 import com.arobs.project.entity.Book;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,13 +37,14 @@ public class TagController {
 
     @GetMapping("findBooks")
     public ResponseEntity<?> getBooks(@RequestParam int tagId) {
-        List<Book> bookList = tagService.findBooks(tagId);
-        if (bookList != null) {
+        try {
+            List<Book> bookList = tagService.findBooks(tagId);
+
             return new ResponseEntity<>(bookList.stream()
                     .map(BookConverter::convertToDTO)
                     .collect(Collectors.toList()), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("invalid id", HttpStatus.OK);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

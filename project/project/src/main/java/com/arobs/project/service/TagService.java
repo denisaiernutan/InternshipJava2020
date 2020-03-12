@@ -14,5 +14,5 @@ public interface TagService {
 
     boolean deleteTag(int tagId);
 
-    List<Book> findBooks(int tagId);
+    List<Book> findBooks(int tagId) throws ValidationException;
 }

@@ -38,7 +38,7 @@ public class EmployeeControllerTest {
     @Test
     void whenFindAll_given_returnResponseEntity() {
         when(employeeService.getAllEmployees()).thenReturn(employeeList);
-        ResponseEntity responseEntity = employeeController.findAll();
+        ResponseEntity<?> responseEntity = employeeController.findAll();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 

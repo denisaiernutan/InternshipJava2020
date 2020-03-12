@@ -4,7 +4,9 @@ import com.arobs.project.repository.hibernate.HibernateRepoFactory;
 import com.arobs.project.repository.jdbc.JDBCRepoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public abstract class RepoFactory {
 
     @Value("${datasource.connection.type}")

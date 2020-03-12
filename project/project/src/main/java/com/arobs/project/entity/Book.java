@@ -158,4 +158,5 @@ public class Book {
     public void setRentRequestSet(Set<RentRequest> rentRequestSet) {
         this.rentRequestSet = rentRequestSet;
     }
+
 }

@@ -60,12 +60,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Transactional
-    public List<Book> findBooks(int tagId) {
+    public List<Book> findBooks(int tagId) throws ValidationException {
         Tag tag = tagRepository.findById(tagId);
         if (tag != null) {
             return new ArrayList<>(tagRepository.findBooks(tagId));
         } else {
-            return null;
+            throw new ValidationException("invalid id");
         }
     }
+    
 }
