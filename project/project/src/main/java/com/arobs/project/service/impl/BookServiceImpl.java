@@ -75,7 +75,7 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
-    public Set<Tag> listTags(Set<Tag> tagSet) {
+    private Set<Tag> listTags(Set<Tag> tagSet) {
         Set<Tag> tagEntitySet = new HashSet<>(15);
         if (tagSet != null && !tagSet.isEmpty()) {
             for (Tag tagDTO : tagSet) {
