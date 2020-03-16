@@ -3,6 +3,7 @@ package com.arobs.project.converter;
 import com.arobs.project.dto.copy.CopyDTO;
 import com.arobs.project.dto.copy.CopyUpdateDTO;
 import com.arobs.project.dto.copy.CopyWithIdDTO;
+import com.arobs.project.entity.Book;
 import com.arobs.project.entity.Copy;
 import org.modelmapper.ModelMapper;
 
@@ -10,7 +11,9 @@ public class CopyConverter {
     private static ModelMapper modelMapper = new ModelMapper();
 
     public static Copy convertToEntity(CopyDTO copyDTO) {
-        return modelMapper.map(copyDTO, Copy.class);
+        Copy copy= modelMapper.map(copyDTO, Copy.class);
+        copy.setBook(new Book(copyDTO.getBook()));
+        return copy;
     }
 
     public static CopyDTO convertToDTO(Copy copy) {

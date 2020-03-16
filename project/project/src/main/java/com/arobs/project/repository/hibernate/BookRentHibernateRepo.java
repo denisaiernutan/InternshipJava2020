@@ -7,6 +7,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class BookRentHibernateRepo implements BookRentRepository {
 
@@ -24,5 +26,12 @@ public class BookRentHibernateRepo implements BookRentRepository {
         int id = (int) session.save(bookRent);
         bookRent.setBookRentId(id);
         return bookRent;
+    }
+
+    @Override
+    public List<BookRent> findById(int bookRentId) {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "from BookRent br join fetch br.book as b join fetch br.copy as c where br.bookRentId= :bookRentId";
+        return session.createQuery(hql, BookRent.class).setParameter("bookRentId", bookRentId).list();
     }
 }

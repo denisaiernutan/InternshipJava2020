@@ -2,6 +2,8 @@ package com.arobs.project.controller;
 
 import com.arobs.project.converter.BookRentConverter;
 import com.arobs.project.dto.bookRent.BookRentInsertDTO;
+import com.arobs.project.dto.bookRent.BookRentReturnDTO;
+import com.arobs.project.entity.Book;
 import com.arobs.project.entity.BookRent;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookRentService;
@@ -29,6 +31,17 @@ public class BookRentController {
             return new ResponseEntity<>(BookRentConverter.convertToBookRentWithIdDTO(inserted), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> returnBook(@RequestBody BookRentReturnDTO bookRentReturnDTO){
+        try {
+            BookRent bookRent= BookRentConverter.convertToEntity(bookRentReturnDTO);
+            return new ResponseEntity<>(BookRentConverter.convertToBookRentWithIdDTO(bookRentService.returnBook(bookRent)),HttpStatus.OK);
+        }catch (ValidationException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
         }
     }
 

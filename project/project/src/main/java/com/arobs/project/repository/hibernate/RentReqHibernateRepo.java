@@ -7,6 +7,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class RentReqHibernateRepo implements RentRequestRepository {
 
@@ -23,6 +25,12 @@ public class RentReqHibernateRepo implements RentRequestRepository {
         int id = (int) session.save(rentRequest);
         rentRequest.setRentReqId(id);
         return rentRequest;
+    }
 
+    @Override
+    public List<RentRequest> findByBook(int bookId){
+        Session session= sessionFactory.getCurrentSession();
+        String hql= "from RentRequest rr join fetch rr.employee as e join fetch rr.book as b where b.bookId= :bookId ";
+        return session.createQuery(hql,RentRequest.class).setParameter("bookId",bookId).list();
     }
 }

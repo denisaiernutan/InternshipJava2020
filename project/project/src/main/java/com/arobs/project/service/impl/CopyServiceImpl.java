@@ -65,9 +65,6 @@ public class CopyServiceImpl implements CopyService {
         if (copyList == null) {
             throw new ValidationException("book id invalid");
         }
-        if (copyList.isEmpty()) {
-            throw new ValidationException("there is no copy available");
-        }
         return copyList;
     }
 

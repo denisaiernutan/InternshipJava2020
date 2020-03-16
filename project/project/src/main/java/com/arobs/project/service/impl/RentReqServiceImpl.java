@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class RentReqServiceImpl implements RentRequestService {
@@ -45,5 +46,11 @@ public class RentReqServiceImpl implements RentRequestService {
         RentRequest rentRequest = new RentRequest(employee, book, new Timestamp(System.currentTimeMillis()),
                 RentReqStatus.WAITING_FOR_AVAILABLE_COPY.toString());
         return rentRequestRepository.insertRentRequest(rentRequest);
+    }
+
+    @Override
+    public List<RentRequest> findByBook(int bookId) {
+        return rentRequestRepository.findByBook(bookId);
+
     }
 }
