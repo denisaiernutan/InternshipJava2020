@@ -3,9 +3,9 @@ package com.arobs.project.controller;
 import com.arobs.project.converter.BookRentConverter;
 import com.arobs.project.dto.bookRent.BookRentInsertDTO;
 import com.arobs.project.dto.bookRent.BookRentReturnDTO;
-import com.arobs.project.entity.Book;
 import com.arobs.project.entity.BookRent;
 import com.arobs.project.exception.ValidationException;
+import com.arobs.project.service.BookRentManager;
 import com.arobs.project.service.BookRentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,16 +18,19 @@ public class BookRentController {
 
     private BookRentService bookRentService;
 
+    private BookRentManager bookRentManager;
+
     @Autowired
-    public BookRentController(BookRentService bookRentService) {
+    public BookRentController(BookRentService bookRentService, BookRentManager bookRentManager) {
         this.bookRentService = bookRentService;
+        this.bookRentManager = bookRentManager;
     }
 
     @PostMapping
     public ResponseEntity<?> insertBookRent(@RequestBody BookRentInsertDTO bookRentInsertDTO) {
         try {
             BookRent bookRent = BookRentConverter.convertToEntity(bookRentInsertDTO);
-            BookRent inserted = bookRentService.insertBookRent(bookRent);
+            BookRent inserted = bookRentService.tryToMakeBookRent(bookRent);
             return new ResponseEntity<>(BookRentConverter.convertToBookRentWithIdDTO(inserted), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -35,11 +38,11 @@ public class BookRentController {
     }
 
     @PutMapping
-    public ResponseEntity<?> returnBook(@RequestBody BookRentReturnDTO bookRentReturnDTO){
+    public ResponseEntity<?> returnBook(@RequestBody BookRentReturnDTO bookRentReturnDTO) {
         try {
-            BookRent bookRent= BookRentConverter.convertToEntity(bookRentReturnDTO);
-            return new ResponseEntity<>(BookRentConverter.convertToBookRentWithIdDTO(bookRentService.returnBook(bookRent)),HttpStatus.OK);
-        }catch (ValidationException e){
+            BookRent bookRent = BookRentConverter.convertToEntity(bookRentReturnDTO);
+            return new ResponseEntity<>(BookRentConverter.convertToBookRentWithIdDTO(bookRentManager.returnBook(bookRent)), HttpStatus.OK);
+        } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
         }

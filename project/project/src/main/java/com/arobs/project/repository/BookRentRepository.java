@@ -8,5 +8,5 @@ public interface BookRentRepository {
 
     BookRent insertBookRent(BookRent bookRent);
 
-    List<BookRent> findById(int bookRentId);
+    BookRent findById(int bookRentId);
 }

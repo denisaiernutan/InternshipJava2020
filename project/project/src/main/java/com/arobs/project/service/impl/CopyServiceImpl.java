@@ -60,8 +60,8 @@ public class CopyServiceImpl implements CopyService {
 
     @Transactional
     @Override
-    public List<Copy> findAvailableCopiesForBook(int bookId) throws ValidationException {
-        List<Copy> copyList = copyRepository.findAvailableCopiesForBook(bookId);
+    public List<Copy> findCopiesForBookByStatus(int bookId,CopyStatus copyStatus) throws ValidationException {
+        List<Copy> copyList = copyRepository.findCopiesForBookByStatus(bookId, copyStatus);
         if (copyList == null) {
             throw new ValidationException("book id invalid");
         }

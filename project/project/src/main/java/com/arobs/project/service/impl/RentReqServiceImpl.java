@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,12 +29,15 @@ public class RentReqServiceImpl implements RentRequestService {
 
     private ValidationRent validationRent;
 
+
     @Autowired
-    public RentReqServiceImpl(RentRequestRepository rentRequestRepository, BookService bookService, EmployeeService employeeService, ValidationRent validationRent) {
+    public RentReqServiceImpl(RentRequestRepository rentRequestRepository, BookService bookService,
+                              EmployeeService employeeService, ValidationRent validationRent) {
         this.rentRequestRepository = rentRequestRepository;
         this.bookService = bookService;
         this.employeeService = employeeService;
         this.validationRent = validationRent;
+
     }
 
 
@@ -49,8 +53,20 @@ public class RentReqServiceImpl implements RentRequestService {
     }
 
     @Override
-    public List<RentRequest> findByBook(int bookId) {
-        return rentRequestRepository.findByBook(bookId);
+    public List<RentRequest> findByBookByStatus(int bookId, RentReqStatus rentReqStatus) {
+        return rentRequestRepository.findByBookByStatus(bookId, rentReqStatus);
+    }
 
+
+    @Override
+    @Transactional
+    public RentRequest findById(int rentRequestId) {
+        return rentRequestRepository.findById(rentRequestId);
+    }
+
+    @Override
+    @Transactional
+    public List<RentRequest> findRentReqWaitForConfirmationEarlierThan(Date date) {
+        return rentRequestRepository.findWaitForConfirmationEarlierThan(date);
     }
 }

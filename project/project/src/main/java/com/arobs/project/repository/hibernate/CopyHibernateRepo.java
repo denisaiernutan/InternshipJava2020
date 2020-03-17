@@ -1,6 +1,7 @@
 package com.arobs.project.repository.hibernate;
 
 import com.arobs.project.entity.Copy;
+import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.repository.CopyRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -63,11 +64,14 @@ public class CopyHibernateRepo implements CopyRepository {
     }
 
     @Override
-    public List<Copy> findAvailableCopiesForBook(int bookId) {
+    public List<Copy> findCopiesForBookByStatus(int bookId, CopyStatus copyStatus) {
         Session session = sessionFactory.getCurrentSession();
         String hql = "SELECT c from Copy c INNER JOIN c.book b where b.bookId= :bookid " +
-                "and c.copyStatus='AVAILABLE' and c.copyFlag=true";
-        return session.createQuery(hql, Copy.class).setParameter("bookid", bookId).list();
+                "and c.copyStatus= :copyStatus " +
+                "and c.copyFlag=true";
+        return session.createQuery(hql, Copy.class)
+                .setParameter("copyStatus", copyStatus.toString())
+                .setParameter("bookid", bookId).list();
     }
 
 

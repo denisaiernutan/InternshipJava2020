@@ -1,6 +1,7 @@
 package com.arobs.project.repository;
 
 import com.arobs.project.entity.Copy;
+import com.arobs.project.enums.CopyStatus;
 
 import java.util.List;
 
@@ -16,5 +17,6 @@ public interface CopyRepository {
 
     Copy findById(int copyId);
 
-    List<Copy> findAvailableCopiesForBook(int bookId);
+    List<Copy> findCopiesForBookByStatus(int bookId, CopyStatus copyStatus);
+
 }
