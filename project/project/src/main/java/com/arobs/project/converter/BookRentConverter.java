@@ -2,6 +2,7 @@ package com.arobs.project.converter;
 
 import com.arobs.project.dto.bookRent.BookRentInsertDTO;
 import com.arobs.project.dto.bookRent.BookRentReturnDTO;
+import com.arobs.project.dto.bookRent.BookRentSimpleDTO;
 import com.arobs.project.dto.bookRent.BookRentWithIdDTO;
 import com.arobs.project.dto.copy.CopyWithoutBookDTO;
 import com.arobs.project.entity.Book;
@@ -20,12 +21,8 @@ public class BookRentConverter {
         return bookRent;
     }
 
-    public static BookRent convertToEntity(BookRentReturnDTO bookRentReturnDTO){
+    public static BookRent convertToEntity(BookRentReturnDTO bookRentReturnDTO) {
         return modelMapper.map(bookRentReturnDTO, BookRent.class);
-    }
-
-    public static BookRentInsertDTO convertToBookRentInsertDTO(BookRent bookRent) {
-        return modelMapper.map(bookRent, BookRentInsertDTO.class);
     }
 
     public static BookRentWithIdDTO convertToBookRentWithIdDTO(BookRent bookRent) {
@@ -37,4 +34,9 @@ public class BookRentConverter {
 
         return bookRentWithIdDTO;
     }
+
+    public static BookRentSimpleDTO convertToSimpleDTO(BookRent bookRent) {
+        return modelMapper.map(bookRent, BookRentSimpleDTO.class);
+    }
+
 }

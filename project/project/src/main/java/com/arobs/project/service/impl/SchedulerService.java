@@ -1,13 +1,17 @@
 package com.arobs.project.service.impl;
 
+import com.arobs.project.entity.BookRent;
 import com.arobs.project.entity.RentRequest;
+import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookRentManager;
+import com.arobs.project.service.BookRentService;
 import com.arobs.project.service.RentRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,11 +22,14 @@ public class SchedulerService {
 
     private BookRentManager bookRentManager;
     private RentRequestService rentRequestService;
+    private BookRentService bookRentService;
 
     @Autowired
-    public SchedulerService(BookRentManager bookRentManager, RentRequestService rentRequestService) {
+    public SchedulerService(BookRentManager bookRentManager, RentRequestService rentRequestService,
+                            BookRentService bookRentService) {
         this.bookRentManager = bookRentManager;
         this.rentRequestService = rentRequestService;
+        this.bookRentService = bookRentService;
     }
 
 
@@ -30,8 +37,9 @@ public class SchedulerService {
     @Scheduled(fixedRate = 60000 * 60)
     @Async
     public void waitForConfirmationRentRequestLessThan24Hours() {
+        int WAIT_FOR_CONFIRMATION_TIME = 24;
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR_OF_DAY, -24);
+        calendar.add(Calendar.HOUR_OF_DAY, -WAIT_FOR_CONFIRMATION_TIME);
         Date date = calendar.getTime();
 
         List<RentRequest> rentRequestList = rentRequestService.findRentReqWaitForConfirmationEarlierThan(date);
@@ -43,7 +51,17 @@ public class SchedulerService {
                 e.printStackTrace();
             }
         }
+    }
 
-
+    //zilnic
+    @Scheduled(fixedRate = 24 * 60000 * 60)
+    @Async
+    @Transactional
+    public void markBookRentAsLate() {
+        List<BookRent> bookRentList = bookRentService.findBookRentThatPassedReturnDate();
+        for (BookRent bookRent : bookRentList) {
+            bookRent.getEmployee().setBanned(true);
+            bookRent.setBookRentStatus(BookRentStatus.LATE.toString());
+        }
     }
 }

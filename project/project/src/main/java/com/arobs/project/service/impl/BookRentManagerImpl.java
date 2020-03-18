@@ -1,9 +1,6 @@
 package com.arobs.project.service.impl;
 
-import com.arobs.project.entity.Book;
-import com.arobs.project.entity.BookRent;
-import com.arobs.project.entity.Copy;
-import com.arobs.project.entity.RentRequest;
+import com.arobs.project.entity.*;
 import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.enums.RentReqStatus;
@@ -12,6 +9,7 @@ import com.arobs.project.service.BookRentManager;
 import com.arobs.project.service.BookRentService;
 import com.arobs.project.service.CopyService;
 import com.arobs.project.service.RentRequestService;
+import com.arobs.project.utils.UtilDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +18,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class BookRentManagerImpl implements BookRentManager {
@@ -57,6 +56,7 @@ public class BookRentManagerImpl implements BookRentManager {
         if (updatedBookRent == null) {
             throw new ValidationException("bookRent id invalid");
         } else {
+            updateEmployeeFromBookRent(updatedBookRent);
             updatedBookRent.setReturnDate(new Date(new java.util.Date().getTime()));
             updatedBookRent.setBookRentStatus(BookRentStatus.RETURNED.toString());
             updatedBookRent.setGrade(bookRent.getGrade());
@@ -66,6 +66,45 @@ public class BookRentManagerImpl implements BookRentManager {
             return updatedBookRent;
         }
     }
+
+
+    private void updateEmployeeFromBookRent(BookRent bookRent) {
+        Employee employee = bookRent.getEmployee();
+        if (employeeExceededThreeMonths(bookRent.getRentalDate())) {
+            Date lastDayOfBan = computeLastDayOfBanForEmployee(bookRent);
+            employee.setLastDayOfBan(lastDayOfBan);
+            employee.setBanned(true);
+        } else {
+            employee.setBanned(false);
+        }
+    }
+
+    private boolean employeeExceededThreeMonths(Date rentalDate) {
+        int MAX_RENTAL_PERIOD = 3;
+        Date maxReturnDate = UtilDate.addMonths(rentalDate, MAX_RENTAL_PERIOD);
+        java.util.Date now = new java.util.Date();
+        return maxReturnDate.before(now);
+    }
+
+    private Date computeLastDayOfBanForEmployee(BookRent bookRent) {
+
+        int MIN_BANNED_DAYS = 10;
+        int MAX_RENTAL_PERIOD = 3;
+
+        Date maxReturnDate = UtilDate.addMonths(bookRent.getRentalDate(), MAX_RENTAL_PERIOD);
+        java.util.Date now = new java.util.Date();
+
+        long exceededTimeMillis = now.getTime() - maxReturnDate.getTime();
+        int exceededDays = (int) TimeUnit.DAYS.convert(exceededTimeMillis, TimeUnit.MILLISECONDS);
+        int bannedDays = exceededDays * 2;
+
+        if (bannedDays < MIN_BANNED_DAYS) {
+            return UtilDate.addDays(new Date(new java.util.Date().getTime()), MIN_BANNED_DAYS);
+        } else {
+            return UtilDate.addDays(new Date(new java.util.Date().getTime()), bannedDays);
+        }
+    }
+
 
     @Override
     @Transactional
@@ -92,4 +131,5 @@ public class BookRentManagerImpl implements BookRentManager {
             rentRequest.setRentReqStatus(RentReqStatus.WAITING_FOR_CONFIRMATION.toString());
         }
     }
+
 }

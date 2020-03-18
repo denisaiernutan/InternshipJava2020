@@ -48,5 +48,15 @@ public class BookRentController {
         }
     }
 
+    @PutMapping("/extensionrent")
+    public ResponseEntity<?> askForExtensionOfRental(@RequestParam int bookRentId) {
+        try {
+            BookRent bookRent = bookRentService.askForExtensionOfRental(bookRentId);
+            return new ResponseEntity<>(BookRentConverter.convertToSimpleDTO(bookRent), HttpStatus.OK);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 }

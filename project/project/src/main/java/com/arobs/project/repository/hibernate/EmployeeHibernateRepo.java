@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class EmployeeHibernateRepo implements EmployeeRepository {
@@ -44,7 +43,7 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
         if (employee != null) {
             return employee.getEmployeePass();
         }
-        return new String();
+        return "";
 
 
     }

@@ -1,6 +1,7 @@
 package com.arobs.project.entity;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,12 @@ public class Employee {
 
     @Column(name = "employee_role")
     private String employeeRole;
+
+    @Column(name="banned")
+    private boolean banned;
+
+    @Column(name="last_day_of_ban")
+    private Date lastDayOfBan;
 
     @OneToMany(mappedBy = "employee")
     private Set<RentRequest> rentRequestSet = new HashSet<>();
@@ -96,6 +103,22 @@ public class Employee {
 
     public void setEmployeeRole(String employeeRole) {
         this.employeeRole = employeeRole;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
+    }
+
+    public Date getLastDayOfBan() {
+        return lastDayOfBan;
+    }
+
+    public void setLastDayOfBan(Date lastDayOfBan) {
+        this.lastDayOfBan = lastDayOfBan;
     }
 
     public void addRentRequest(RentRequest rentRequest) {

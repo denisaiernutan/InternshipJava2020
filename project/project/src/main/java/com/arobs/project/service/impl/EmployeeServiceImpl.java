@@ -46,6 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public Employee insertEmployee(Employee employee) throws ValidationException {
         if (employeeRepository.findByEmail(employee.getEmployeeEmail()).isEmpty()) {
+            employee.setBanned(false);
             return employeeRepository.insertEmployee(employee);
         } else {
             throw new ValidationException("email is already registered");

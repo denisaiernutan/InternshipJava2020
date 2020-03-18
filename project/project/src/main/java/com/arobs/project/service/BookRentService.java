@@ -6,6 +6,8 @@ import com.arobs.project.entity.Copy;
 import com.arobs.project.entity.Employee;
 import com.arobs.project.exception.ValidationException;
 
+import java.util.List;
+
 public interface BookRentService {
 
     BookRent tryToMakeBookRent(BookRent bookRent) throws ValidationException;
@@ -13,6 +15,10 @@ public interface BookRentService {
     void insertBookRent(BookRent bookRent, Copy copy, Employee employee, Book book);
 
     BookRent findById(int bookRentId);
+
+    List<BookRent> findBookRentThatPassedReturnDate();
+
+    BookRent askForExtensionOfRental(int bookRentId) throws ValidationException;
 
 
 }

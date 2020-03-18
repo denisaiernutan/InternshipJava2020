@@ -7,6 +7,9 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 @Repository
 public class BookRentHibernateRepo implements BookRentRepository {
 
@@ -29,8 +32,14 @@ public class BookRentHibernateRepo implements BookRentRepository {
     @Override
     public BookRent findById(int bookRentId) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(BookRent.class, bookRentId);
-//        String hql = "from BookRent br join fetch br.book as b join fetch br.copy as c where br.bookRentId= :bookRentId";
-//        return session.createQuery(hql, BookRent.class).setParameter("bookRentId", bookRentId).list();
+        String hql = "from BookRent br join fetch br.employee e where br.bookRentId= :bookRentId";
+        return session.createQuery(hql, BookRent.class).setParameter("bookRentId", bookRentId).list().get(0);
+    }
+
+    @Override
+    public List<BookRent> findBookRentThatPassedReturnDate() {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "from BookRent br where br.returnDate< :returnDate and br.bookRentStatus='ON_GOING'";
+        return session.createQuery(hql, BookRent.class).setParameter("returnDate", new Date()).list();
     }
 }

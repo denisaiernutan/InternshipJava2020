@@ -9,4 +9,6 @@ public interface BookRentRepository {
     BookRent insertBookRent(BookRent bookRent);
 
     BookRent findById(int bookRentId);
+
+    List<BookRent> findBookRentThatPassedReturnDate();
 }
