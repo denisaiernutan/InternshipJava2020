@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -76,5 +77,13 @@ public class EmployeeHibernateRepo implements EmployeeRepository {
     public Employee findById(int employeeId) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(Employee.class, employeeId);
+    }
+
+    @Override
+    public List<Employee> findEmployeesWithLastDayOfBanExceeded() {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "from Employee where lastDayOfBan< :currentDate";
+        return session.createQuery(hql, Employee.class)
+                .setParameter("currentDate", new Date(new java.util.Date().getTime())).list();
     }
 }

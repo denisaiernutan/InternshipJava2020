@@ -4,6 +4,7 @@ import com.arobs.project.converter.EmployeeConverter;
 import com.arobs.project.dto.employee.EmployeeNewPassDTO;
 import com.arobs.project.dto.employee.EmployeeWithPassDTO;
 import com.arobs.project.entity.Employee;
+import com.arobs.project.enums.EmployeeRole;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.EmployeeRepository;
 import com.arobs.project.repository.RepoFactory;
@@ -46,11 +47,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public Employee insertEmployee(Employee employee) throws ValidationException {
         if (employeeRepository.findByEmail(employee.getEmployeeEmail()).isEmpty()) {
+            verifyEmployeeRole(employee.getEmployeeRole());
             employee.setBanned(false);
             return employeeRepository.insertEmployee(employee);
         } else {
             throw new ValidationException("email is already registered");
         }
+    }
+
+    private void verifyEmployeeRole(String employeeRole) throws ValidationException {
+        if (employeeRole.toUpperCase().equals(EmployeeRole.USER.toString()) ||
+                employeeRole.toUpperCase().equals(EmployeeRole.ADMIN.toString()))
+            return;
+        throw new ValidationException("employee role invalid");
     }
 
     @Transactional
@@ -117,6 +126,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee findById(int employeeId) {
         return employeeRepository.findById(employeeId);
+    }
+
+    @Override
+    @Transactional
+    public void releaseBanningForEmployees() {
+        List<Employee> employeeList = employeeRepository.findEmployeesWithLastDayOfBanExceeded();
+        for (Employee employee : employeeList) {
+            employee.setBanned(false);
+            employee.setLastDayOfBan(null);
+        }
     }
 }
 

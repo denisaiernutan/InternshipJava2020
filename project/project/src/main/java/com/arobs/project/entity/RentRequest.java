@@ -26,6 +26,9 @@ public class RentRequest {
     @Column(name = "rent_req_status")
     private String rentReqStatus;
 
+    @Column(name = "sent_email_date")
+    private Timestamp sentEmailDate;
+
     public RentRequest() {
     }
 
@@ -43,6 +46,17 @@ public class RentRequest {
         this.requestDate = requestDate;
         this.rentReqStatus = rentReqStatus;
     }
+
+    public RentRequest(int rentReqId, Employee employee, Book book, Timestamp requestDate, String rentReqStatus,
+                       Timestamp sentEmailDate) {
+        this.rentReqId = rentReqId;
+        this.employee = employee;
+        this.book = book;
+        this.requestDate = requestDate;
+        this.rentReqStatus = rentReqStatus;
+        this.sentEmailDate = sentEmailDate;
+    }
+
 
     public int getRentReqId() {
         return rentReqId;
@@ -82,5 +96,13 @@ public class RentRequest {
 
     public void setRentReqStatus(String rentReqStatus) {
         this.rentReqStatus = rentReqStatus;
+    }
+
+    public Timestamp getSentEmailDate() {
+        return sentEmailDate;
+    }
+
+    public void setSentEmailDate(Timestamp sentEmailDate) {
+        this.sentEmailDate = sentEmailDate;
     }
 }

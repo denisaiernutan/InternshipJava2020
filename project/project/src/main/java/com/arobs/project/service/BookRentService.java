@@ -16,9 +16,9 @@ public interface BookRentService {
 
     BookRent findById(int bookRentId);
 
-    List<BookRent> findBookRentThatPassedReturnDate();
-
     BookRent askForExtensionOfRental(int bookRentId) throws ValidationException;
+
+    void markBookRentAsLate();
 
 
 }

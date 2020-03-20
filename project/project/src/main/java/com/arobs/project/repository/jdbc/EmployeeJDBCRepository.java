@@ -92,4 +92,8 @@ public class EmployeeJDBCRepository implements EmployeeRepository {
         return jdbcTemplate.update(sql, employeeId) != 0;
     }
 
+    @Override
+    public List<Employee> findEmployeesWithLastDayOfBanExceeded() {
+        return null;
+    }
 }

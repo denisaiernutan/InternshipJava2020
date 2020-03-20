@@ -1,17 +1,15 @@
 package com.arobs.project.service.impl;
 
-import com.arobs.project.entity.BookRent;
 import com.arobs.project.entity.RentRequest;
-import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookRentManager;
 import com.arobs.project.service.BookRentService;
+import com.arobs.project.service.EmployeeService;
 import com.arobs.project.service.RentRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -23,13 +21,15 @@ public class SchedulerService {
     private BookRentManager bookRentManager;
     private RentRequestService rentRequestService;
     private BookRentService bookRentService;
+    private EmployeeService employeeService;
 
     @Autowired
     public SchedulerService(BookRentManager bookRentManager, RentRequestService rentRequestService,
-                            BookRentService bookRentService) {
+                            BookRentService bookRentService, EmployeeService employeeService) {
         this.bookRentManager = bookRentManager;
         this.rentRequestService = rentRequestService;
         this.bookRentService = bookRentService;
+        this.employeeService = employeeService;
     }
 
 
@@ -46,7 +46,7 @@ public class SchedulerService {
 
         for (RentRequest rentRequest : rentRequestList) {
             try {
-                bookRentManager.declineRentRequest(rentRequest.getRentReqId());
+                bookRentManager.acceptRentRequest(false, rentRequest.getRentReqId());
             } catch (ValidationException e) {
                 e.printStackTrace();
             }
@@ -56,12 +56,10 @@ public class SchedulerService {
     //zilnic
     @Scheduled(fixedRate = 24 * 60000 * 60)
     @Async
-    @Transactional
-    public void markBookRentAsLate() {
-        List<BookRent> bookRentList = bookRentService.findBookRentThatPassedReturnDate();
-        for (BookRent bookRent : bookRentList) {
-            bookRent.getEmployee().setBanned(true);
-            bookRent.setBookRentStatus(BookRentStatus.LATE.toString());
-        }
+    public void dailyActions() {
+        bookRentService.markBookRentAsLate();
+        employeeService.releaseBanningForEmployees();
+
     }
+
 }

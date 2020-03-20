@@ -1,6 +1,5 @@
 package com.arobs.project.service.impl;
 
-import com.arobs.project.entity.Book;
 import com.arobs.project.entity.Copy;
 import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.exception.ValidationException;
@@ -28,18 +27,8 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     @Transactional
-    public Copy insertCopy(Copy copy) throws ValidationException {
-        if (copy.getCopyStatus().toUpperCase().equals(CopyStatus.AVAILABLE.toString())) {
-            Book book = bookService.findById(copy.getBook().getBookId());
-            if (book == null) {
-                throw new ValidationException("book id invalid");
-            }
-            copy.setBook(book);
-            return copyRepository.insertCopy(copy);
-        } else {
-            throw new ValidationException("status invalid! accepted status: AVAILABLE");
-        }
-
+    public Copy insertCopy(Copy copy) {
+        return copyRepository.insertCopy(copy);
     }
 
     @Override
@@ -47,7 +36,8 @@ public class CopyServiceImpl implements CopyService {
     public boolean deleteCopy(int copyId) {
         Copy copy = copyRepository.findById(copyId);
         if (copy != null) {
-            return copyRepository.deleteCopy(copy);
+            copy.setCopyFlag(false);
+            return true;
         }
         return false;
     }
@@ -60,8 +50,8 @@ public class CopyServiceImpl implements CopyService {
 
     @Transactional
     @Override
-    public List<Copy> findCopiesForBookByStatus(int bookId,CopyStatus copyStatus) throws ValidationException {
-        List<Copy> copyList = copyRepository.findCopiesForBookByStatus(bookId, copyStatus);
+    public List<Copy> findCopiesForBookByStatus(int bookId, CopyStatus copyStatus) throws ValidationException {
+        List<Copy> copyList = copyRepository.findRentableCopiesForBookByStatus(bookId, copyStatus);
         if (copyList == null) {
             throw new ValidationException("book id invalid");
         }
@@ -77,6 +67,7 @@ public class CopyServiceImpl implements CopyService {
             throw new ValidationException("invalid status. Accepted status: AVAILABLE, RENTED,PENDING");
         }
         Copy updateCopy = copyRepository.findById(copy.getCopyId());
+        copy.setCopyStatus(copy.getCopyStatus().toUpperCase());
         if (updateCopy == null) {
             throw new ValidationException("invalid copy id");
         }

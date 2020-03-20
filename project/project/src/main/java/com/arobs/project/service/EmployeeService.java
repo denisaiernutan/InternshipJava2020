@@ -18,4 +18,6 @@ public interface EmployeeService {
     boolean deleteEmployee(int employeeId) throws ValidationException;
 
     Employee findById(int employeeId);
+
+    void releaseBanningForEmployees();
 }

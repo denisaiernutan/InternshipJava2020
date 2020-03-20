@@ -53,7 +53,7 @@ public class RentReqHibernateRepo implements RentRequestRepository {
         String hql = "from RentRequest rr join fetch rr.employee as e " +
                 "join fetch rr.book as b " +
                 "where rr.rentReqStatus= 'WAITING_FOR_CONFIRMATION' " +
-                "and rr.requestDate<= :date";
+                "and rr.sentEmailDate<= :date";
         return session.createQuery(hql, RentRequest.class).setParameter("date", date).list();
     }
 }

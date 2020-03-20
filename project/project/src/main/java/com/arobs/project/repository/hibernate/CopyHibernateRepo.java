@@ -52,9 +52,7 @@ public class CopyHibernateRepo implements CopyRepository {
 
     @Override
     public boolean deleteCopy(Copy copy) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(copy);
-        return true;
+        return false;
     }
 
     @Override
@@ -64,7 +62,7 @@ public class CopyHibernateRepo implements CopyRepository {
     }
 
     @Override
-    public List<Copy> findCopiesForBookByStatus(int bookId, CopyStatus copyStatus) {
+    public List<Copy> findRentableCopiesForBookByStatus(int bookId, CopyStatus copyStatus) {
         Session session = sessionFactory.getCurrentSession();
         String hql = "SELECT c from Copy c INNER JOIN c.book b where b.bookId= :bookid " +
                 "and c.copyStatus= :copyStatus " +

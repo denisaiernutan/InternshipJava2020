@@ -36,20 +36,10 @@ public class RentRequestController {
         }
     }
 
-    @PutMapping("/decline")
-    public ResponseEntity<?> declineRentRequest(@RequestParam int rentRequestId) {
+    @PutMapping
+    public ResponseEntity<?> acceptRentRequest(@RequestParam boolean accepted,@RequestParam int rentRequestId) {
         try {
-            RentRequest rentRequest = bookRentManager.declineRentRequest(rentRequestId);
-            return new ResponseEntity<>(RentRequestConverter.convertToRentReqWithIdDTO(rentRequest), HttpStatus.OK);
-        } catch (ValidationException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PutMapping("/confirm")
-    public ResponseEntity<?> confirmRentRequest(@RequestParam int rentRequestId) {
-        try {
-            RentRequest rentRequest = bookRentManager.confirmRentRequest(rentRequestId);
+            RentRequest rentRequest = bookRentManager.acceptRentRequest(accepted,rentRequestId);
             return new ResponseEntity<>(RentRequestConverter.convertToRentReqWithIdDTO(rentRequest), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

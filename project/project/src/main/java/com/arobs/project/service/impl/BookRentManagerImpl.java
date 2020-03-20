@@ -5,10 +5,7 @@ import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.enums.RentReqStatus;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.service.BookRentManager;
-import com.arobs.project.service.BookRentService;
-import com.arobs.project.service.CopyService;
-import com.arobs.project.service.RentRequestService;
+import com.arobs.project.service.*;
 import com.arobs.project.utils.UtilDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,23 +26,16 @@ public class BookRentManagerImpl implements BookRentManager {
 
     private BookRentService bookRentService;
 
+    private BookService bookService;
+
+
     @Autowired
     public BookRentManagerImpl(RentRequestService rentRequestService, CopyService copyService,
-                               BookRentService bookRentService) {
+                               BookRentService bookRentService, BookService bookService) {
         this.rentRequestService = rentRequestService;
         this.copyService = copyService;
         this.bookRentService = bookRentService;
-    }
-
-
-    @Override
-    @Transactional
-    public RentRequest confirmRentRequest(int rentRequestId) throws ValidationException {
-        RentRequest rentRequest = rentRequestService.findById(rentRequestId);
-        Copy copy = copyService.findCopiesForBookByStatus(rentRequest.getBook().getBookId(), CopyStatus.PENDING).get(0);
-        bookRentService.insertBookRent(new BookRent(), copy, rentRequest.getEmployee(), rentRequest.getBook());
-        rentRequest.setRentReqStatus(RentReqStatus.GRANTED.toString());
-        return rentRequest;
+        this.bookService = bookService;
     }
 
 
@@ -70,45 +60,52 @@ public class BookRentManagerImpl implements BookRentManager {
 
     private void updateEmployeeFromBookRent(BookRent bookRent) {
         Employee employee = bookRent.getEmployee();
-        if (employeeExceededThreeMonths(bookRent.getRentalDate())) {
+        if (employee.isBanned()) {
             Date lastDayOfBan = computeLastDayOfBanForEmployee(bookRent);
             employee.setLastDayOfBan(lastDayOfBan);
             employee.setBanned(true);
-        } else {
-            employee.setBanned(false);
         }
     }
 
-    private boolean employeeExceededThreeMonths(Date rentalDate) {
-        int MAX_RENTAL_PERIOD = 3;
-        Date maxReturnDate = UtilDate.addMonths(rentalDate, MAX_RENTAL_PERIOD);
-        java.util.Date now = new java.util.Date();
-        return maxReturnDate.before(now);
-    }
 
     private Date computeLastDayOfBanForEmployee(BookRent bookRent) {
-
         int MIN_BANNED_DAYS = 10;
-        int MAX_RENTAL_PERIOD = 3;
 
-        Date maxReturnDate = UtilDate.addMonths(bookRent.getRentalDate(), MAX_RENTAL_PERIOD);
-        java.util.Date now = new java.util.Date();
-
-        long exceededTimeMillis = now.getTime() - maxReturnDate.getTime();
+        long exceededTimeMillis = new java.util.Date().getTime() - bookRent.getReturnDate().getTime();
         int exceededDays = (int) TimeUnit.DAYS.convert(exceededTimeMillis, TimeUnit.MILLISECONDS);
         int bannedDays = exceededDays * 2;
 
+        Date lastDayOfBanInPresent = bookRent.getEmployee().getLastDayOfBan();
+        if (lastDayOfBanInPresent == null) {
+            lastDayOfBanInPresent = new Date(new java.util.Date().getTime());
+        }
+
         if (bannedDays < MIN_BANNED_DAYS) {
-            return UtilDate.addDays(new Date(new java.util.Date().getTime()), MIN_BANNED_DAYS);
+            return UtilDate.addDays(lastDayOfBanInPresent, MIN_BANNED_DAYS);
         } else {
-            return UtilDate.addDays(new Date(new java.util.Date().getTime()), bannedDays);
+            return UtilDate.addDays(lastDayOfBanInPresent, bannedDays);
         }
     }
 
 
     @Override
     @Transactional
-    public RentRequest declineRentRequest(int rentRequestId) throws ValidationException {
+    public RentRequest acceptRentRequest(boolean accepted, int rentRequestId) throws ValidationException {
+        if (accepted) {
+            return confirmRentRequest(rentRequestId);
+        }
+        return declineRentRequest(rentRequestId);
+    }
+
+    private RentRequest confirmRentRequest(int rentRequestId) throws ValidationException {
+        RentRequest rentRequest = rentRequestService.findById(rentRequestId);
+        Copy copy = copyService.findCopiesForBookByStatus(rentRequest.getBook().getBookId(), CopyStatus.PENDING).get(0);
+        bookRentService.insertBookRent(new BookRent(), copy, rentRequest.getEmployee(), rentRequest.getBook());
+        rentRequest.setRentReqStatus(RentReqStatus.GRANTED.toString());
+        return rentRequest;
+    }
+
+    private RentRequest declineRentRequest(int rentRequestId) throws ValidationException {
         RentRequest rentRequest = rentRequestService.findById(rentRequestId);
         rentRequest.setRentReqStatus(RentReqStatus.DECLINED.toString());
         Copy copy = copyService.findCopiesForBookByStatus(rentRequest.getBook().getBookId(), CopyStatus.PENDING).get(0);
@@ -127,9 +124,22 @@ public class BookRentManagerImpl implements BookRentManager {
             copy.setCopyStatus(CopyStatus.PENDING.toString());
             rentRequesWaitingForCopyList.sort(Comparator.comparing(RentRequest::getRequestDate));
             RentRequest rentRequest = rentRequesWaitingForCopyList.get(0);
-            rentRequest.setRequestDate(new Timestamp(System.currentTimeMillis()));
+            rentRequest.setSentEmailDate(new Timestamp(System.currentTimeMillis()));
             rentRequest.setRentReqStatus(RentReqStatus.WAITING_FOR_CONFIRMATION.toString());
         }
     }
 
+    @Transactional
+    public Copy insertAvailableCopy(Copy copy) throws ValidationException {
+        Book book = bookService.findById(copy.getBook().getBookId());
+        if (book == null) {
+            throw new ValidationException("book id invalid");
+        }
+        copy.setBook(book);
+        Copy newCopy = copyService.insertCopy(copy);
+        manageRentRequest(book, copy);
+        return newCopy;
+    }
 }
+
+

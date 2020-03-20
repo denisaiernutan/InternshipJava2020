@@ -5,13 +5,11 @@ public class CopyDTO {
 
     private boolean copyFlag;
 
-    private String copyStatus;
 
     private int book;
 
-    public CopyDTO(boolean copyFlag, String copyStatus, int book) {
+    public CopyDTO(boolean copyFlag, int book) {
         this.copyFlag = copyFlag;
-        this.copyStatus = copyStatus;
         this.book = book;
     }
 
@@ -24,14 +22,6 @@ public class CopyDTO {
 
     public void setCopyFlag(boolean copyFlag) {
         this.copyFlag = copyFlag;
-    }
-
-    public String getCopyStatus() {
-        return copyStatus;
-    }
-
-    public void setCopyStatus(String copyStatus) {
-        this.copyStatus = copyStatus;
     }
 
     public int getBook() {

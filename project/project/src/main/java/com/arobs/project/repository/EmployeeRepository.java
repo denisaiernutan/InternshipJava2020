@@ -21,5 +21,7 @@ public interface EmployeeRepository {
 
     Employee findById(int employeeId);
 
+    List<Employee> findEmployeesWithLastDayOfBanExceeded();
+
 
 }

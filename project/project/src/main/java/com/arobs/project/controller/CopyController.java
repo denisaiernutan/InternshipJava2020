@@ -6,6 +6,7 @@ import com.arobs.project.dto.copy.CopyUpdateDTO;
 import com.arobs.project.dto.copy.CopyWithIdDTO;
 import com.arobs.project.entity.Copy;
 import com.arobs.project.exception.ValidationException;
+import com.arobs.project.service.BookRentManager;
 import com.arobs.project.service.CopyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,9 +21,12 @@ public class CopyController {
 
     private CopyService copyService;
 
+    private BookRentManager bookRentManager;
+
     @Autowired
-    public CopyController(CopyService copyService) {
+    public CopyController(CopyService copyService, BookRentManager bookRentManager) {
         this.copyService = copyService;
+        this.bookRentManager = bookRentManager;
     }
 
     @GetMapping
@@ -31,9 +35,9 @@ public class CopyController {
     }
 
     @PostMapping
-    public ResponseEntity<?> insertCopy(@RequestBody CopyDTO copyDTO) {
+    public ResponseEntity<?> insertAvailableCopy(@RequestBody CopyDTO copyDTO) {
         try {
-            return new ResponseEntity<>(CopyConverter.convertToCopyWithIdDTO(copyService.insertCopy(CopyConverter.convertToEntity(copyDTO))), HttpStatus.OK);
+            return new ResponseEntity<>(CopyConverter.convertToCopyWithIdDTO(bookRentManager.insertAvailableCopy(CopyConverter.convertToEntity(copyDTO))), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

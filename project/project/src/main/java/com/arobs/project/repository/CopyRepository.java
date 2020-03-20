@@ -17,6 +17,6 @@ public interface CopyRepository {
 
     Copy findById(int copyId);
 
-    List<Copy> findCopiesForBookByStatus(int bookId, CopyStatus copyStatus);
+    List<Copy> findRentableCopiesForBookByStatus(int bookId, CopyStatus copyStatus);
 
 }

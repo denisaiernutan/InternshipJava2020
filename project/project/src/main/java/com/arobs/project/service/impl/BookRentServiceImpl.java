@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -44,28 +45,39 @@ public class BookRentServiceImpl implements BookRentService {
     @Transactional
     public BookRent tryToMakeBookRent(BookRent bookRent) throws ValidationException {
         {
-            Employee employee = employeeService.findById(bookRent.getEmployee().getEmployeeId());
-            Book book;
-            if (bookService.existBookInDb(bookRent.getBook().getBookId())) {
-                book = bookService.findById(bookRent.getBook().getBookId());
-            } else {
+            if (!bookService.existBookInDb(bookRent.getBook().getBookId())) {
                 throw new ValidationException("book id invalid");
             }
-
-            if (employee != null && !employee.isBanned()) {
-                List<Copy> copyList = copyService.findCopiesForBookByStatus(bookRent.getBook().getBookId(), CopyStatus.AVAILABLE);
-                if (copyList.isEmpty()) {
-                    throw new ValidationException("there is no copy available. You can register to read this book " +
-                            "when it`s available ");
-                } else {
-                    Copy copy = copyList.get(0);
-                    insertBookRent(bookRent, copy, employee, book);
-                    return bookRent;
-                }
+            Book book = bookService.findById(bookRent.getBook().getBookId());
+            Employee employee = employeeService.findById(bookRent.getEmployee().getEmployeeId());
+            if (employee == null) {
+                throw new ValidationException("employee id invalid");
             }
-            throw new ValidationException("employee id invalid or employee is banned");
+            if (employeeHasNotPermissionToRentNewBook(employee, book)) {
+                throw new ValidationException("you don't have permission to rent a book");
+            }
+
+            List<Copy> copyList = copyService.findCopiesForBookByStatus(bookRent.getBook().getBookId(),
+                    CopyStatus.AVAILABLE);
+            if (copyList.isEmpty()) {
+                throw new ValidationException("there is no copy available. You can register to read this book " +
+                        "when it`s available ");
+            }
+            insertBookRent(bookRent, copyList.get(0), employee, book);
+            return bookRent;
         }
 
+    }
+
+    private boolean employeeHasNotPermissionToRentNewBook(Employee employee, Book book) {
+        if (employee.isBanned()) return true;
+
+        Set<BookRent> bookRentList = employee.getBookRentSet();
+        for (BookRent bookRent : bookRentList) {
+            if (bookRent.getBook().equals(book) && bookRent.getBookRentStatus().equals(BookRentStatus.ON_GOING.toString()))
+                return true;
+        }
+        return false;
     }
 
     @Override
@@ -91,19 +103,17 @@ public class BookRentServiceImpl implements BookRentService {
         return bookRentRepository.findById(bookRentId);
     }
 
-
-    @Override
-    @Transactional
-    public List<BookRent> findBookRentThatPassedReturnDate() {
-        return bookRentRepository.findBookRentThatPassedReturnDate();
-    }
-
     @Override
     @Transactional
     public BookRent askForExtensionOfRental(int bookRentId) throws ValidationException {
         int MAX_RENTAL_PERIOD = 3;
         int EXTENSION_OF_RENTAL = 15;
         BookRent bookRent = bookRentRepository.findById(bookRentId);
+
+        if (askForExtensionIsNotInTheLastFiveDays(bookRent.getReturnDate(), bookRent.getBookRentStatus())) {
+            throw new ValidationException("you may ask for extension in your last 5 days of rental");
+        }
+
         Date maxReturnDate = UtilDate.addMonths(bookRent.getRentalDate(), MAX_RENTAL_PERIOD);
         Date askedReturnDate = UtilDate.addDays(bookRent.getReturnDate(), EXTENSION_OF_RENTAL);
 
@@ -116,14 +126,30 @@ public class BookRentServiceImpl implements BookRentService {
         } else {
             bookRent.setReturnDate(maxReturnDate);
         }
-        bookRent.getEmployee().setBanned(false);
-        bookRent.setBookRentStatus(BookRentStatus.ON_GOING.toString());
+
         return bookRent;
     }
-
 
     private boolean askForExtensionOfRentalIsNotValid(Date maxReturnDate, Date actualReturnDate) {
         return maxReturnDate.equals(actualReturnDate);
     }
+
+    private boolean askForExtensionIsNotInTheLastFiveDays(Date actualReturnDate, String statusBookRent) {
+        int DAYS_FOR_ASKING_EXTENSION = 5;
+
+        Date fiveDaysBeforeActualReturnDate = UtilDate.addDays(actualReturnDate, -DAYS_FOR_ASKING_EXTENSION);
+        Date today = new Date(new java.util.Date().getTime());
+        return today.before(fiveDaysBeforeActualReturnDate) || statusBookRent.equals(BookRentStatus.LATE.toString());
+    }
+
+    @Transactional
+    public void markBookRentAsLate() {
+        List<BookRent> bookRentList = bookRentRepository.findBookRentThatPassedReturnDate();
+        for (BookRent bookRent : bookRentList) {
+            bookRent.getEmployee().setBanned(true);
+            bookRent.setBookRentStatus(BookRentStatus.LATE.toString());
+        }
+    }
+
 }
 
