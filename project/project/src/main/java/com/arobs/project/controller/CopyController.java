@@ -5,6 +5,7 @@ import com.arobs.project.dto.copy.CopyDTO;
 import com.arobs.project.dto.copy.CopyUpdateDTO;
 import com.arobs.project.dto.copy.CopyWithIdDTO;
 import com.arobs.project.entity.Copy;
+import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookRentManager;
 import com.arobs.project.service.CopyService;
@@ -31,13 +32,18 @@ public class CopyController {
 
     @GetMapping
     public ResponseEntity<?> findAll() {
-        return new ResponseEntity<>(copyService.findAll().stream().map(CopyConverter::convertToCopyWithIdDTO).collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(copyService.findAll()
+                .stream()
+                .map(CopyConverter::convertToCopyWithIdDTO)
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> insertAvailableCopy(@RequestBody CopyDTO copyDTO) {
         try {
-            return new ResponseEntity<>(CopyConverter.convertToCopyWithIdDTO(bookRentManager.insertAvailableCopy(CopyConverter.convertToEntity(copyDTO))), HttpStatus.OK);
+            Copy newCopy = CopyConverter.convertToEntity(copyDTO);
+            Copy insertedCopy = bookRentManager.insertAvailableCopy(newCopy);
+            return new ResponseEntity<>(CopyConverter.convertToCopyWithIdDTO(insertedCopy), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -50,6 +56,12 @@ public class CopyController {
 
     @PutMapping
     public ResponseEntity<?> updateCopy(@RequestBody CopyUpdateDTO copyUpdateDTO) {
+        try {
+            CopyStatus.valueOf(copyUpdateDTO.getCopyStatus().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("invalid status. Accepted status: AVAILABLE, RENTED,PENDING",
+                    HttpStatus.BAD_REQUEST);
+        }
         try {
             Copy updatedCopy = copyService.updateCopy(CopyConverter.convertToEntity(copyUpdateDTO));
             CopyWithIdDTO copyWithIdDTO = CopyConverter.convertToCopyWithIdDTO(updatedCopy);

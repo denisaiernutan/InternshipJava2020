@@ -42,31 +42,30 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public Tag findByDescription(String description) throws ValidationException {
         Tag tag = ValidationService.safeGetUniqueResult(tagRepository.findByDescription(description));
-        if (tag != null) {
-            return tag;
-        } else {
+        if (tag == null) {
             throw new ValidationException("tag does not exist");
         }
+        return tag;
     }
 
     @Transactional
     public boolean deleteTag(int tagId) {
         Tag tag = tagRepository.findById(tagId);
-        if (tag != null) {
-            return tagRepository.deleteTag(tag);
-        } else {
+        if (tag == null) {
             return false;
         }
+        return tagRepository.deleteTag(tag);
+
     }
 
     @Transactional
     public List<Book> findBooks(int tagId) throws ValidationException {
         Tag tag = tagRepository.findById(tagId);
-        if (tag != null) {
-            return new ArrayList<>(tagRepository.findBooks(tagId));
-        } else {
+        if (tag == null) {
             throw new ValidationException("invalid id");
         }
+        return new ArrayList<>(tagRepository.findBooks(tagId));
+
     }
 
 }

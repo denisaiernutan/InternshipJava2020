@@ -43,7 +43,8 @@ public class BookRentController {
             if (bookRentReturnDTO.getGrade() > 5 || bookRentReturnDTO.getGrade() < 1)
                 return new ResponseEntity<>("you have to give a grade from 1 to 5 ", HttpStatus.NOT_ACCEPTABLE);
             BookRent bookRent = BookRentConverter.convertToEntity(bookRentReturnDTO);
-            return new ResponseEntity<>(BookRentConverter.convertToBookRentWithIdDTO(bookRentManager.returnBook(bookRent)), HttpStatus.OK);
+            BookRent returnedBookRent = bookRentManager.returnBook(bookRent);
+            return new ResponseEntity<>(BookRentConverter.convertToBookRentWithIdDTO(returnedBookRent), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 

@@ -9,7 +9,6 @@ import com.arobs.project.repository.RentRequestRepository;
 import com.arobs.project.service.BookService;
 import com.arobs.project.service.EmployeeService;
 import com.arobs.project.service.RentRequestService;
-import com.arobs.project.service.ValidationRent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,29 +26,35 @@ public class RentReqServiceImpl implements RentRequestService {
 
     private EmployeeService employeeService;
 
-    private ValidationRent validationRent;
-
 
     @Autowired
     public RentReqServiceImpl(RentRequestRepository rentRequestRepository, BookService bookService,
-                              EmployeeService employeeService, ValidationRent validationRent) {
+                              EmployeeService employeeService) {
         this.rentRequestRepository = rentRequestRepository;
         this.bookService = bookService;
         this.employeeService = employeeService;
-        this.validationRent = validationRent;
-
     }
 
 
     @Override
     @Transactional
     public RentRequest insertRentRequest(int bookId, int employeeId) throws ValidationException {
-        validationRent.validateRent(bookId, employeeId);
+        validateRent(bookId, employeeId);
         Book book = bookService.findById(bookId);
         Employee employee = employeeService.findById(employeeId);
         RentRequest rentRequest = new RentRequest(employee, book, new Timestamp(System.currentTimeMillis()),
                 RentReqStatus.WAITING_FOR_AVAILABLE_COPY.toString());
         return rentRequestRepository.insertRentRequest(rentRequest);
+    }
+
+    private void validateRent(int bookId, int employeeId) throws ValidationException {
+        if (bookService.existBookInDb(bookId)) {
+            if (employeeService.findById(employeeId) == null) {
+                throw new ValidationException("employee id invalid");
+            }
+        } else {
+            throw new ValidationException("book id invalid");
+        }
     }
 
     @Override

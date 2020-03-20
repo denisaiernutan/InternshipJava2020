@@ -70,11 +70,14 @@ public class BookRentServiceImpl implements BookRentService {
     }
 
     private boolean employeeHasNotPermissionToRentNewBook(Employee employee, Book book) {
-        if (employee.isBanned()) return true;
+        if (employee.isBanned()) {
+            return true;
+        }
 
         Set<BookRent> bookRentList = employee.getBookRentSet();
         for (BookRent bookRent : bookRentList) {
-            if (bookRent.getBook().equals(book) && bookRent.getBookRentStatus().equals(BookRentStatus.ON_GOING.toString()))
+            if (bookRent.getBook().equals(book)
+                    && bookRent.getBookRentStatus().equals(BookRentStatus.ON_GOING.toString()))
                 return true;
         }
         return false;

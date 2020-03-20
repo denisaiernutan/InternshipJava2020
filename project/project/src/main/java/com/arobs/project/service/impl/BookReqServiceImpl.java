@@ -28,33 +28,24 @@ public class BookReqServiceImpl implements BookRequestService {
     @Override
     @Transactional
     public BookRequest insertBookRequest(BookRequest bookRequest) throws ValidationException {
-        if (bookRequest.getBookReqStatus().toUpperCase().equals(BookRequestStatus.PENDING.toString())) {
-            Employee employee = employeeService.findById(bookRequest.getEmployee().getEmployeeId());
-            if (employee == null) {
-                throw new ValidationException(" employee id invalid ");
-            }
-            bookRequest.setEmployee(employee);
-            return bookRequestRepository.insertBookRequest(bookRequest);
-        } else {
-            throw new ValidationException("status invalid! Accepted status: PENDING");
+
+        Employee employee = employeeService.findById(bookRequest.getEmployee().getEmployeeId());
+        if (employee == null) {
+            throw new ValidationException(" employee id invalid ");
         }
+        bookRequest.setBookReqStatus(BookRequestStatus.PENDING.toString());
+        bookRequest.setEmployee(employee);
+        return bookRequestRepository.insertBookRequest(bookRequest);
     }
 
 
     @Override
     @Transactional
     public BookRequest updateBookRequest(BookRequest bookRequest) throws ValidationException {
-        try {
-            BookRequestStatus.valueOf(bookRequest.getBookReqStatus().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("status invalid! Accepted status: PENDING,ACCEPTED,REJECTED");
-        }
-
         BookRequest foundBookRequest = bookRequestRepository.findById(bookRequest.getBookReqId());
         if (foundBookRequest == null) {
             throw new ValidationException("id invalid");
         }
-
         return bookRequestRepository.updateBookRequest(bookRequest);
     }
 

@@ -18,10 +18,9 @@ public class BookRequestDTO {
 
     private Double totalCost;
 
-    private String bookReqStatus;
 
     public BookRequestDTO(int employeeId, String bookTitle, String bookAuthor, String publishingCompany,
-                          String onlineLibrary, int noCopies, Double totalCost, String bookReqStatus) {
+                          String onlineLibrary, int noCopies, Double totalCost) {
 
         this.employeeId = employeeId;
         this.bookTitle = bookTitle;
@@ -30,7 +29,6 @@ public class BookRequestDTO {
         this.onlineLibrary = onlineLibrary;
         this.noCopies = noCopies;
         this.totalCost = totalCost;
-        this.bookReqStatus = bookReqStatus;
     }
 
     public BookRequestDTO() {
@@ -92,11 +90,4 @@ public class BookRequestDTO {
         this.totalCost = totalCost;
     }
 
-    public String getBookReqStatus() {
-        return bookReqStatus;
-    }
-
-    public void setBookReqStatus(String bookReqStatus) {
-        this.bookReqStatus = bookReqStatus;
-    }
 }

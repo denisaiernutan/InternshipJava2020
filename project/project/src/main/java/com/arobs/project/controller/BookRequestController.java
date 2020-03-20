@@ -3,6 +3,8 @@ package com.arobs.project.controller;
 import com.arobs.project.converter.BookRequestConverter;
 import com.arobs.project.dto.bookRequest.BookReqUpdateDTO;
 import com.arobs.project.dto.bookRequest.BookRequestDTO;
+import com.arobs.project.entity.BookRequest;
+import com.arobs.project.enums.BookRequestStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,9 @@ public class BookRequestController {
     @PostMapping
     public ResponseEntity<?> insertBookRequest(@RequestBody BookRequestDTO bookRequestDTO) {
         try {
-            BookRequestDTO bookRequestDTOReturn = BookRequestConverter.convertToDTO(bookRequestService.insertBookRequest(BookRequestConverter.convertToEntity(bookRequestDTO)));
+            BookRequest bookRequest = BookRequestConverter.convertToEntity(bookRequestDTO);
+            BookRequest insertedBookRequest = bookRequestService.insertBookRequest(bookRequest);
+            BookRequestDTO bookRequestDTOReturn = BookRequestConverter.convertToBookReqWithIdDTO(insertedBookRequest);
             return new ResponseEntity<>(bookRequestDTOReturn, HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -35,14 +39,25 @@ public class BookRequestController {
 
     @GetMapping
     public ResponseEntity<?> findAll() {
-        return new ResponseEntity<>(bookRequestService.findAll().stream().map(BookRequestConverter::convertToBookReqWithIdDTO).collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(bookRequestService.findAll()
+                .stream()
+                .map(BookRequestConverter::convertToBookReqWithIdDTO)
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<?> updateBookRequest(@RequestBody BookReqUpdateDTO bookReqUpdateDTO) {
         try {
-
-            return new ResponseEntity<>(BookRequestConverter.convertToBookReqWithIdDTO(bookRequestService.updateBookRequest(BookRequestConverter.convertToEntity(bookReqUpdateDTO))), HttpStatus.OK);
+            BookRequestStatus.valueOf(bookReqUpdateDTO.getBookReqStatus().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("status invalid! Accepted status: PENDING,ACCEPTED,REJECTED",
+                    HttpStatus.BAD_REQUEST);
+        }
+        try {
+            BookRequest bookRequest = BookRequestConverter.convertToEntity(bookReqUpdateDTO);
+            BookRequest updatedBookRequest = bookRequestService.updateBookRequest(bookRequest);
+            return new ResponseEntity<>(BookRequestConverter.convertToBookReqWithIdDTO(updatedBookRequest),
+                    HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

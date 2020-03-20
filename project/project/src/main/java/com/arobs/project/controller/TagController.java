@@ -2,8 +2,8 @@ package com.arobs.project.controller;
 
 import com.arobs.project.converter.BookConverter;
 import com.arobs.project.converter.TagConverter;
-import com.arobs.project.dto.tag.TagWithIdDTO;
 import com.arobs.project.entity.Book;
+import com.arobs.project.entity.Tag;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,9 @@ public class TagController {
     }
 
     @PostMapping(value = "/{descr}")
-    public TagWithIdDTO insertTag(@PathVariable("descr") String description) {
-        return TagConverter.convertToTagWithIdDTO(tagService.insertTag(description));
+    public ResponseEntity<?> insertTag(@PathVariable("descr") String description) {
+        Tag insertedTag = tagService.insertTag(description);
+        return new ResponseEntity<>(TagConverter.convertToTagWithIdDTO(insertedTag), HttpStatus.OK);
     }
 
     @DeleteMapping

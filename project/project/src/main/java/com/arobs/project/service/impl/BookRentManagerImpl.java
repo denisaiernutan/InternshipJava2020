@@ -45,16 +45,14 @@ public class BookRentManagerImpl implements BookRentManager {
         BookRent updatedBookRent = bookRentService.findById(bookRent.getBook().getBookId());
         if (updatedBookRent == null) {
             throw new ValidationException("bookRent id invalid");
-        } else {
-            updateEmployeeFromBookRent(updatedBookRent);
-            updatedBookRent.setReturnDate(new Date(new java.util.Date().getTime()));
-            updatedBookRent.setBookRentStatus(BookRentStatus.RETURNED.toString());
-            updatedBookRent.setGrade(bookRent.getGrade());
-            Copy copy = updatedBookRent.getCopy();
-
-            manageRentRequest(updatedBookRent.getBook(), copy);
-            return updatedBookRent;
         }
+        updateEmployeeFromBookRent(updatedBookRent);
+        updatedBookRent.setReturnDate(new Date(new java.util.Date().getTime()));
+        updatedBookRent.setBookRentStatus(BookRentStatus.RETURNED.toString());
+        updatedBookRent.setGrade(bookRent.getGrade());
+        Copy copy = updatedBookRent.getCopy();
+        manageRentRequest(updatedBookRent.getBook(), copy);
+        return updatedBookRent;
     }
 
 

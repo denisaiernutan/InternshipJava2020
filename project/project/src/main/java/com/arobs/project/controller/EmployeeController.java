@@ -4,6 +4,7 @@ import com.arobs.project.converter.EmployeeConverter;
 import com.arobs.project.dto.employee.EmployeeNewPassDTO;
 import com.arobs.project.dto.employee.EmployeeWithPassDTO;
 import com.arobs.project.entity.Employee;
+import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,15 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<?> insertEmployee(@RequestBody @Valid EmployeeWithPassDTO employeeDTO) {
         try {
-            return new ResponseEntity<>(EmployeeConverter.convertToEmployeeWithPassDTO(employeeService.insertEmployee(EmployeeConverter.convertToEntity(employeeDTO))), HttpStatus.OK);
+            CopyStatus.valueOf(employeeDTO.getEmployeeRole().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("invalid employee role. Accepted role:USER, ADMIN",
+                    HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Employee newEmployee = EmployeeConverter.convertToEntity(employeeDTO);
+            Employee insertedEmployee = employeeService.insertEmployee(newEmployee);
+            return new ResponseEntity<>(EmployeeConverter.convertToEmployeeWithPassDTO(insertedEmployee), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -52,6 +61,9 @@ public class EmployeeController {
 
     @PutMapping
     public ResponseEntity<?> updatePasswordEmployee(@RequestBody @Valid EmployeeNewPassDTO employeeNewPassDTO) {
+        if (employeeNewPassDTO.getEmployeeNewPass().equals(employeeNewPassDTO.getEmployeeOldPass())) {
+            return new ResponseEntity<>("old password and the new one are the same", HttpStatus.BAD_REQUEST);
+        }
         try {
             return new ResponseEntity<>(employeeService.updatePasswordEmployee(employeeNewPassDTO), HttpStatus.OK);
         } catch (ValidationException e) {

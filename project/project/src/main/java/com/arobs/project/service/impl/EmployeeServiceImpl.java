@@ -4,7 +4,6 @@ import com.arobs.project.converter.EmployeeConverter;
 import com.arobs.project.dto.employee.EmployeeNewPassDTO;
 import com.arobs.project.dto.employee.EmployeeWithPassDTO;
 import com.arobs.project.entity.Employee;
-import com.arobs.project.enums.EmployeeRole;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.EmployeeRepository;
 import com.arobs.project.repository.RepoFactory;
@@ -47,7 +46,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public Employee insertEmployee(Employee employee) throws ValidationException {
         if (employeeRepository.findByEmail(employee.getEmployeeEmail()).isEmpty()) {
-            verifyEmployeeRole(employee.getEmployeeRole());
             employee.setBanned(false);
             return employeeRepository.insertEmployee(employee);
         } else {
@@ -55,12 +53,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    private void verifyEmployeeRole(String employeeRole) throws ValidationException {
-        if (employeeRole.toUpperCase().equals(EmployeeRole.USER.toString()) ||
-                employeeRole.toUpperCase().equals(EmployeeRole.ADMIN.toString()))
-            return;
-        throw new ValidationException("employee role invalid");
-    }
 
     @Transactional
     public boolean deleteEmployee(int employeeId) throws ValidationException {
@@ -77,33 +69,33 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     public EmployeeWithPassDTO updatePasswordEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
-        String oldPassword = validateEmployee(employeeNewPassDTO);
-        String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
-        if (oldPassword.equals(oldPassFromEmpl)) {
-            Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeId(),
-                    employeeNewPassDTO.getEmployeeNewPass());
-            return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
-        } else {
+        if (oldPasswordIsNotValid(employeeNewPassDTO)) {
             throw new ValidationException("old password is incorrect!");
         }
+        Employee employee = employeeRepository.updatePassword(employeeNewPassDTO.getEmployeeId(),
+                employeeNewPassDTO.getEmployeeNewPass());
+        return EmployeeConverter.convertToEmployeeWithPassDTO(employee);
     }
 
-    private String validateEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
+    private boolean oldPasswordIsNotValid(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
+        String oldPassword = getOldPasswordForEmployee(employeeNewPassDTO);
+        String oldPassFromEmpl = encryptPass(employeeNewPassDTO.getEmployeeOldPass());
+        return !oldPassword.equals(oldPassFromEmpl);
+    }
+
+    private String getOldPasswordForEmployee(EmployeeNewPassDTO employeeNewPassDTO) throws ValidationException {
         String oldPassword;
-        if (!employeeNewPassDTO.getEmployeeNewPass().equals(employeeNewPassDTO.getEmployeeOldPass())) {
-            try {
-                oldPassword = employeeRepository.getPasswordById(employeeNewPassDTO.getEmployeeId());
-                if (oldPassword.isEmpty()) {
-                    throw new ValidationException("invalid id");
-                } else return oldPassword;
-            } catch (EmptyResultDataAccessException e) {
+        try {
+            oldPassword = employeeRepository.getPasswordById(employeeNewPassDTO.getEmployeeId());
+            if (oldPassword.isEmpty()) {
                 throw new ValidationException("invalid id");
             }
-        } else {
-            throw new ValidationException("old password and the new one are the same");
+            return oldPassword;
+        } catch (EmptyResultDataAccessException e) {
+            throw new ValidationException("invalid id");
         }
-
     }
+
 
     private String encryptPass(String password) {
         MessageDigest md = null;
