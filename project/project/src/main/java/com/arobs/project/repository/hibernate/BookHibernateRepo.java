@@ -58,17 +58,10 @@ public class BookHibernateRepo implements BookRepository {
     @Override
     public Book findById(int bookId) {
         Session session = this.sessionFactory.getCurrentSession();
-        String hql = "SELECT b from Book b join fetch b.tagSet where b.bookId= :bookid";
-        //fix it
-        return session.createQuery(hql, Book.class).setParameter("bookid", bookId).getSingleResult();
+        return session.get(Book.class, bookId);
 
     }
 
-    @Override
-    public boolean existBookInDb(int bookId) {
-        Session session = this.sessionFactory.getCurrentSession();
-        return null != session.get(Book.class, bookId);
-    }
 
     @Override
     public Set<Copy> findCopies(int bookId) {

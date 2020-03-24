@@ -18,7 +18,6 @@ public interface BookRepository {
 
     Book findById(int bookId);
 
-    boolean existBookInDb(int bookId);
 
     Set<Copy> findCopies(int bookId);
 

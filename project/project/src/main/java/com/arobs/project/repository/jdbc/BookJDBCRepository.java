@@ -69,8 +69,4 @@ public class BookJDBCRepository implements BookRepository {
         return null;
     }
 
-    @Override
-    public boolean existBookInDb(int bookId) {
-        return false;
-    }
 }

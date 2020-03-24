@@ -20,5 +20,4 @@ public interface BookService {
 
     List<Copy> findCopies(int bookId) throws ValidationException;
 
-    boolean existBookInDb(int bookId);
 }

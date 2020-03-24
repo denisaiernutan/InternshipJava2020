@@ -48,13 +48,14 @@ public class RentReqServiceImpl implements RentRequestService {
     }
 
     private void validateRent(int bookId, int employeeId) throws ValidationException {
-        if (bookService.existBookInDb(bookId)) {
-            if (employeeService.findById(employeeId) == null) {
-                throw new ValidationException("employee id invalid");
-            }
-        } else {
+
+        if (bookService.findById(bookId) == null) {
             throw new ValidationException("book id invalid");
         }
+        if (employeeService.findById(employeeId) == null) {
+            throw new ValidationException("employee id invalid");
+        }
+
     }
 
     @Override

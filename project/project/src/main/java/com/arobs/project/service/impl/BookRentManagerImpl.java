@@ -89,24 +89,26 @@ public class BookRentManagerImpl implements BookRentManager {
     @Override
     @Transactional
     public RentRequest acceptRentRequest(boolean accepted, int rentRequestId) throws ValidationException {
-        if (accepted) {
-            return confirmRentRequest(rentRequestId);
+        RentRequest rentRequest = rentRequestService.findById(rentRequestId);
+        if (rentRequest == null) {
+            throw new ValidationException("invalid rent request id");
         }
-        return declineRentRequest(rentRequestId);
+
+        Copy copy = copyService.findCopiesForBookByStatus(rentRequest.getBook().getBookId(), CopyStatus.PENDING).get(0);
+        if (accepted) {
+            return confirmRentRequest(rentRequest, copy);
+        }
+        return declineRentRequest(rentRequest, copy);
     }
 
-    private RentRequest confirmRentRequest(int rentRequestId) throws ValidationException {
-        RentRequest rentRequest = rentRequestService.findById(rentRequestId);
-        Copy copy = copyService.findCopiesForBookByStatus(rentRequest.getBook().getBookId(), CopyStatus.PENDING).get(0);
+    private RentRequest confirmRentRequest(RentRequest rentRequest, Copy copy) {
         bookRentService.insertBookRent(new BookRent(), copy, rentRequest.getEmployee(), rentRequest.getBook());
         rentRequest.setRentReqStatus(RentReqStatus.GRANTED.toString());
         return rentRequest;
     }
 
-    private RentRequest declineRentRequest(int rentRequestId) throws ValidationException {
-        RentRequest rentRequest = rentRequestService.findById(rentRequestId);
+    private RentRequest declineRentRequest(RentRequest rentRequest, Copy copy) {
         rentRequest.setRentReqStatus(RentReqStatus.DECLINED.toString());
-        Copy copy = copyService.findCopiesForBookByStatus(rentRequest.getBook().getBookId(), CopyStatus.PENDING).get(0);
         manageRentRequest(rentRequest.getBook(), copy);
         return rentRequest;
     }

@@ -35,8 +35,7 @@ public class BookRentHibernateRepo implements BookRentRepository {
     @Override
     public BookRent findById(int bookRentId) {
         Session session = sessionFactory.getCurrentSession();
-        String hql = "from BookRent br join fetch br.employee e where br.bookRentId= :bookRentId";
-        return session.createQuery(hql, BookRent.class).setParameter("bookRentId", bookRentId).list().get(0);
+        return session.get(BookRent.class,bookRentId);
     }
 
     @Override

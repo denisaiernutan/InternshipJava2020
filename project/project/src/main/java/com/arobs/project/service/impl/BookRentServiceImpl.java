@@ -45,10 +45,14 @@ public class BookRentServiceImpl implements BookRentService {
     @Transactional
     public BookRent tryToMakeBookRent(BookRent bookRent) throws ValidationException {
         {
-            if (!bookService.existBookInDb(bookRent.getBook().getBookId())) {
+//            if (!bookService.existBookInDb(bookRent.getBook().getBookId())) {
+//                throw new ValidationException("book id invalid");
+//            }
+
+            Book book = bookService.findById(bookRent.getBook().getBookId());
+            if(book==null){
                 throw new ValidationException("book id invalid");
             }
-            Book book = bookService.findById(bookRent.getBook().getBookId());
             Employee employee = employeeService.findById(bookRent.getEmployee().getEmployeeId());
             if (employee == null) {
                 throw new ValidationException("employee id invalid");
@@ -112,6 +116,9 @@ public class BookRentServiceImpl implements BookRentService {
         int MAX_RENTAL_PERIOD = 3;
         int EXTENSION_OF_RENTAL = 15;
         BookRent bookRent = bookRentRepository.findById(bookRentId);
+        if (bookRent == null) {
+            throw new ValidationException("book rent id invalid");
+        }
 
         if (askForExtensionIsNotInTheLastFiveDays(bookRent.getReturnDate(), bookRent.getBookRentStatus())) {
             throw new ValidationException("you may ask for extension in your last 5 days of rental");

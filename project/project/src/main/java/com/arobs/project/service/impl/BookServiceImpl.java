@@ -93,12 +93,17 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     public Book updateBook(Book book) throws ValidationException {
-        if (bookRepository.existBookInDb(book.getBookId())) {
-            book.setTagSet(listTags(book.getTagSet()));
-            return bookRepository.updateBook(book);
-        } else {
+        Book foundBook = bookRepository.findById(book.getBookId());
+        if (foundBook == null) {
             throw new ValidationException("invalid id");
         }
+        Set<Tag> tagSet = listTags(book.getTagSet());
+        foundBook.setTagSet(tagSet);
+        foundBook.setBookDescription(book.getBookDescription());
+        foundBook.setBookAuthor(book.getBookAuthor());
+        foundBook.setBookTitle(book.getBookTitle());
+
+        return foundBook;
     }
 
 
@@ -125,15 +130,11 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     public List<Copy> findCopies(int bookId) throws ValidationException {
-        if (bookRepository.existBookInDb(bookId)) {
-            return new ArrayList<>(bookRepository.findCopies(bookId));
-        } else {
-            throw new ValidationException("invalid id");
+        Book book = bookRepository.findById(bookId);
+        if (book == null) {
+            throw new ValidationException("book id invalid");
         }
+        return new ArrayList<>(book.getCopySet());
     }
 
-    @Override
-    public boolean existBookInDb(int bookId) {
-        return bookRepository.existBookInDb(bookId);
-    }
 }
