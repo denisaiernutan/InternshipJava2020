@@ -20,4 +20,6 @@ public interface BookRentRepository {
     List<Book> listBooksRented(Date startDate, Date endDate);
 
     List<Employee> listXEmployeesByNoOfBooksRead(int noOfEmployees, Date startDate, Date endDate);
+
+    List<Employee> listLateEmployees();
 }

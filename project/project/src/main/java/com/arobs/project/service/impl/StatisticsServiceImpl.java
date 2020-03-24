@@ -35,4 +35,10 @@ public class StatisticsServiceImpl implements StatisticsService {
     public List<Employee> listXEmployeesByNoOfBooksRead(int noOfEmployees, Date startDate, Date endDate) {
         return bookRentRepository.listXEmployeesByNoOfBooksRead(noOfEmployees, startDate, endDate);
     }
+
+    @Override
+    @Transactional
+    public List<Employee> listLateEmployees() {
+        return bookRentRepository.listLateEmployees();
+    }
 }

@@ -21,4 +21,5 @@ public interface BookRepository {
     boolean existBookInDb(int bookId);
 
     Set<Copy> findCopies(int bookId);
+
 }

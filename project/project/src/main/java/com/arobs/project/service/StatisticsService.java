@@ -12,4 +12,6 @@ public interface StatisticsService {
 
     List<Employee> listXEmployeesByNoOfBooksRead(int noOfEmployees, Date startDate, Date endDate);
 
+    List<Employee> listLateEmployees();
+
 }

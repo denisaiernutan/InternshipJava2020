@@ -103,7 +103,12 @@ public class BookRentHibernateRepo implements BookRentRepository {
         return objectList.stream()
                 .map(o -> (Employee) o[0])
                 .collect(Collectors.toList());
+    }
 
-
+    @Override
+    public List<Employee> listLateEmployees() {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "select distinct employee from BookRent br where br.bookRentStatus='LATE'";
+        return session.createQuery(hql, Employee.class).list();
     }
 }

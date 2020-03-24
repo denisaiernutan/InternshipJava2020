@@ -75,4 +75,6 @@ public class BookHibernateRepo implements BookRepository {
         Session session = this.sessionFactory.getCurrentSession();
         return session.get(Book.class, bookId).getCopySet();
     }
+
+
 }

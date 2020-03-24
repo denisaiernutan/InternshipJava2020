@@ -43,4 +43,12 @@ public class StatisticsController {
                 .map(EmployeeConverter::convertToEmployeeDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
+
+    @GetMapping("/listlateemployees")
+    public ResponseEntity<?> listLateEmployees() {
+        return new ResponseEntity<>(statisticsService.listLateEmployees()
+                .stream()
+                .map(EmployeeConverter::convertToEmployeeDTO)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
 }
