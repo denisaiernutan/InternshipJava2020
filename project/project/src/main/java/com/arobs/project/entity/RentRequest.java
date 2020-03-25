@@ -2,6 +2,7 @@ package com.arobs.project.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Table(name = "rent_requests")
@@ -104,5 +105,36 @@ public class RentRequest {
 
     public void setSentEmailDate(Timestamp sentEmailDate) {
         this.sentEmailDate = sentEmailDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RentRequest)) return false;
+        RentRequest that = (RentRequest) o;
+        return getRentReqId() == that.getRentReqId() &&
+                Objects.equals(getEmployee(), that.getEmployee()) &&
+                Objects.equals(getBook(), that.getBook()) &&
+                Objects.equals(getRequestDate(), that.getRequestDate()) &&
+                Objects.equals(getRentReqStatus(), that.getRentReqStatus()) &&
+                Objects.equals(getSentEmailDate(), that.getSentEmailDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRentReqId(), getEmployee(), getBook(), getRequestDate(), getRentReqStatus(),
+                getSentEmailDate());
+    }
+
+    @Override
+    public String toString() {
+        return "RentRequest{" +
+                "rentReqId=" + rentReqId +
+                ", employee=" + employee +
+                ", book=" + book +
+                ", requestDate=" + requestDate +
+                ", rentReqStatus='" + rentReqStatus + '\'' +
+                ", sentEmailDate=" + sentEmailDate +
+                '}';
     }
 }

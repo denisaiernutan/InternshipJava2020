@@ -8,10 +8,6 @@ public class TagConverter {
 
     private static ModelMapper modelMapper = new ModelMapper();
 
-    public static TagWithIdDTO convertToDTO(Tag tag) {
-        return modelMapper.map(tag, TagWithIdDTO.class);
-    }
-
     public static Tag convertToEntity(TagWithIdDTO tagDTO) {
         return modelMapper.map(tagDTO, Tag.class);
     }

@@ -35,7 +35,8 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     public Tag insertTag(String description) {
-        return tagRepository.insertTag(new Tag(description));
+        Tag tag = new Tag(description);
+        return tagRepository.insertTag(tag);
     }
 
 

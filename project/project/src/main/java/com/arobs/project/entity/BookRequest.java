@@ -1,6 +1,7 @@
 package com.arobs.project.entity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "book_requests")
@@ -122,5 +123,42 @@ public class BookRequest {
 
     public void setBookReqStatus(String bookReqStatus) {
         this.bookReqStatus = bookReqStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BookRequest)) return false;
+        BookRequest that = (BookRequest) o;
+        return getBookReqId() == that.getBookReqId() &&
+                getNoCopies() == that.getNoCopies() &&
+                Objects.equals(getEmployee(), that.getEmployee()) &&
+                Objects.equals(getBookTitle(), that.getBookTitle()) &&
+                Objects.equals(getBookAuthor(), that.getBookAuthor()) &&
+                Objects.equals(getPublishingCompany(), that.getPublishingCompany()) &&
+                Objects.equals(getOnlineLibrary(), that.getOnlineLibrary()) &&
+                Objects.equals(getTotalCost(), that.getTotalCost()) &&
+                Objects.equals(getBookReqStatus(), that.getBookReqStatus());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBookReqId(), getEmployee(), getBookTitle(), getBookAuthor(), getPublishingCompany(),
+                getOnlineLibrary(), getNoCopies(), getTotalCost(), getBookReqStatus());
+    }
+
+    @Override
+    public String toString() {
+        return "BookRequest{" +
+                "bookReqId=" + bookReqId +
+                ", employee=" + employee +
+                ", bookTitle='" + bookTitle + '\'' +
+                ", bookAuthor='" + bookAuthor + '\'' +
+                ", publishingCompany='" + publishingCompany + '\'' +
+                ", onlineLibrary='" + onlineLibrary + '\'' +
+                ", noCopies=" + noCopies +
+                ", totalCost=" + totalCost +
+                ", bookReqStatus='" + bookReqStatus + '\'' +
+                '}';
     }
 }

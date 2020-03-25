@@ -2,18 +2,24 @@ package com.arobs.project.dto.book;
 
 import com.arobs.project.dto.tag.TagDTO;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 public class BookUpdateDTO {
 
+    @NotNull
     private int bookId;
 
+    @NotNull
     private String bookTitle;
 
+    @NotNull
     private String bookAuthor;
 
+    @NotNull
     private String bookDescription;
 
+    @NotNull
     private Set<TagDTO> tagSet;
 
     public BookUpdateDTO(int bookId, String bookTitle, String bookAuthor, String bookDescription, Set<TagDTO> tagSet) {

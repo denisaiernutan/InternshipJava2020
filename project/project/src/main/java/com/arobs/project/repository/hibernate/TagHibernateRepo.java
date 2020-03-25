@@ -25,8 +25,9 @@ public class TagHibernateRepo implements TagRepository {
     public List<Tag> findByDescription(String description) {
         String hql = "from Tag where tagDescription= :descr";
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery(hql, Tag.class).setParameter("descr", description).list();
-
+        return session.createQuery(hql, Tag.class)
+                .setParameter("descr", description)
+                .list();
     }
 
     @Override
@@ -51,6 +52,7 @@ public class TagHibernateRepo implements TagRepository {
     @Override
     public Set<Book> findBooks(int tagId) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Tag.class, tagId).getBookSet();
+        return session.get(Tag.class, tagId)
+                .getBookSet();
     }
 }

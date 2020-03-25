@@ -2,6 +2,7 @@ package com.arobs.project.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "book_rents")
@@ -57,7 +58,6 @@ public class BookRent {
         this.bookRentStatus = bookRentStatus;
         this.grade = grade;
     }
-
 
 
     public int getBookRentId() {
@@ -122,5 +122,40 @@ public class BookRent {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BookRent)) return false;
+        BookRent bookRent = (BookRent) o;
+        return getBookRentId() == bookRent.getBookRentId() &&
+                Objects.equals(getBook(), bookRent.getBook()) &&
+                Objects.equals(getCopy(), bookRent.getCopy()) &&
+                Objects.equals(getEmployee(), bookRent.getEmployee()) &&
+                Objects.equals(getRentalDate(), bookRent.getRentalDate()) &&
+                Objects.equals(getReturnDate(), bookRent.getReturnDate()) &&
+                Objects.equals(getBookRentStatus(), bookRent.getBookRentStatus()) &&
+                Objects.equals(getGrade(), bookRent.getGrade());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBookRentId(), getBook(), getCopy(), getEmployee(), getRentalDate(), getReturnDate(),
+                getBookRentStatus(), getGrade());
+    }
+
+    @Override
+    public String toString() {
+        return "BookRent{" +
+                "bookRentId=" + bookRentId +
+                ", book=" + book +
+                ", copy=" + copy +
+                ", employee=" + employee +
+                ", rentalDate=" + rentalDate +
+                ", returnDate=" + returnDate +
+                ", bookRentStatus='" + bookRentStatus + '\'' +
+                ", grade=" + grade +
+                '}';
     }
 }

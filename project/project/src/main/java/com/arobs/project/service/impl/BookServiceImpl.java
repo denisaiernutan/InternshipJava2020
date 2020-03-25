@@ -10,12 +10,12 @@ import com.arobs.project.repository.RepoFactory;
 import com.arobs.project.service.BookService;
 import com.arobs.project.service.BookTagService;
 import com.arobs.project.service.TagService;
+import com.arobs.project.utils.UtilDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,9 +46,8 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     public Book insertBook(Book book) {
-        book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
+        book.setBookAddedDate(UtilDate.getNowTimestamp());
         Set<Tag> tagSet = listTags(book.getTagSet());
-        //strategy ?
         if (bookRepository.getClass().getName().contains("BookJDBCRepository")) {
             book = insertBookJDBC(book, tagSet);
         } else {
@@ -62,7 +61,8 @@ public class BookServiceImpl implements BookService {
         book = bookRepository.insertBook(book);
         if (!tagSet.isEmpty()) {
             for (Tag tag : tagSet) {
-                bookTagService.insertBookTag(new BookTag(book, tag));
+                BookTag newBookTag = new BookTag(book, tag);
+                bookTagService.insertBookTag(newBookTag);
             }
         }
         return book;

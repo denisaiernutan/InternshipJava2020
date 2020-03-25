@@ -1,6 +1,5 @@
 package com.arobs.project.converter;
 
-import com.arobs.project.dto.copy.CopyDTO;
 import com.arobs.project.dto.copy.CopyUpdateDTO;
 import com.arobs.project.dto.copy.CopyWithIdDTO;
 import com.arobs.project.entity.Book;
@@ -8,19 +7,10 @@ import com.arobs.project.entity.Copy;
 import org.modelmapper.ModelMapper;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class CopyConverter {
     private static ModelMapper modelMapper = new ModelMapper();
-
-    public static Copy convertToEntity(CopyDTO copyDTO) {
-        Copy copy = modelMapper.map(copyDTO, Copy.class);
-        copy.setBook(new Book(copyDTO.getBook()));
-        return copy;
-    }
-
-    public static CopyDTO convertToDTO(Copy copy) {
-        return modelMapper.map(copy, CopyDTO.class);
-    }
 
     public static Copy convertToEntity(CopyWithIdDTO copyDTO) {
         return modelMapper.map(copyDTO, Copy.class);
@@ -28,7 +18,8 @@ public class CopyConverter {
 
     public static CopyWithIdDTO convertToCopyWithIdDTO(Copy copy) {
         Book book = copy.getBook();
-        book.setTagSet(new HashSet<>());
+        Set tagSet = new HashSet<>();
+        book.setTagSet(tagSet);
         return new CopyWithIdDTO(copy.getCopyId(), copy.isCopyFlag(), copy.getCopyStatus(),
                 BookConverter.convertToBookWithIdDTO(book));
 

@@ -1,25 +1,23 @@
 package com.arobs.project.service.impl;
 
-import com.arobs.project.entity.Book;
-import com.arobs.project.entity.BookRent;
-import com.arobs.project.entity.Copy;
-import com.arobs.project.entity.Employee;
+import com.arobs.project.entity.*;
 import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.enums.CopyStatus;
+import com.arobs.project.enums.RentReqStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.repository.BookRentRepository;
-import com.arobs.project.service.BookRentService;
-import com.arobs.project.service.BookService;
-import com.arobs.project.service.CopyService;
-import com.arobs.project.service.EmployeeService;
+import com.arobs.project.service.*;
 import com.arobs.project.utils.UtilDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -29,31 +27,30 @@ public class BookRentServiceImpl implements BookRentService {
     private BookService bookService;
     private EmployeeService employeeService;
     private CopyService copyService;
+    private RentRequestService rentRequestService;
 
 
     @Autowired
     public BookRentServiceImpl(BookRentRepository bookRentRepository, BookService bookService,
-                               EmployeeService employeeService, CopyService copyService) {
+                               EmployeeService employeeService, CopyService copyService,
+                               RentRequestService rentRequestService) {
         this.bookRentRepository = bookRentRepository;
         this.bookService = bookService;
         this.employeeService = employeeService;
         this.copyService = copyService;
+        this.rentRequestService = rentRequestService;
 
     }
 
     @Override
     @Transactional
-    public BookRent tryToMakeBookRent(BookRent bookRent) throws ValidationException {
+    public BookRent tryToMakeBookRent(int bookId, int employeeId) throws ValidationException {
         {
-//            if (!bookService.existBookInDb(bookRent.getBook().getBookId())) {
-//                throw new ValidationException("book id invalid");
-//            }
-
-            Book book = bookService.findById(bookRent.getBook().getBookId());
-            if(book==null){
+            Book book = bookService.findById(bookId);
+            if (book == null) {
                 throw new ValidationException("book id invalid");
             }
-            Employee employee = employeeService.findById(bookRent.getEmployee().getEmployeeId());
+            Employee employee = employeeService.findById(employeeId);
             if (employee == null) {
                 throw new ValidationException("employee id invalid");
             }
@@ -61,14 +58,13 @@ public class BookRentServiceImpl implements BookRentService {
                 throw new ValidationException("you don't have permission to rent a book");
             }
 
-            List<Copy> copyList = copyService.findCopiesForBookByStatus(bookRent.getBook().getBookId(),
+            List<Copy> copyList = copyService.findCopiesForBookByStatus(bookId,
                     CopyStatus.AVAILABLE);
             if (copyList.isEmpty()) {
                 throw new ValidationException("there is no copy available. You can register to read this book " +
                         "when it`s available ");
             }
-            insertBookRent(bookRent, copyList.get(0), employee, book);
-            return bookRent;
+            return insertBookRent(copyList.get(0), employee, book);
         }
 
     }
@@ -77,7 +73,6 @@ public class BookRentServiceImpl implements BookRentService {
         if (employee.isBanned()) {
             return true;
         }
-
         Set<BookRent> bookRentList = employee.getBookRentSet();
         for (BookRent bookRent : bookRentList) {
             if (bookRent.getBook().equals(book)
@@ -87,20 +82,21 @@ public class BookRentServiceImpl implements BookRentService {
         return false;
     }
 
-    @Override
-    public void insertBookRent(BookRent bookRent, Copy copy, Employee employee, Book book) {
+
+    private BookRent insertBookRent(Copy copy, Employee employee, Book book) {
         int RENTAL_PERIOD = 1;
 
+        BookRent bookRent = new BookRent();
         bookRent.setBook(book);
         bookRent.setCopy(copy);
         bookRent.setEmployee(employee);
         bookRent.setGrade(0.0);
         bookRent.setBookRentStatus(BookRentStatus.ON_GOING.toString());
-        bookRent.setRentalDate(new Date(new java.util.Date().getTime()));
-        Date returnDate = UtilDate.addMonths(new Date(new java.util.Date().getTime()), RENTAL_PERIOD);
+        bookRent.setRentalDate(UtilDate.getNow());
+        Date returnDate = UtilDate.addMonths(UtilDate.getNow(), RENTAL_PERIOD);
         bookRent.setReturnDate(returnDate);
-        bookRentRepository.insertBookRent(bookRent);
         copy.setCopyStatus(CopyStatus.RENTED.toString());
+        return bookRentRepository.insertBookRent(bookRent);
     }
 
 
@@ -148,7 +144,7 @@ public class BookRentServiceImpl implements BookRentService {
         int DAYS_FOR_ASKING_EXTENSION = 5;
 
         Date fiveDaysBeforeActualReturnDate = UtilDate.addDays(actualReturnDate, -DAYS_FOR_ASKING_EXTENSION);
-        Date today = new Date(new java.util.Date().getTime());
+        Date today = UtilDate.getNow();
         return today.before(fiveDaysBeforeActualReturnDate) || statusBookRent.equals(BookRentStatus.LATE.toString());
     }
 
@@ -160,6 +156,110 @@ public class BookRentServiceImpl implements BookRentService {
             bookRent.setBookRentStatus(BookRentStatus.LATE.toString());
         }
     }
+
+    @Override
+    @Transactional
+    public Copy insertAvailableCopy(int bookId) throws ValidationException {
+        Book book = bookService.findById(bookId);
+        if (book == null) {
+            throw new ValidationException("book id invalid");
+        }
+        Copy copy = new Copy();
+        copy.setCopyFlag(true);
+        copy.setBook(book);
+        Copy newCopy = copyService.insertCopy(copy);
+        manageRentRequest(book, copy);
+        return newCopy;
+    }
+
+    private void manageRentRequest(Book book, Copy copy) {
+        List<RentRequest> rentRequesWaitingForCopyList = rentRequestService.findByBookByStatus(
+                book.getBookId(), RentReqStatus.WAITING_FOR_AVAILABLE_COPY);
+
+        if (rentRequesWaitingForCopyList.isEmpty()) {
+            copy.setCopyStatus(CopyStatus.AVAILABLE.toString());
+        } else {
+            copy.setCopyStatus(CopyStatus.PENDING.toString());
+            rentRequesWaitingForCopyList.sort(Comparator.comparing(RentRequest::getRequestDate));
+            RentRequest rentRequest = rentRequesWaitingForCopyList.get(0);
+            rentRequest.setSentEmailDate(UtilDate.getNowTimestamp());
+            rentRequest.setRentReqStatus(RentReqStatus.WAITING_FOR_CONFIRMATION.toString());
+        }
+    }
+
+    @Override
+    @Transactional
+    public BookRent returnBook(BookRent bookRent) throws ValidationException {
+        BookRent updatedBookRent = findById(bookRent.getBook().getBookId());
+        if (updatedBookRent == null) {
+            throw new ValidationException("bookRent id invalid");
+        }
+        updateEmployeeFromBookRent(updatedBookRent);
+        updatedBookRent.setReturnDate(UtilDate.getNow());
+        updatedBookRent.setBookRentStatus(BookRentStatus.RETURNED.toString());
+        updatedBookRent.setGrade(bookRent.getGrade());
+        Copy copy = updatedBookRent.getCopy();
+        manageRentRequest(updatedBookRent.getBook(), copy);
+        return updatedBookRent;
+    }
+
+
+    private void updateEmployeeFromBookRent(BookRent bookRent) {
+        Employee employee = bookRent.getEmployee();
+        if (employee.isBanned()) {
+            Date lastDayOfBan = computeLastDayOfBanForEmployee(bookRent);
+            employee.setLastDayOfBan(lastDayOfBan);
+            employee.setBanned(true);
+        }
+    }
+
+
+    private Date computeLastDayOfBanForEmployee(BookRent bookRent) {
+        int MIN_BANNED_DAYS = 10;
+
+        long exceededTimeMillis = System.currentTimeMillis() - bookRent.getReturnDate().getTime();
+        int exceededDays = (int) TimeUnit.DAYS.convert(exceededTimeMillis, TimeUnit.MILLISECONDS);
+        int bannedDays = exceededDays * 2;
+
+        Date lastDayOfBanInPresent = bookRent.getEmployee().getLastDayOfBan();
+        if (lastDayOfBanInPresent == null) {
+            lastDayOfBanInPresent = UtilDate.getNow();
+        }
+
+        if (bannedDays < MIN_BANNED_DAYS) {
+            return UtilDate.addDays(lastDayOfBanInPresent, MIN_BANNED_DAYS);
+        } else {
+            return UtilDate.addDays(lastDayOfBanInPresent, bannedDays);
+        }
+    }
+
+    @Override
+    @Transactional
+    public RentRequest acceptRentRequest(boolean accepted, int rentRequestId) throws ValidationException {
+        RentRequest rentRequest = rentRequestService.findById(rentRequestId);
+        if (rentRequest == null) {
+            throw new ValidationException("invalid rent request id");
+        }
+
+        Copy copy = copyService.findCopiesForBookByStatus(rentRequest.getBook().getBookId(), CopyStatus.PENDING).get(0);
+        if (accepted) {
+            return confirmRentRequest(rentRequest, copy);
+        }
+        return declineRentRequest(rentRequest, copy);
+    }
+
+    private RentRequest confirmRentRequest(RentRequest rentRequest, Copy copy) {
+        insertBookRent(copy, rentRequest.getEmployee(), rentRequest.getBook());
+        rentRequest.setRentReqStatus(RentReqStatus.GRANTED.toString());
+        return rentRequest;
+    }
+
+    private RentRequest declineRentRequest(RentRequest rentRequest, Copy copy) {
+        rentRequest.setRentReqStatus(RentReqStatus.DECLINED.toString());
+        manageRentRequest(rentRequest.getBook(), copy);
+        return rentRequest;
+    }
+
 
 }
 

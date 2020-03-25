@@ -2,7 +2,6 @@ package com.arobs.project.service.impl;
 
 import com.arobs.project.entity.RentRequest;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.service.BookRentManager;
 import com.arobs.project.service.BookRentService;
 import com.arobs.project.service.EmployeeService;
 import com.arobs.project.service.RentRequestService;
@@ -18,15 +17,13 @@ import java.util.List;
 @Service
 public class SchedulerService {
 
-    private BookRentManager bookRentManager;
     private RentRequestService rentRequestService;
     private BookRentService bookRentService;
     private EmployeeService employeeService;
 
     @Autowired
-    public SchedulerService(BookRentManager bookRentManager, RentRequestService rentRequestService,
+    public SchedulerService(RentRequestService rentRequestService,
                             BookRentService bookRentService, EmployeeService employeeService) {
-        this.bookRentManager = bookRentManager;
         this.rentRequestService = rentRequestService;
         this.bookRentService = bookRentService;
         this.employeeService = employeeService;
@@ -46,20 +43,24 @@ public class SchedulerService {
 
         for (RentRequest rentRequest : rentRequestList) {
             try {
-                bookRentManager.acceptRentRequest(false, rentRequest.getRentReqId());
+                bookRentService.acceptRentRequest(false, rentRequest.getRentReqId());
             } catch (ValidationException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    //zilnic
+    //daily
     @Scheduled(fixedRate = 24 * 60000 * 60)
     @Async
-    public void dailyActions() {
+    public void markBookRentAsLate() {
         bookRentService.markBookRentAsLate();
-        employeeService.releaseBanningForEmployees();
+    }
 
+    @Scheduled(fixedRate = 24 * 60000 * 60)
+    @Async
+    public void releaseBanningFromEmployees() {
+        employeeService.releaseBanningForEmployees();
     }
 
 }

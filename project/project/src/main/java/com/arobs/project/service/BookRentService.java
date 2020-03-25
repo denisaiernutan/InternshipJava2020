@@ -1,18 +1,11 @@
 package com.arobs.project.service;
 
-import com.arobs.project.entity.Book;
-import com.arobs.project.entity.BookRent;
-import com.arobs.project.entity.Copy;
-import com.arobs.project.entity.Employee;
+import com.arobs.project.entity.*;
 import com.arobs.project.exception.ValidationException;
-
-import java.util.List;
 
 public interface BookRentService {
 
-    BookRent tryToMakeBookRent(BookRent bookRent) throws ValidationException;
-
-    void insertBookRent(BookRent bookRent, Copy copy, Employee employee, Book book);
+    BookRent tryToMakeBookRent(int bookId, int employeeId) throws ValidationException;
 
     BookRent findById(int bookRentId);
 
@@ -20,5 +13,9 @@ public interface BookRentService {
 
     void markBookRentAsLate();
 
+    BookRent returnBook(BookRent bookRent) throws ValidationException;
 
+    RentRequest acceptRentRequest(boolean accepted, int rentRequestId) throws ValidationException;
+
+    Copy insertAvailableCopy(int bookId) throws ValidationException;
 }

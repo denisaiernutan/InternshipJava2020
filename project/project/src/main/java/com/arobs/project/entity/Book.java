@@ -3,6 +3,7 @@ package com.arobs.project.entity;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -159,4 +160,40 @@ public class Book {
         this.rentRequestSet = rentRequestSet;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        Book book = (Book) o;
+        return getBookId() == book.getBookId() &&
+                Objects.equals(getBookTitle(), book.getBookTitle()) &&
+                Objects.equals(getBookAuthor(), book.getBookAuthor()) &&
+                Objects.equals(getBookDescription(), book.getBookDescription()) &&
+                Objects.equals(getBookAddedDate(), book.getBookAddedDate()) &&
+                Objects.equals(getTagSet(), book.getTagSet()) &&
+                Objects.equals(getCopySet(), book.getCopySet()) &&
+                Objects.equals(getBookRentSet(), book.getBookRentSet()) &&
+                Objects.equals(getRentRequestSet(), book.getRentRequestSet());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBookId(), getBookTitle(), getBookAuthor(), getBookDescription(), getBookAddedDate(),
+                getTagSet(), getCopySet(), getBookRentSet(), getRentRequestSet());
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "bookId=" + bookId +
+                ", bookTitle='" + bookTitle + '\'' +
+                ", bookAuthor='" + bookAuthor + '\'' +
+                ", bookDescription='" + bookDescription + '\'' +
+                ", bookAddedDate=" + bookAddedDate +
+                ", tagSet=" + tagSet +
+                ", copySet=" + copySet +
+                ", bookRentSet=" + bookRentSet +
+                ", rentRequestSet=" + rentRequestSet +
+                '}';
+    }
 }

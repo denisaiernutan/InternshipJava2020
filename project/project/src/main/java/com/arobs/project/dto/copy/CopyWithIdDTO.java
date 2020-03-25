@@ -10,13 +10,13 @@ public class CopyWithIdDTO {
 
     private String copyStatus;
 
-    private BookWithIdDTO book;
+    private BookWithIdDTO bookWithIdDTO;
 
-    public CopyWithIdDTO(int copyId, boolean copyFlag, String copyStatus, BookWithIdDTO book) {
+    public CopyWithIdDTO(int copyId, boolean copyFlag, String copyStatus, BookWithIdDTO bookWithIdDTO) {
         this.copyId = copyId;
         this.copyFlag = copyFlag;
         this.copyStatus = copyStatus;
-        this.book = book;
+        this.bookWithIdDTO = bookWithIdDTO;
     }
 
     public CopyWithIdDTO() {
@@ -46,11 +46,11 @@ public class CopyWithIdDTO {
         this.copyStatus = copyStatus;
     }
 
-    public BookWithIdDTO getBook() {
-        return book;
+    public BookWithIdDTO getBookWithIdDTO() {
+        return bookWithIdDTO;
     }
 
-    public void setBook(BookWithIdDTO book) {
-        this.book = book;
+    public void setBookWithIdDTO(BookWithIdDTO bookWithIdDTO) {
+        this.bookWithIdDTO = bookWithIdDTO;
     }
 }

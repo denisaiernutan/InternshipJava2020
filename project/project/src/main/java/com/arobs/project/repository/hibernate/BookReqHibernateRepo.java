@@ -30,7 +30,8 @@ public class BookReqHibernateRepo implements BookRequestRepository {
     @Override
     public List<BookRequest> findAll() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("Select b from BookRequest as b join fetch b.employee", BookRequest.class).list();
+        return session.createQuery("Select b from BookRequest as b join fetch b.employee", BookRequest.class)
+                .list();
     }
 
     @Override

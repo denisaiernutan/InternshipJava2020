@@ -1,6 +1,7 @@
 package com.arobs.project.entity;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -70,5 +71,33 @@ public class Copy {
 
     public void addBookRent(BookRent bookRent) {
         this.bookRentSet.add(bookRent);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Copy)) return false;
+        Copy copy = (Copy) o;
+        return getCopyId() == copy.getCopyId() &&
+                isCopyFlag() == copy.isCopyFlag() &&
+                Objects.equals(getCopyStatus(), copy.getCopyStatus()) &&
+                Objects.equals(getBook(), copy.getBook()) &&
+                Objects.equals(bookRentSet, copy.bookRentSet);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCopyId(), isCopyFlag(), getCopyStatus(), getBook(), bookRentSet);
+    }
+
+    @Override
+    public String toString() {
+        return "Copy{" +
+                "copyId=" + copyId +
+                ", copyFlag=" + copyFlag +
+                ", copyStatus='" + copyStatus + '\'' +
+                ", book=" + book +
+                ", bookRentSet=" + bookRentSet +
+                '}';
     }
 }

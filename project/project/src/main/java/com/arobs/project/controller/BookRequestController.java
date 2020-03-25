@@ -7,17 +7,21 @@ import com.arobs.project.entity.BookRequest;
 import com.arobs.project.enums.BookRequestStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookRequestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/bookrequests")
 public class BookRequestController {
 
+    private static final Logger logger = LoggerFactory.getLogger("FILE");
     private BookRequestService bookRequestService;
 
     @Autowired
@@ -26,14 +30,18 @@ public class BookRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<?> insertBookRequest(@RequestBody BookRequestDTO bookRequestDTO) {
+    public ResponseEntity<?> insertBookRequest(@RequestBody @Valid BookRequestDTO bookRequestDTO) {
         try {
             BookRequest bookRequest = BookRequestConverter.convertToEntity(bookRequestDTO);
             BookRequest insertedBookRequest = bookRequestService.insertBookRequest(bookRequest);
             BookRequestDTO bookRequestDTOReturn = BookRequestConverter.convertToBookReqWithIdDTO(insertedBookRequest);
             return new ResponseEntity<>(bookRequestDTOReturn, HttpStatus.OK);
         } catch (ValidationException e) {
+            logger.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -46,10 +54,11 @@ public class BookRequestController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateBookRequest(@RequestBody BookReqUpdateDTO bookReqUpdateDTO) {
+    public ResponseEntity<?> updateBookRequest(@RequestBody @Valid BookReqUpdateDTO bookReqUpdateDTO) {
         try {
             BookRequestStatus.valueOf(bookReqUpdateDTO.getBookReqStatus().toUpperCase());
         } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
             return new ResponseEntity<>("status invalid! Accepted status: PENDING,ACCEPTED,REJECTED",
                     HttpStatus.BAD_REQUEST);
         }
@@ -59,7 +68,11 @@ public class BookRequestController {
             return new ResponseEntity<>(BookRequestConverter.convertToBookReqWithIdDTO(updatedBookRequest),
                     HttpStatus.OK);
         } catch (ValidationException e) {
+            logger.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

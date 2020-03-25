@@ -3,6 +3,7 @@ package com.arobs.project.entity;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -140,5 +141,42 @@ public class Employee {
 
     public void setBookRentSet(Set<BookRent> bookRentSet) {
         this.bookRentSet = bookRentSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee)) return false;
+        Employee employee = (Employee) o;
+        return getEmployeeId() == employee.getEmployeeId() &&
+                isBanned() == employee.isBanned() &&
+                Objects.equals(getEmployeeName(), employee.getEmployeeName()) &&
+                Objects.equals(getEmployeePass(), employee.getEmployeePass()) &&
+                Objects.equals(getEmployeeEmail(), employee.getEmployeeEmail()) &&
+                Objects.equals(getEmployeeRole(), employee.getEmployeeRole()) &&
+                Objects.equals(getLastDayOfBan(), employee.getLastDayOfBan()) &&
+                Objects.equals(getRentRequestSet(), employee.getRentRequestSet()) &&
+                Objects.equals(getBookRentSet(), employee.getBookRentSet());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmployeeId(), getEmployeeName(), getEmployeePass(), getEmployeeEmail(),
+                getEmployeeRole(), isBanned(), getLastDayOfBan(), getRentRequestSet(), getBookRentSet());
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", employeeName='" + employeeName + '\'' +
+                ", employeePass='" + employeePass + '\'' +
+                ", employeeEmail='" + employeeEmail + '\'' +
+                ", employeeRole='" + employeeRole + '\'' +
+                ", banned=" + banned +
+                ", lastDayOfBan=" + lastDayOfBan +
+                ", rentRequestSet=" + rentRequestSet +
+                ", bookRentSet=" + bookRentSet +
+                '}';
     }
 }

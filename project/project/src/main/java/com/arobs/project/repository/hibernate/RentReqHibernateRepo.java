@@ -38,7 +38,8 @@ public class RentReqHibernateRepo implements RentRequestRepository {
                 "rr.rentReqStatus= :rentReqStatus ";
         return session.createQuery(hql, RentRequest.class)
                 .setParameter("rentReqStatus", rentReqStatus.toString())
-                .setParameter("bookId", bookId).list();
+                .setParameter("bookId", bookId)
+                .list();
     }
 
     @Override
@@ -54,6 +55,8 @@ public class RentReqHibernateRepo implements RentRequestRepository {
                 "join fetch rr.book as b " +
                 "where rr.rentReqStatus= 'WAITING_FOR_CONFIRMATION' " +
                 "and rr.sentEmailDate<= :date";
-        return session.createQuery(hql, RentRequest.class).setParameter("date", date).list();
+        return session.createQuery(hql, RentRequest.class)
+                .setParameter("date", date)
+                .list();
     }
 }

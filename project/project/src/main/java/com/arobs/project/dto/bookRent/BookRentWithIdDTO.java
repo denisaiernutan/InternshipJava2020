@@ -8,7 +8,7 @@ public class BookRentWithIdDTO {
 
     private int bookRentId;
 
-    private int book;
+    private int bookId;
 
     private CopyWithoutBookDTO copy;
 
@@ -22,10 +22,10 @@ public class BookRentWithIdDTO {
 
     private Double grade;
 
-    public BookRentWithIdDTO(int bookRentId, int book, CopyWithoutBookDTO copy, int employee,
+    public BookRentWithIdDTO(int bookRentId, int bookId, CopyWithoutBookDTO copy, int employee,
                              Date rentalDate, Date returnDate, String bookRentStatus, Double grade) {
         this.bookRentId = bookRentId;
-        this.book = book;
+        this.bookId = bookId;
         this.copy = copy;
         this.employee = employee;
         this.rentalDate = rentalDate;
@@ -53,12 +53,12 @@ public class BookRentWithIdDTO {
         this.bookRentId = bookRentId;
     }
 
-    public int getBook() {
-        return book;
+    public int getBookId() {
+        return bookId;
     }
 
-    public void setBook(int book) {
-        this.book = book;
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
     }
 
     public int getEmployee() {

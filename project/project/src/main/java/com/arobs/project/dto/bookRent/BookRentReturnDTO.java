@@ -1,9 +1,13 @@
 package com.arobs.project.dto.bookRent;
 
+import javax.validation.constraints.NotNull;
+
 public class BookRentReturnDTO {
 
+    @NotNull
     private int bookRentId;
 
+    @NotNull
     private Double grade;
 
     public BookRentReturnDTO() {

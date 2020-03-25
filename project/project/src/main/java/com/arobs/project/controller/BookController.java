@@ -8,11 +8,14 @@ import com.arobs.project.dto.book.BookWithIdDTO;
 import com.arobs.project.entity.Book;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.service.BookService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private BookService bookService;
+    private static final Logger logger = LoggerFactory.getLogger("FILE");
 
     @Autowired
     public BookController(BookService bookService) {
@@ -27,13 +31,17 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<?> insertBook(@RequestBody BookDTO bookDTO) {
+    public ResponseEntity<?> insertBook(@RequestBody @Valid BookDTO bookDTO) {
         try {
             Book book = BookConverter.convertToEntity(bookDTO);
             return new ResponseEntity<>(BookConverter.convertToBookWithIdDTO(bookService.insertBook(book)),
                     HttpStatus.OK);
         } catch (ValidationException e) {
+            logger.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -47,15 +55,18 @@ public class BookController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateBook(@RequestBody BookUpdateDTO bookDTO) {
+    public ResponseEntity<?> updateBook(@RequestBody @Valid BookUpdateDTO bookDTO) {
 
         try {
             Book book = bookService.updateBook(BookConverter.convertToEntity(bookDTO));
-
             BookWithIdDTO bookWithIdDTO = BookConverter.convertToBookWithIdDTO(book);
             return new ResponseEntity<>(bookWithIdDTO, HttpStatus.OK);
         } catch (ValidationException e) {
+            logger.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -72,7 +83,11 @@ public class BookController {
                     .map(CopyConverter::convertToCopyWithIdDTO)
                     .collect(Collectors.toList()), HttpStatus.OK);
         } catch (ValidationException e) {
+            logger.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

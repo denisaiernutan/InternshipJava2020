@@ -2,6 +2,7 @@ package com.arobs.project.entity;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -63,4 +64,27 @@ public class Tag {
         book.getTagSet().add(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Tag tag = (Tag) o;
+        return getTagId() == tag.getTagId() &&
+                Objects.equals(getTagDescription(), tag.getTagDescription()) &&
+                Objects.equals(getBookSet(), tag.getBookSet());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTagId(), getTagDescription(), getBookSet());
+    }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "tagId=" + tagId +
+                ", tagDescription='" + tagDescription + '\'' +
+                ", bookSet=" + bookSet +
+                '}';
+    }
 }

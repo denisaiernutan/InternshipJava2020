@@ -6,7 +6,6 @@ import java.util.Set;
 
 public class BookWithIdDTO{
 
-
     private int bookId;
 
     private String bookTitle;

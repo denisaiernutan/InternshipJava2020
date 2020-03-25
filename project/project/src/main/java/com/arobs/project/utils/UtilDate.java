@@ -1,6 +1,7 @@
 package com.arobs.project.utils;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 
 public class UtilDate {
@@ -17,5 +18,13 @@ public class UtilDate {
         calendar.setTime(date);
         calendar.add(Calendar.MONTH, noOfMonths);
         return new Date(calendar.getTimeInMillis());
+    }
+
+    public static Date getNow() {
+        return new Date(System.currentTimeMillis());
+    }
+
+    public static Timestamp getNowTimestamp() {
+        return new Timestamp(System.currentTimeMillis());
     }
 }

@@ -41,10 +41,11 @@ public class CopyHibernateRepo implements CopyRepository {
     public Copy updateCopy(Copy copy) {
         Session session = sessionFactory.getCurrentSession();
         Copy updatedCopy = session.createQuery("SELECT DISTINCT c from Copy c " +
-                        "join fetch c.book as b " +
-                        "join fetch b.tagSet" +
-                        " where c.copyId= :copyId",
-                Copy.class).setParameter("copyId", copy.getCopyId()).getSingleResult();
+                "join fetch c.book as b " +
+                "join fetch b.tagSet" +
+                " where c.copyId= :copyId", Copy.class)
+                .setParameter("copyId", copy.getCopyId())
+                .getSingleResult();
         updatedCopy.setCopyFlag(copy.isCopyFlag());
         updatedCopy.setCopyStatus(copy.getCopyStatus());
         return updatedCopy;
@@ -69,7 +70,8 @@ public class CopyHibernateRepo implements CopyRepository {
                 "and c.copyFlag=true";
         return session.createQuery(hql, Copy.class)
                 .setParameter("copyStatus", copyStatus.toString())
-                .setParameter("bookid", bookId).list();
+                .setParameter("bookid", bookId)
+                .list();
     }
 
 

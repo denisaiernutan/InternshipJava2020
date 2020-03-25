@@ -1,11 +1,16 @@
 package com.arobs.project.dto.copy;
 
+import javax.validation.constraints.NotNull;
+
 public class CopyUpdateDTO {
 
+    @NotNull
     private int copyId;
 
+    @NotNull
     private boolean copyFlag;
 
+    @NotNull
     private String copyStatus;
 
     public CopyUpdateDTO(int copyId, boolean copyFlag, String copyStatus) {

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class BookRentHibernateRepo implements BookRentRepository {
 
 
-    SessionFactory sessionFactory;
+   private SessionFactory sessionFactory;
 
     @Autowired
     public BookRentHibernateRepo(SessionFactory sessionFactory) {
@@ -42,7 +42,9 @@ public class BookRentHibernateRepo implements BookRentRepository {
     public List<BookRent> findBookRentThatPassedReturnDate() {
         Session session = sessionFactory.getCurrentSession();
         String hql = "from BookRent br where br.returnDate< :returnDate and br.bookRentStatus='ON_GOING'";
-        return session.createQuery(hql, BookRent.class).setParameter("returnDate", new Date()).list();
+        return session.createQuery(hql, BookRent.class)
+                .setParameter("returnDate", new Date())
+                .list();
     }
 
     @Override
@@ -80,7 +82,10 @@ public class BookRentHibernateRepo implements BookRentRepository {
     }
 
     private List<Book> getBooksRented(List<Object[]> objectList) {
-        return objectList.stream().map(o -> (Book) o[0]).collect(Collectors.toList());
+        return objectList
+                .stream()
+                .map(o -> (Book) o[0])
+                .collect(Collectors.toList());
 
     }
 
@@ -108,6 +113,7 @@ public class BookRentHibernateRepo implements BookRentRepository {
     public List<Employee> listLateEmployees() {
         Session session = sessionFactory.getCurrentSession();
         String hql = "select distinct employee from BookRent br where br.bookRentStatus='LATE'";
-        return session.createQuery(hql, Employee.class).list();
+        return session.createQuery(hql, Employee.class)
+                .list();
     }
 }

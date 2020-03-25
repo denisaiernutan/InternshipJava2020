@@ -1,9 +1,13 @@
 package com.arobs.project.dto.bookRequest;
 
+import javax.validation.constraints.NotNull;
+
 public class BookReqUpdateDTO {
 
+    @NotNull
     private int bookReqId;
 
+    @NotNull
     private String bookReqStatus;
 
     public BookReqUpdateDTO(int bookReqId, String bookReqStatus) {

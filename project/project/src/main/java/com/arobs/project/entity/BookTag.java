@@ -1,5 +1,7 @@
 package com.arobs.project.entity;
 
+import java.util.Objects;
+
 public class BookTag {
 
     private Book book;
@@ -25,5 +27,27 @@ public class BookTag {
 
     public void setTag(Tag tag) {
         this.tag = tag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BookTag)) return false;
+        BookTag bookTag = (BookTag) o;
+        return Objects.equals(getBook(), bookTag.getBook()) &&
+                Objects.equals(getTag(), bookTag.getTag());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBook(), getTag());
+    }
+
+    @Override
+    public String toString() {
+        return "BookTag{" +
+                "book=" + book +
+                ", tag=" + tag +
+                '}';
     }
 }
